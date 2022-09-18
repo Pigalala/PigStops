@@ -1,0 +1,6 @@
+name: PigStops
+version: '${project.version}'
+main: me.pigalala.pigstops.PigStops
+api-version: 1.19
+prefix: PigStops
+authors: [ Pigalala ]
