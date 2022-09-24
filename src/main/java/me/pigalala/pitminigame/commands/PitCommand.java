@@ -38,6 +38,7 @@ public class PitCommand implements CommandExecutor {
                 if(games.contains(args[1])) {
                     if(args[0].equalsIgnoreCase("setnew") && p.hasPermission("pigstop.modify")){
                         PigStops.getPlugin().setDefaultPitGame(PitGame.valueOf(args[1]));
+                        p.sendMessage("§aSuccessfully changed pit game");
                     }
                 } else {
                     p.sendMessage("§cPit game not found");
