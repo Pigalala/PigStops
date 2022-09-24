@@ -28,11 +28,11 @@ public class PitListener implements Listener {
             e.setCancelled(true);
             if(e.getCurrentItem() == null) return;
             if (PigStops.getPlugin().getDefaultPitGame() == PitGame.NORMAL){
-                PigStops.getPlugin().getPitWindow().normalItemClick(player, e.getCurrentItem());
+                PigStops.getPitWindow().onItemClick(player, e.getCurrentItem());
                 return;
             }
             if (PigStops.getPlugin().getDefaultPitGame() == PitGame.COOKIE){
-                PigStops.getPlugin().getPitWindow().cookieItemClick(player, e.getCurrentItem());
+                PigStops.getPitWindow().onItemClick(player, e.getCurrentItem());
                 return;
             }
         }
@@ -67,6 +67,6 @@ public class PitListener implements Listener {
     public void onInvClose(InventoryCloseEvent e){
         if(e.getReason().equals(InventoryCloseEvent.Reason.OPEN_NEW)) return;
 
-        PigStops.getPlugin().getPitWindow().reset((Player) e.getPlayer());
+        PigStops.getPitWindow().reset((Player) e.getPlayer());
     }
 }

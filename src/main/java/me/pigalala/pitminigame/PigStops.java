@@ -5,12 +5,16 @@ import me.pigalala.pitminigame.listeners.PitListener;
 import me.pigalala.pitminigame.pit.PitWindow;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.plugin.java.JavaPlugin;
+
+import java.util.HashMap;
 
 public final class PigStops extends JavaPlugin {
 
     private static PigStops plugin;
-    private PitWindow pitWindow;
+    private static PitWindow pitWindow;
     private PitGame defaultPit;
 
     private final Material pitBlock = Material.REDSTONE_BLOCK;
@@ -31,7 +35,7 @@ public final class PigStops extends JavaPlugin {
         Bukkit.getOnlinePlayers().forEach(player -> getPitWindow().reset(player));
     }
 
-    public PitWindow getPitWindow() {return pitWindow;}
+    public static PitWindow getPitWindow() {return pitWindow;}
 
     public static PigStops getPlugin() {return plugin;}
 

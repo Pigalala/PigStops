@@ -2,7 +2,11 @@ package me.pigalala.pitminigame.pit;
 
 import me.pigalala.pitminigame.PigStops;
 import me.pigalala.pitminigame.PitType;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.Sound;
+import org.bukkit.SoundCategory;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
@@ -17,7 +21,7 @@ public class PitNormal {
 
     public PitNormal(Player player, PitType pitType){
         setItemMetas();
-        PigStops.getPlugin().getPitWindow().createWindow(player, pitType, setContents());
+        PigStops.getPitWindow().createWindow(player, pitType, setContents());
     }
 
     private ItemStack[] setContents(){
@@ -46,5 +50,33 @@ public class PitNormal {
         paddleMeta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
         paddleMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
         paddle.setItemMeta(paddleMeta);
+    }
+
+    public static void normalItemClick(Player player, ItemStack clickedItem){
+        if(clickedItem.getType() == Material.WOODEN_SHOVEL){
+            ItemMeta paddleMeta = clickedItem.getItemMeta();
+            if(paddleMeta.hasEnchants()) return;
+            paddleMeta.addEnchant(Enchantment.LUCK, 1, true);
+            paddleMeta.setDisplayName("New Paddle");
+            clickedItem.setItemMeta(paddleMeta);
+
+            if(PigStops.getPitWindow().itemsToClick.get(player) == 2){
+                player.playSound(player.getLocation(), Sound.BLOCK_GRINDSTONE_USE, SoundCategory.MASTER, 0.5f, 1f);
+            }
+
+            PigStops.getPitWindow().itemsToClick.put(player, PigStops.getPitWindow().itemsToClick.get(player) - 1);
+
+            if(PigStops.getPitWindow().isFinished(player)){
+                for (int i = 0; i < 3; i++) {
+                    Bukkit.getScheduler().runTaskLater(PigStops.getPlugin(), () -> {
+                        player.playSound(player, Sound.BLOCK_SMITHING_TABLE_USE, SoundCategory.MASTER, 0.5f, 1f);
+                    },1);
+                }
+                PigStops.getPitWindow().finishPits(player);
+            }
+        }
+        if(clickedItem.getType() == Material.LIGHT_BLUE_STAINED_GLASS_PANE) {
+            PigStops.getPitWindow().shufflePlayer(player);
+        }
     }
 }
