@@ -26,6 +26,8 @@ public class PitWindow {
     public final HashMap<Player, PitType> pitTypes = new HashMap<>();
     public final HashMap<Player, Inventory> pitWindows = new HashMap<>();
 
+    public final String pitNameBase = "§dPigStop - ";
+
     private void setHashMaps(Player player, PitType pitType){
         if(PigStops.getPlugin().getDefaultPitGame() == PitGame.NORMAL) itemsToClick.put(player, 2);
         if(PigStops.getPlugin().getDefaultPitGame() == PitGame.COOKIE) itemsToClick.put(player, 3);
@@ -48,13 +50,13 @@ public class PitWindow {
         if(PigStops.getPlugin().getDefaultPitGame() == PitGame.COOKIE) PitCookie.cookieItemClick(player, clickedItem);
     }
 
-    public void createWindow(Player player, PitType pitType, ItemStack[] contents){
+    public void createWindow(Player player, PitType pitType, ItemStack[] contents, String windowName, Integer windowSize){
         if(hasStarted.get(player) != null) {
             if(hasStarted.get(player)) return;
         }
 
         setHashMaps(player, pitType);
-        Inventory pitWindow = Bukkit.createInventory(player, 27, "§6§lPIG STOP!");
+        Inventory pitWindow = Bukkit.createInventory(player, windowSize, pitNameBase + windowName);
 
         pitWindow.setContents(contents);
         player.openInventory(pitWindow);

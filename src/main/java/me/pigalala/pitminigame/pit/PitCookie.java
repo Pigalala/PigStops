@@ -1,6 +1,7 @@
 package me.pigalala.pitminigame.pit;
 
 import me.pigalala.pitminigame.PigStops;
+import me.pigalala.pitminigame.PitGame;
 import me.pigalala.pitminigame.PitType;
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -21,7 +22,7 @@ public class PitCookie {
 
     public PitCookie(Player player, PitType pitType){
         setItemMetas();
-        PigStops.getPitWindow().createWindow(player, pitType, setContents());
+        PigStops.getPitWindow().createWindow(player, pitType, setContents(), PitGame.COOKIE.name(), 27);
     }
 
     private ItemStack[] setContents(){
