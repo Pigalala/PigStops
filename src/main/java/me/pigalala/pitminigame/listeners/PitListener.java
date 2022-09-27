@@ -4,8 +4,8 @@ import me.makkuusen.timing.system.event.EventDatabase;
 import me.pigalala.pitminigame.PigStops;
 import me.pigalala.pitminigame.PitGame;
 import me.pigalala.pitminigame.PitType;
-import me.pigalala.pitminigame.pit.PitCookie;
-import me.pigalala.pitminigame.pit.PitNormal;
+import me.pigalala.pitminigame.pit.PitCOOKIE;
+import me.pigalala.pitminigame.pit.PitNORMAL;
 import org.bukkit.entity.Boat;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -53,11 +53,11 @@ public class PitListener implements Listener {
         if(driver.get().getHeat().isActive()){
             if (!driver.get().getCurrentLap().isPitted()) {
                 if(PigStops.getPlugin().getDefaultPitGame() == PitGame.NORMAL){
-                    new PitNormal(p, PitType.REAL);
+                    new PitNORMAL(p, PitType.REAL);
                     return;
                 }
                 if(PigStops.getPlugin().getDefaultPitGame() == PitGame.COOKIE){
-                    new PitCookie(p, PitType.REAL);
+                    new PitCOOKIE(p, PitType.REAL);
                 }
             }
         }

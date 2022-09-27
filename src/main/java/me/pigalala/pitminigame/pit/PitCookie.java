@@ -15,12 +15,12 @@ import org.bukkit.inventory.meta.ItemMeta;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PitCookie {
+public class PitCOOKIE {
     private final ItemStack background = new ItemStack(Material.LIGHT_BLUE_STAINED_GLASS_PANE);
     private final ItemStack wheat = new ItemStack(Material.WHEAT);
     private final ItemStack cocoa = new ItemStack(Material.COCOA_BEANS);
 
-    public PitCookie(Player player, PitType pitType){
+    public PitCOOKIE(Player player, PitType pitType){
         setItemMetas();
         PigStops.getPitWindow().createWindow(player, pitType, setContents(), PitGame.COOKIE.name(), 27);
     }
@@ -61,7 +61,7 @@ public class PitCookie {
         wheat.setItemMeta(wheatMeta);
     }
 
-    public static void cookieItemClick(Player player, ItemStack clickedItem){
+    public static void itemClick(Player player, ItemStack clickedItem){
         if(clickedItem.getType() == Material.WHEAT){
             if((PigStops.getPitWindow().itemsToClick.get(player) != 3 && PigStops.getPitWindow().itemsToClick.get(player) != 1)) {
                 player.playSound(player, Sound.BLOCK_NOTE_BLOCK_PLING, 0.5f, 0.5f);

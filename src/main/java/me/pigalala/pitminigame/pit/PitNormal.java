@@ -16,11 +16,11 @@ import org.bukkit.inventory.meta.ItemMeta;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PitNormal {
+public class PitNORMAL {
     private final ItemStack background = new ItemStack(Material.LIGHT_BLUE_STAINED_GLASS_PANE);
     private final ItemStack paddle = new ItemStack(Material.WOODEN_SHOVEL);
 
-    public PitNormal(Player player, PitType pitType){
+    public PitNORMAL(Player player, PitType pitType){
         setItemMetas();
         PigStops.getPitWindow().createWindow(player, pitType, setContents(), PitGame.NORMAL.name(), 27);
     }
@@ -53,7 +53,7 @@ public class PitNormal {
         paddle.setItemMeta(paddleMeta);
     }
 
-    public static void normalItemClick(Player player, ItemStack clickedItem){
+    public static void itemClick(Player player, ItemStack clickedItem){
         if(clickedItem.getType() == Material.WOODEN_SHOVEL){
             ItemMeta paddleMeta = clickedItem.getItemMeta();
             if(paddleMeta.hasEnchants()) return;

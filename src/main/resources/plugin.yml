@@ -1,4 +1,4 @@
-name: Pitminigame
+name: PigStops
 version: '${project.version}'
 main: me.pigalala.pitminigame.PigStops
 api-version: 1.19

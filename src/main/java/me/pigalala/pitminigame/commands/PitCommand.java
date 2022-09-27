@@ -3,8 +3,8 @@ package me.pigalala.pitminigame.commands;
 import me.pigalala.pitminigame.PigStops;
 import me.pigalala.pitminigame.PitGame;
 import me.pigalala.pitminigame.PitType;
-import me.pigalala.pitminigame.pit.PitCookie;
-import me.pigalala.pitminigame.pit.PitNormal;
+import me.pigalala.pitminigame.pit.PitCOOKIE;
+import me.pigalala.pitminigame.pit.PitNORMAL;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -45,8 +45,8 @@ public class PitCommand implements CommandExecutor {
                     return true;
                 }
             } else {
-                if(PigStops.getPlugin().getDefaultPitGame() == PitGame.NORMAL) new PitNormal(p, PitType.FAKE);
-                if(PigStops.getPlugin().getDefaultPitGame() == PitGame.COOKIE) new PitCookie(p, PitType.FAKE);
+                if(PigStops.getPlugin().getDefaultPitGame() == PitGame.NORMAL) new PitNORMAL(p, PitType.FAKE);
+                if(PigStops.getPlugin().getDefaultPitGame() == PitGame.COOKIE) new PitCOOKIE(p, PitType.FAKE);
                 return true;
             }
         }

@@ -8,14 +8,10 @@ import me.pigalala.pitminigame.PitGame;
 import me.pigalala.pitminigame.PitType;
 import me.pigalala.pitminigame.PigStops;
 import org.bukkit.Bukkit;
-import org.bukkit.Material;
 import org.bukkit.Sound;
-import org.bukkit.SoundCategory;
-import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.*;
 
@@ -45,9 +41,9 @@ public class PitWindow {
         pitWindows.put(player, null);
     }
 
-    public void onItemClick(Player player, ItemStack clickedItem){
-        if(PigStops.getPlugin().getDefaultPitGame() == PitGame.NORMAL) PitNormal.normalItemClick(player, clickedItem);
-        if(PigStops.getPlugin().getDefaultPitGame() == PitGame.COOKIE) PitCookie.cookieItemClick(player, clickedItem);
+    public void onItemClick(Player player, ItemStack clickedItem) throws ClassNotFoundException {
+        if(PigStops.getPlugin().getDefaultPitGame() == PitGame.NORMAL) PitNORMAL.itemClick(player, clickedItem);
+        if(PigStops.getPlugin().getDefaultPitGame() == PitGame.COOKIE) PitCOOKIE.itemClick(player, clickedItem);
     }
 
     public void createWindow(Player player, PitType pitType, ItemStack[] contents, String windowName, Integer windowSize){
