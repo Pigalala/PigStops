@@ -2,7 +2,7 @@ name: PigStops
 version: '${project.version}'
 main: me.pigalala.pitminigame.PigStops
 api-version: 1.19
-prefix: PitMinigame
+prefix: PigStops
 authors: [ Pigalala ]
 depend: [TimingSystem]
 

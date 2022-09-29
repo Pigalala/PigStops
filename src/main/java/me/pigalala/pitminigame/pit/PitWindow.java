@@ -25,7 +25,7 @@ public class PitWindow {
     public final String pitNameBase = "§dPigStop - ";
 
     private void setHashMaps(Player player, PitType pitType){
-        if(PigStops.getPlugin().getDefaultPitGame() == PitGame.NORMAL) itemsToClick.put(player, 2);
+        if(PigStops.getPlugin().getDefaultPitGame() == PitGame.STANDARD) itemsToClick.put(player, 2);
         if(PigStops.getPlugin().getDefaultPitGame() == PitGame.COOKIE) itemsToClick.put(player, 3);
         hasStarted.put(player, true);
         pitTypes.put(player, pitType);
@@ -42,7 +42,7 @@ public class PitWindow {
     }
 
     public void onItemClick(Player player, ItemStack clickedItem) throws ClassNotFoundException {
-        if(PigStops.getPlugin().getDefaultPitGame() == PitGame.NORMAL) PitNORMAL.onItemClick(player, clickedItem);
+        if(PigStops.getPlugin().getDefaultPitGame() == PitGame.STANDARD) PitSTANDARD.onItemClick(player, clickedItem);
         if(PigStops.getPlugin().getDefaultPitGame() == PitGame.COOKIE) PitCOOKIE.onItemClick(player, clickedItem);
     }
 

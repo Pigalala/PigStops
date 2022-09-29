@@ -16,13 +16,13 @@ import org.bukkit.inventory.meta.ItemMeta;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PitNORMAL {
+public class PitSTANDARD {
     private final ItemStack background = new ItemStack(Material.LIGHT_BLUE_STAINED_GLASS_PANE);
     private final ItemStack paddle = new ItemStack(Material.WOODEN_SHOVEL);
 
-    public PitNORMAL(Player player, PitType pitType){
+    public PitSTANDARD(Player player, PitType pitType){
         setItemMetas();
-        PigStops.getPitWindow().createWindow(player, pitType, setContents(), PitGame.NORMAL.name(), 27);
+        PigStops.getPitWindow().createWindow(player, pitType, setContents(), PitGame.STANDARD.name(), 27);
     }
 
     private ItemStack[] setContents(){

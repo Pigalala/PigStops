@@ -5,8 +5,7 @@ import me.pigalala.pitminigame.PigStops;
 import me.pigalala.pitminigame.PitGame;
 import me.pigalala.pitminigame.PitType;
 import me.pigalala.pitminigame.pit.PitCOOKIE;
-import me.pigalala.pitminigame.pit.PitNORMAL;
-import org.bukkit.Material;
+import me.pigalala.pitminigame.pit.PitSTANDARD;
 import org.bukkit.entity.Boat;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -28,8 +27,8 @@ public class PitListener implements Listener {
         if (e.getView().getTitle().startsWith(PigStops.getPitWindow().pitNameBase)) {
             e.setCancelled(true);
             if(e.getCurrentItem() == null) return;
-            if (PigStops.getPlugin().getDefaultPitGame() == PitGame.NORMAL){
-                PitNORMAL.onItemClick(player, e.getCurrentItem());
+            if (PigStops.getPlugin().getDefaultPitGame() == PitGame.STANDARD){
+                PitSTANDARD.onItemClick(player, e.getCurrentItem());
                 return;
             }
             if (PigStops.getPlugin().getDefaultPitGame() == PitGame.COOKIE){
@@ -46,15 +45,15 @@ public class PitListener implements Listener {
         if (e.getVehicle().getPassengers().size() != 1) return;
 
         Player p = (Player) b.getPassenger();
-        if (p.getLocation().add(new Vector(0, -1, 0)).getBlock().getType() != Material.REDSTONE_BLOCK) return;
+        if (p.getLocation().add(new Vector(0, -1, 0)).getBlock().getType() != PigStops.getPlugin().getPitBlock()) return;
 
         var driver = EventDatabase.getDriverFromRunningHeat(p.getUniqueId());
         if(!driver.isPresent()) return;
 
         if(driver.get().getHeat().isActive()){
             if (!driver.get().getCurrentLap().isPitted()) {
-                if(PigStops.getPlugin().getDefaultPitGame() == PitGame.NORMAL){
-                    new PitNORMAL(p, PitType.REAL);
+                if(PigStops.getPlugin().getDefaultPitGame() == PitGame.STANDARD){
+                    new PitSTANDARD(p, PitType.REAL);
                     return;
                 }
                 if(PigStops.getPlugin().getDefaultPitGame() == PitGame.COOKIE){

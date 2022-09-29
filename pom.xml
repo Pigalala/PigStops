@@ -6,7 +6,7 @@
 
     <groupId>me.pigalala</groupId>
     <artifactId>pigstops</artifactId>
-    <version>dev-1</version>
+    <version>1.0</version>
     <packaging>jar</packaging>
 
     <name>PigStops</name>
