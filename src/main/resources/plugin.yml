@@ -7,7 +7,7 @@ authors: [ Pigalala ]
 depend: [TimingSystem]
 
 commands:
-  pit:
+  pigstop:
     aliases: []
 
 permissions:

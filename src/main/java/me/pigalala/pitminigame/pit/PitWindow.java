@@ -42,8 +42,8 @@ public class PitWindow {
     }
 
     public void onItemClick(Player player, ItemStack clickedItem) throws ClassNotFoundException {
-        if(PigStops.getPlugin().getDefaultPitGame() == PitGame.NORMAL) PitNORMAL.itemClick(player, clickedItem);
-        if(PigStops.getPlugin().getDefaultPitGame() == PitGame.COOKIE) PitCOOKIE.itemClick(player, clickedItem);
+        if(PigStops.getPlugin().getDefaultPitGame() == PitGame.NORMAL) PitNORMAL.onItemClick(player, clickedItem);
+        if(PigStops.getPlugin().getDefaultPitGame() == PitGame.COOKIE) PitCOOKIE.onItemClick(player, clickedItem);
     }
 
     public void createWindow(Player player, PitType pitType, ItemStack[] contents, String windowName, Integer windowSize){

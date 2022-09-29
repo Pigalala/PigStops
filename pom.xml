@@ -48,8 +48,8 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.8.1</version>
                 <configuration>
-                    <source>1.8</source>
-                    <target>1.8</target>
+                    <source>16</source>
+                    <target>16</target>
                     <compilerArgs>
                         <arg>-parameters</arg>
                     </compilerArgs>
@@ -64,7 +64,7 @@
                     <relocations>
                         <relocation>
                             <pattern>co.aikar.commands</pattern>
-                            <shadedPattern>[YOUR_PLUGIN_PACKAGE].acf</shadedPattern> <!-- Replace this -->
+                            <shadedPattern>me.pigalala.pitminigame.acf</shadedPattern> <!-- Replace this -->
                         </relocation>
                         <relocation>
                             <pattern>co.aikar.locales</pattern>

@@ -53,7 +53,7 @@ public class PitNORMAL {
         paddle.setItemMeta(paddleMeta);
     }
 
-    public static void itemClick(Player player, ItemStack clickedItem){
+    public static void onItemClick(Player player, ItemStack clickedItem){
         if(clickedItem.getType() == Material.WOODEN_SHOVEL){
             ItemMeta paddleMeta = clickedItem.getItemMeta();
             if(paddleMeta.hasEnchants()) return;

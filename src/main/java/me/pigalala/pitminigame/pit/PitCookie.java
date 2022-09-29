@@ -61,7 +61,7 @@ public class PitCOOKIE {
         wheat.setItemMeta(wheatMeta);
     }
 
-    public static void itemClick(Player player, ItemStack clickedItem){
+    public static void onItemClick(Player player, ItemStack clickedItem){
         if(clickedItem.getType() == Material.WHEAT){
             if((PigStops.getPitWindow().itemsToClick.get(player) != 3 && PigStops.getPitWindow().itemsToClick.get(player) != 1)) {
                 player.playSound(player, Sound.BLOCK_NOTE_BLOCK_PLING, 0.5f, 0.5f);
