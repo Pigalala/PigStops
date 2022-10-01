@@ -23,7 +23,7 @@ public class PitCOOKIE {
 
     public PitCOOKIE(Player player, PitType pitType){
         setItemMetas();
-        PigStops.getPitWindow().createWindow(player, pitType, setContents(), PitGame.COOKIE.name(), 27);
+        PitWindow.createWindow(player, pitType, setContents(), PitGame.COOKIE.name(), 27);
     }
 
     private ItemStack[] setContents(){
@@ -64,17 +64,17 @@ public class PitCOOKIE {
             cookieMeta.addEnchant(Enchantment.LUCK, 1, true);
             clickedItem.setItemMeta(cookieMeta);
 
-            PigStops.getPitWindow().itemsToClick.put(player, PigStops.getPitWindow().itemsToClick.get(player) - 1);
+            PitWindow.getItemsToClick().put(player, PitWindow.getItemsToClick().get(player) - 1);
             player.playSound(player, Sound.BLOCK_BAMBOO_HIT, SoundCategory.MASTER, 0.5f, 1f);
         }
 
-        if(PigStops.getPitWindow().isFinished(player)){
+        if(PitWindow.isFinished(player)){
             player.playSound(player, Sound.BLOCK_SMITHING_TABLE_USE, SoundCategory.MASTER, 0.5f, 1f);
-            PigStops.getPitWindow().finishPits(player);
+            PitWindow.finishPits(player);
         }
 
         if(clickedItem.getType() == Material.LIGHT_BLUE_STAINED_GLASS_PANE) {
-            PigStops.getPitWindow().shuffleItems(player);
+            PitWindow.shuffleItems(player);
         }
     }
 }

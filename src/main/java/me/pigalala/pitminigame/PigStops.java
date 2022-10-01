@@ -18,7 +18,6 @@ import java.util.logging.Level;
 public final class PigStops extends JavaPlugin {
 
     private static PigStops plugin;
-    private static PitWindow pitWindow;
     private PitGame defaultPit;
 
     private Material pitBlock;
@@ -33,15 +32,13 @@ public final class PigStops extends JavaPlugin {
 
         new PitListener();
 
-        pitWindow = new PitWindow();
-
         setupCommands();
         loadPitBlock();
     }
 
     @Override
     public void onDisable(){
-        Bukkit.getOnlinePlayers().forEach(player -> getPitWindow().reset(player));
+        Bukkit.getOnlinePlayers().forEach(PitWindow::reset);
     }
 
     private void loadPitBlock(){
@@ -74,8 +71,6 @@ public final class PigStops extends JavaPlugin {
             return ImmutableList.copyOf(blocks.toArray(new String[0]));
         });
     }
-
-    public static PitWindow getPitWindow() {return pitWindow;}
 
     public static PigStops getPlugin() {return plugin;}
 

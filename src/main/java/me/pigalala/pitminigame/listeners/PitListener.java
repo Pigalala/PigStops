@@ -6,6 +6,7 @@ import me.pigalala.pitminigame.PitGame;
 import me.pigalala.pitminigame.PitType;
 import me.pigalala.pitminigame.pit.PitCOOKIE;
 import me.pigalala.pitminigame.pit.PitSTANDARD;
+import me.pigalala.pitminigame.pit.PitWindow;
 import org.bukkit.entity.Boat;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -24,7 +25,7 @@ public class PitListener implements Listener {
     @EventHandler
     public void onPitWindowClick(InventoryClickEvent e) {
         Player player = (Player) e.getWhoClicked();
-        if (e.getView().getTitle().startsWith(PigStops.getPitWindow().pitNameBase)) {
+        if (e.getView().getTitle().startsWith(PitWindow.pitNameBase)) {
             e.setCancelled(true);
             if(e.getCurrentItem() == null) return;
             if (PigStops.getPlugin().getDefaultPitGame() == PitGame.STANDARD){
@@ -42,9 +43,9 @@ public class PitListener implements Listener {
     public void onMove(VehicleMoveEvent e) {
         if (!(e.getVehicle() instanceof Boat b)) return;
         if (e.getVehicle().getPassengers().isEmpty()) return;
-        if (e.getVehicle().getPassengers().size() != 1) return;
+        if (e.getVehicle().getPassengers().size() > 0) return;
 
-        Player p = (Player) b.getPassenger();
+        Player p = (Player) b.getPassengers().get(0);
         if (p.getLocation().add(new Vector(0, -1, 0)).getBlock().getType() != PigStops.getPlugin().getPitBlock()) return;
 
         var driver = EventDatabase.getDriverFromRunningHeat(p.getUniqueId());
@@ -67,6 +68,6 @@ public class PitListener implements Listener {
     public void onInvClose(InventoryCloseEvent e){
         if(e.getReason().equals(InventoryCloseEvent.Reason.OPEN_NEW)) return;
 
-        PigStops.getPitWindow().reset((Player) e.getPlayer());
+        PitWindow.reset((Player) e.getPlayer());
     }
 }

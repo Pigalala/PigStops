@@ -22,7 +22,7 @@ public class PitSTANDARD {
 
     public PitSTANDARD(Player player, PitType pitType){
         setItemMetas();
-        PigStops.getPitWindow().createWindow(player, pitType, setContents(), PitGame.STANDARD.name(), 27);
+        PitWindow.createWindow(player, pitType, setContents(), PitGame.STANDARD.name(), 27);
     }
 
     private ItemStack[] setContents(){
@@ -61,23 +61,23 @@ public class PitSTANDARD {
             paddleMeta.setDisplayName("New Paddle");
             clickedItem.setItemMeta(paddleMeta);
 
-            if(PigStops.getPitWindow().itemsToClick.get(player) == 2){
+            if(PitWindow.getItemsToClick().get(player) == 2){
                 player.playSound(player.getLocation(), Sound.BLOCK_GRINDSTONE_USE, SoundCategory.MASTER, 0.5f, 1f);
             }
 
-            PigStops.getPitWindow().itemsToClick.put(player, PigStops.getPitWindow().itemsToClick.get(player) - 1);
+            PitWindow.getItemsToClick().put(player, PitWindow.getItemsToClick().get(player) - 1);
 
-            if(PigStops.getPitWindow().isFinished(player)){
+            if(PitWindow.isFinished(player)){
                 for (int i = 0; i < 3; i++) {
                     Bukkit.getScheduler().runTaskLater(PigStops.getPlugin(), () -> {
                         player.playSound(player, Sound.BLOCK_SMITHING_TABLE_USE, SoundCategory.MASTER, 0.5f, 1f);
                     },1);
                 }
-                PigStops.getPitWindow().finishPits(player);
+                PitWindow.finishPits(player);
             }
         }
         if(clickedItem.getType() == Material.LIGHT_BLUE_STAINED_GLASS_PANE) {
-            PigStops.getPitWindow().shuffleItems(player);
+            PitWindow.shuffleItems(player);
         }
     }
 }
