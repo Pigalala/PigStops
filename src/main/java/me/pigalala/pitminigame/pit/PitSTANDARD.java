@@ -77,7 +77,7 @@ public class PitSTANDARD {
             }
         }
         if(clickedItem.getType() == Material.LIGHT_BLUE_STAINED_GLASS_PANE) {
-            PigStops.getPitWindow().shufflePlayer(player);
+            PigStops.getPitWindow().shuffleItems(player);
         }
     }
 }

@@ -14,11 +14,12 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 public class PitCOOKIE {
+
     private final ItemStack background = new ItemStack(Material.LIGHT_BLUE_STAINED_GLASS_PANE);
-    private final ItemStack wheat = new ItemStack(Material.WHEAT);
-    private final ItemStack cocoa = new ItemStack(Material.COCOA_BEANS);
+    private final ItemStack cookie = new ItemStack(Material.COOKIE);
 
     public PitCOOKIE(Player player, PitType pitType){
         setItemMetas();
@@ -27,15 +28,17 @@ public class PitCOOKIE {
 
     private ItemStack[] setContents(){
         List<ItemStack> items = new ArrayList<>();
-        for (int i = 0; i < 24; i++) {
+        for (int i = 0; i < 17; i++) {
             items.add(background);
         }
-        for (int i = 0; i < 2; i++) {
-            int rand = (int) Math.floor(Math.random() * 25);
-            items.add(rand, wheat);
+        for (int i = 0; i < 10; i++) {
+            try {
+                int rand = new Random().nextInt(0, 27);
+                items.add(rand, cookie);
+            } catch (IndexOutOfBoundsException e) {
+                i--;
+            }
         }
-        int rand = (int) Math.floor(Math.random() * 25);
-        items.add(rand, cocoa);
 
         return items.toArray(new ItemStack[0]);
     }
@@ -46,46 +49,20 @@ public class PitCOOKIE {
         backgroundMeta.setDisplayName(" ");
         background.setItemMeta(backgroundMeta);
 
-        // COCOA
-        ItemMeta cocoaMeta = cocoa.getItemMeta();
-        cocoaMeta.setDisplayName("Cocoa Beans");
-        cocoaMeta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
-        cocoaMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-        cocoa.setItemMeta(cocoaMeta);
-
-        // WHEAT
-        ItemMeta wheatMeta = wheat.getItemMeta();
-        wheatMeta.setDisplayName("Wheat");
-        wheatMeta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
-        wheatMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-        wheat.setItemMeta(wheatMeta);
+        // COOKIE
+        ItemMeta cookieMeta = cookie.getItemMeta();
+        cookieMeta.setDisplayName("Cookie");
+        cookieMeta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
+        cookieMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+        cookie.setItemMeta(cookieMeta);
     }
 
     public static void onItemClick(Player player, ItemStack clickedItem){
-        if(clickedItem.getType() == Material.WHEAT){
-            if((PigStops.getPitWindow().itemsToClick.get(player) != 3 && PigStops.getPitWindow().itemsToClick.get(player) != 1)) {
-                player.playSound(player, Sound.BLOCK_NOTE_BLOCK_PLING, 0.5f, 0.5f);
-                return;
-            }
-
-            ItemMeta wheatMeta = clickedItem.getItemMeta();
-            if(wheatMeta.hasEnchants()) return;
-            wheatMeta.addEnchant(Enchantment.LUCK, 1, true);
-            clickedItem.setItemMeta(wheatMeta);
-
-            PigStops.getPitWindow().itemsToClick.put(player, PigStops.getPitWindow().itemsToClick.get(player) - 1);
-            player.playSound(player, Sound.BLOCK_BAMBOO_HIT, SoundCategory.MASTER, 0.5f, 1f);
-        }
-        if(clickedItem.getType() == Material.COCOA_BEANS) {
-            if(PigStops.getPitWindow().itemsToClick.get(player) != 2) {
-                player.playSound(player, Sound.BLOCK_NOTE_BLOCK_PLING, 0.5f, 0.5f);
-                return;
-            }
-
-            ItemMeta cocoaMeta = clickedItem.getItemMeta();
-            if(cocoaMeta.hasEnchants()) return;
-            cocoaMeta.addEnchant(Enchantment.LUCK, 1, true);
-            clickedItem.setItemMeta(cocoaMeta);
+        if(clickedItem.getType() == Material.COOKIE){
+            ItemMeta cookieMeta = clickedItem.getItemMeta();
+            if(cookieMeta.hasEnchants()) return;
+            cookieMeta.addEnchant(Enchantment.LUCK, 1, true);
+            clickedItem.setItemMeta(cookieMeta);
 
             PigStops.getPitWindow().itemsToClick.put(player, PigStops.getPitWindow().itemsToClick.get(player) - 1);
             player.playSound(player, Sound.BLOCK_BAMBOO_HIT, SoundCategory.MASTER, 0.5f, 1f);
@@ -97,7 +74,7 @@ public class PitCOOKIE {
         }
 
         if(clickedItem.getType() == Material.LIGHT_BLUE_STAINED_GLASS_PANE) {
-            PigStops.getPitWindow().shufflePlayer(player);
+            PigStops.getPitWindow().shuffleItems(player);
         }
     }
 }
