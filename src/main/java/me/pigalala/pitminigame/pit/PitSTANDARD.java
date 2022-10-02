@@ -11,10 +11,12 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 public class PitSTANDARD {
     private final ItemStack background = new ItemStack(Material.LIGHT_BLUE_STAINED_GLASS_PANE);
@@ -31,10 +33,14 @@ public class PitSTANDARD {
             items.add(background);
         }
 
-        int rand1 = (int) Math.floor(Math.random() * 26);
-        int rand2 = (int) Math.floor(Math.random() * 26);
-        items.add(rand1, paddle);
-        items.add(rand2, paddle);
+        for (int i = 0; i < 2; i++) {
+            try {
+                int rand = new Random().nextInt(0, 27);
+                items.add(rand, paddle);
+            } catch (IndexOutOfBoundsException e) {
+                i--;
+            }
+        }
 
         return items.toArray(new ItemStack[0]);
     }
@@ -46,19 +52,21 @@ public class PitSTANDARD {
         background.setItemMeta(backgroundMeta);
 
         // PADDLES
-        ItemMeta paddleMeta = paddle.getItemMeta();
-        paddleMeta.setDisplayName("Worn Paddle");
-        paddleMeta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
-        paddleMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-        paddle.setItemMeta(paddleMeta);
+        Damageable paddleDamage = (Damageable) paddle.getItemMeta();
+        paddleDamage.setDamage(new Random().nextInt(10,59));
+        paddleDamage.setDisplayName("Worn Paddle");
+        paddleDamage.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
+        paddleDamage.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+        paddle.setItemMeta(paddleDamage);
     }
 
     public static void onItemClick(Player player, ItemStack clickedItem){
         if(clickedItem.getType() == Material.WOODEN_SHOVEL){
-            ItemMeta paddleMeta = clickedItem.getItemMeta();
+            Damageable paddleMeta = (Damageable) clickedItem.getItemMeta();
             if(paddleMeta.hasEnchants()) return;
             paddleMeta.addEnchant(Enchantment.LUCK, 1, true);
             paddleMeta.setDisplayName("New Paddle");
+            paddleMeta.setDamage(1);
             clickedItem.setItemMeta(paddleMeta);
 
             if(PitWindow.getItemsToClick().get(player) == 2){

@@ -20,7 +20,7 @@ import java.util.*;
 
 import static me.makkuusen.timing.system.ApiUtilities.formatAsTime;
 
-public class PitWindow {
+public abstract class PitWindow {
 
     private static final HashMap<Player, Integer> itemsToClick = new HashMap<>();
     private static final HashMap<Player, Boolean> hasStarted = new HashMap<>();
