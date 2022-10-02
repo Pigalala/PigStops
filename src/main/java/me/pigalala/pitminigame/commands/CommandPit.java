@@ -1,11 +1,7 @@
 package me.pigalala.pitminigame.commands;
 
 import co.aikar.commands.BaseCommand;
-import co.aikar.commands.annotation.CommandAlias;
-import co.aikar.commands.annotation.CommandPermission;
-import co.aikar.commands.annotation.Default;
-import co.aikar.commands.annotation.Subcommand;
-import co.aikar.commands.annotation.CommandCompletion;
+import co.aikar.commands.annotation.*;
 import me.pigalala.pitminigame.PigStops;
 import me.pigalala.pitminigame.PitGame;
 import me.pigalala.pitminigame.PitType;
@@ -24,6 +20,12 @@ public class CommandPit extends BaseCommand {
     @CommandCompletion("@pits")
     public static void practisePit(Player player, PitGame pitGame){
         PigStops.openPitGame(player, PitType.FAKE, pitGame);
+    }
+
+    @Subcommand("info")
+    @CommandPermission("pigstop.admin")
+    public static void getInfo(Player player) {
+        player.sendMessage("§dPitBlock: §a" + PigStops.getPlugin().getPitBlock().name() + "\n§dPitGame: §a " + PigStops.getPlugin().getDefaultPitGame().name());
     }
 
     @Subcommand("setgame")
