@@ -106,16 +106,4 @@ public class PitWindow {
     public static HashMap<Player, Integer> getItemsToClick(){
         return itemsToClick;
     }
-    public static HashMap<Player, Boolean> getHasStarted(){
-        return hasStarted;
-    }
-    public static HashMap<Player, PitType> getPitTypes(){
-        return pitTypes;
-    }
-    public static HashMap<Player, Inventory> getPitWindows(){
-        return pitWindows;
-    }
-    public static HashMap<Player, Instant> getPlayerTime(){
-        return playerTime;
-    }
 }

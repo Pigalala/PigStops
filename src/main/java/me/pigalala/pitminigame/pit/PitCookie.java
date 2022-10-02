@@ -1,6 +1,5 @@
 package me.pigalala.pitminigame.pit;
 
-import me.pigalala.pitminigame.PigStops;
 import me.pigalala.pitminigame.PitGame;
 import me.pigalala.pitminigame.PitType;
 import org.bukkit.Material;

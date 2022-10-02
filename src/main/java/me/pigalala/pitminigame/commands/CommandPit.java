@@ -9,8 +9,6 @@ import co.aikar.commands.annotation.CommandCompletion;
 import me.pigalala.pitminigame.PigStops;
 import me.pigalala.pitminigame.PitGame;
 import me.pigalala.pitminigame.PitType;
-import me.pigalala.pitminigame.pit.PitCOOKIE;
-import me.pigalala.pitminigame.pit.PitSTANDARD;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
@@ -18,15 +16,14 @@ import org.bukkit.entity.Player;
 public class CommandPit extends BaseCommand {
 
     @Default
-    public static void practisePit(Player player) {
-        if(PigStops.getPlugin().getDefaultPitGame() == PitGame.STANDARD) {
-            new PitSTANDARD(player, PitType.FAKE);
-            return;
-        }
-        if(PigStops.getPlugin().getDefaultPitGame() == PitGame.COOKIE) {
-            new PitCOOKIE(player, PitType.FAKE);
-            return;
-        }
+    public static void practiseDefaultPit(Player player) {
+        PigStops.openPitGame(player, PitType.FAKE);
+    }
+
+    @Subcommand("practise")
+    @CommandCompletion("@pits")
+    public static void practisePit(Player player, PitGame pitGame){
+        PigStops.openPitGame(player, PitType.FAKE, pitGame);
     }
 
     @Subcommand("setgame")
