@@ -35,6 +35,7 @@ public interface Pit {
     private static void setHashMaps(Player player, PitType pitType, Integer toClick){
         if(getPlugin().getDefaultPitGame() == PitGame.STANDARD) itemsToClick.put(player, toClick);
         if(getPlugin().getDefaultPitGame() == PitGame.COOKIE) itemsToClick.put(player, toClick);
+        if(getPlugin().getDefaultPitGame() == PitGame.MARIANA) itemsToClick.put(player, toClick);
         hasStarted.put(player, true);
         pitTypes.put(player, pitType);
         pitWindows.put(player, null);

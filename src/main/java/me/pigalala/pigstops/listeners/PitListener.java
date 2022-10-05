@@ -26,7 +26,7 @@ public class PitListener implements Listener {
         if (e.getView().getTitle().startsWith(PitManager.pitNameBase)) {
             e.setCancelled(true);
             if(e.getCurrentItem() == null) return;
-            PitManager.onItemClick(player, PigStops.getPlugin().getDefaultPitGame(), e.getCurrentItem(), e.getSlot());
+            PitManager.onItemClick(player, e.getCurrentItem(), e.getSlot());
         }
     }
 

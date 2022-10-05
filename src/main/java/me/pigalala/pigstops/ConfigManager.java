@@ -23,7 +23,7 @@ public class ConfigManager {
         try {
             plugin.setPitBlock(Material.valueOf(config.getString("pitBlock").toUpperCase()));
         } catch (IllegalArgumentException e) {
-            plugin.getLogger().log(Level.SEVERE, "'pitBlock' in PigStops plugin config does not exist, resetting to default.");
+            plugin.getLogger().log(Level.WARNING, "'pitBlock' in PigStops plugin config does not exist, resetting to default.");
             plugin.setPitBlock(Material.REDSTONE_BLOCK);
         }
     }
@@ -32,7 +32,7 @@ public class ConfigManager {
         try {
             plugin.setDefaultPitGame(PitGame.valueOf(config.getString("pitGame").toUpperCase()));
         } catch (IllegalArgumentException e) {
-            plugin.getLogger().log(Level.SEVERE, "'pitGame' in PigStops plugin config does not exist, resetting to default.");
+            plugin.getLogger().log(Level.WARNING, "'pitGame' in PigStops plugin config does not exist, resetting to default.");
             plugin.setDefaultPitGame(PitGame.STANDARD);
         }
     }

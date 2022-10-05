@@ -6,6 +6,7 @@ import me.pigalala.pigstops.commands.CommandPit;
 import me.pigalala.pigstops.enums.PitGame;
 import me.pigalala.pigstops.listeners.PitListener;
 import me.pigalala.pigstops.pit.Pit;
+import me.pigalala.pigstops.pit.PitManager;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -65,6 +66,7 @@ public final class PigStops extends JavaPlugin {
         getConfig().set("pitGame", pit.name());
         saveConfig();
         reloadConfig();
+        PitManager.updatePitGame(getDefaultPitGame());
     }
 
     public PitGame getDefaultPitGame() {
