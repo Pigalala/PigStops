@@ -3,8 +3,9 @@ package me.pigalala.pitminigame.commands;
 import co.aikar.commands.BaseCommand;
 import co.aikar.commands.annotation.*;
 import me.pigalala.pitminigame.PigStops;
-import me.pigalala.pitminigame.PitGame;
-import me.pigalala.pitminigame.PitType;
+import me.pigalala.pitminigame.enums.PitGame;
+import me.pigalala.pitminigame.enums.PitType;
+import me.pigalala.pitminigame.pit.PitManager;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
@@ -13,13 +14,7 @@ public class CommandPit extends BaseCommand {
 
     @Default
     public static void practiseDefaultPit(Player player) {
-        PigStops.openPitGame(player, PitType.FAKE);
-    }
-
-    @Subcommand("practise")
-    @CommandCompletion("@pits")
-    public static void practisePit(Player player, PitGame pitGame){
-        PigStops.openPitGame(player, PitType.FAKE, pitGame);
+        PitManager.openPitGame(player, PitType.FAKE);
     }
 
     @Subcommand("info")

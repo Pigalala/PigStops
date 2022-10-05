@@ -1,8 +1,8 @@
 package me.pigalala.pitminigame.pit;
 
 import me.pigalala.pitminigame.PigStops;
-import me.pigalala.pitminigame.PitGame;
-import me.pigalala.pitminigame.PitType;
+import me.pigalala.pitminigame.enums.PitGame;
+import me.pigalala.pitminigame.enums.PitType;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -18,13 +18,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-public class PitSTANDARD {
+public class PitSTANDARD implements Pit {
     private final ItemStack background = new ItemStack(Material.LIGHT_BLUE_STAINED_GLASS_PANE);
     private final ItemStack paddle = new ItemStack(Material.WOODEN_SHOVEL);
 
     public PitSTANDARD(Player player, PitType pitType){
         setItemMetas();
-        PitWindow.createWindow(player, pitType, setContents(), PitGame.STANDARD.name(), 27);
+        Pit.createWindow(player, pitType, setContents(), PitGame.STANDARD.name(), 27, 2);
     }
 
     private ItemStack[] setContents(){
@@ -69,23 +69,23 @@ public class PitSTANDARD {
             paddleMeta.setDamage(1);
             clickedItem.setItemMeta(paddleMeta);
 
-            if(PitWindow.getItemsToClick().get(player) == 2){
+            if(Pit.getItemsToClick().get(player) == 2){
                 player.playSound(player.getLocation(), Sound.BLOCK_GRINDSTONE_USE, SoundCategory.MASTER, 0.5f, 1f);
             }
 
-            PitWindow.getItemsToClick().put(player, PitWindow.getItemsToClick().get(player) - 1);
+            Pit.getItemsToClick().put(player, Pit.getItemsToClick().get(player) - 1);
 
-            if(PitWindow.isFinished(player)){
+            if(Pit.isFinished(player)){
                 for (int i = 0; i < 3; i++) {
                     Bukkit.getScheduler().runTaskLater(PigStops.getPlugin(), () -> {
                         player.playSound(player, Sound.BLOCK_SMITHING_TABLE_USE, SoundCategory.MASTER, 0.5f, 1f);
                     },1);
                 }
-                PitWindow.finishPits(player);
+                Pit.finishPits(player);
             }
         }
         if(clickedItem.getType() == Material.LIGHT_BLUE_STAINED_GLASS_PANE) {
-            PitWindow.shuffleItems(player);
+            Pit.shuffleItems(player);
         }
     }
 }

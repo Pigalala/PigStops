@@ -1,7 +1,7 @@
 package me.pigalala.pitminigame.pit;
 
-import me.pigalala.pitminigame.PitGame;
-import me.pigalala.pitminigame.PitType;
+import me.pigalala.pitminigame.enums.PitGame;
+import me.pigalala.pitminigame.enums.PitType;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.SoundCategory;
@@ -15,14 +15,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-public class PitCOOKIE {
+public class PitCOOKIE implements Pit {
 
     private final ItemStack background = new ItemStack(Material.LIGHT_BLUE_STAINED_GLASS_PANE);
     private final ItemStack cookie = new ItemStack(Material.COOKIE);
 
     public PitCOOKIE(Player player, PitType pitType){
         setItemMetas();
-        PitWindow.createWindow(player, pitType, setContents(), PitGame.COOKIE.name(), 27);
+        Pit.createWindow(player, pitType, setContents(), PitGame.COOKIE.name(), 27, 10);
     }
 
     private ItemStack[] setContents(){
@@ -63,17 +63,17 @@ public class PitCOOKIE {
             cookieMeta.addEnchant(Enchantment.LUCK, 1, true);
             clickedItem.setItemMeta(cookieMeta);
 
-            PitWindow.getItemsToClick().put(player, PitWindow.getItemsToClick().get(player) - 1);
+            Pit.getItemsToClick().put(player, Pit.getItemsToClick().get(player) - 1);
             player.playSound(player, Sound.BLOCK_BAMBOO_HIT, SoundCategory.MASTER, 0.5f, 1f);
         }
 
-        if(PitWindow.isFinished(player)){
+        if(Pit.isFinished(player)){
             player.playSound(player, Sound.BLOCK_SMITHING_TABLE_USE, SoundCategory.MASTER, 0.5f, 1f);
-            PitWindow.finishPits(player);
+            Pit.finishPits(player);
         }
 
         if(clickedItem.getType() == Material.LIGHT_BLUE_STAINED_GLASS_PANE) {
-            PitWindow.shuffleItems(player);
+            Pit.shuffleItems(player);
         }
     }
 }

@@ -2,11 +2,9 @@ package me.pigalala.pitminigame.listeners;
 
 import me.makkuusen.timing.system.event.EventDatabase;
 import me.pigalala.pitminigame.PigStops;
-import me.pigalala.pitminigame.PitGame;
-import me.pigalala.pitminigame.PitType;
-import me.pigalala.pitminigame.pit.PitCOOKIE;
-import me.pigalala.pitminigame.pit.PitSTANDARD;
-import me.pigalala.pitminigame.pit.PitWindow;
+import me.pigalala.pitminigame.enums.PitType;
+import me.pigalala.pitminigame.pit.Pit;
+import me.pigalala.pitminigame.pit.PitManager;
 import org.bukkit.entity.Boat;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -25,17 +23,10 @@ public class PitListener implements Listener {
     @EventHandler
     public void onPitWindowClick(InventoryClickEvent e) {
         Player player = (Player) e.getWhoClicked();
-        if (e.getView().getTitle().startsWith(PitWindow.pitNameBase)) {
+        if (e.getView().getTitle().startsWith(PitManager.pitNameBase)) {
             e.setCancelled(true);
             if(e.getCurrentItem() == null) return;
-            if (PigStops.getPlugin().getDefaultPitGame() == PitGame.STANDARD){
-                PitSTANDARD.onItemClick(player, e.getCurrentItem());
-                return;
-            }
-            if (PigStops.getPlugin().getDefaultPitGame() == PitGame.COOKIE){
-                PitCOOKIE.onItemClick(player, e.getCurrentItem());
-                return;
-            }
+            PitManager.onItemClick(player, PigStops.getPlugin().getDefaultPitGame(), e.getCurrentItem(), e.getSlot());
         }
     }
 
@@ -53,13 +44,7 @@ public class PitListener implements Listener {
 
         if(driver.get().getHeat().isActive()){
             if (!driver.get().getCurrentLap().isPitted()) {
-                if(PigStops.getPlugin().getDefaultPitGame() == PitGame.STANDARD){
-                    new PitSTANDARD(p, PitType.REAL);
-                    return;
-                }
-                if(PigStops.getPlugin().getDefaultPitGame() == PitGame.COOKIE){
-                    new PitCOOKIE(p, PitType.REAL);
-                }
+                PitManager.openPitGame(p, PitType.REAL);
             }
         }
     }
@@ -68,6 +53,6 @@ public class PitListener implements Listener {
     public void onInvClose(InventoryCloseEvent e){
         if(e.getReason().equals(InventoryCloseEvent.Reason.OPEN_NEW)) return;
 
-        PitWindow.reset((Player) e.getPlayer());
+        Pit.reset((Player) e.getPlayer());
     }
 }

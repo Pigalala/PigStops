@@ -1,4 +1,4 @@
-package me.pigalala.pitminigame;
+package me.pigalala.pitminigame.enums;
 
 public enum PitType {
     REAL,

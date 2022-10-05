@@ -3,13 +3,11 @@ package me.pigalala.pitminigame;
 import co.aikar.commands.PaperCommandManager;
 import com.google.common.collect.ImmutableList;
 import me.pigalala.pitminigame.commands.CommandPit;
+import me.pigalala.pitminigame.enums.PitGame;
 import me.pigalala.pitminigame.listeners.PitListener;
-import me.pigalala.pitminigame.pit.PitCOOKIE;
-import me.pigalala.pitminigame.pit.PitSTANDARD;
-import me.pigalala.pitminigame.pit.PitWindow;
+import me.pigalala.pitminigame.pit.Pit;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
-import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.ArrayList;
@@ -40,7 +38,7 @@ public final class PigStops extends JavaPlugin {
 
     @Override
     public void onDisable(){
-        Bukkit.getOnlinePlayers().forEach(PitWindow::reset);
+        Bukkit.getOnlinePlayers().forEach(Pit::reset);
     }
 
     private void loadPitBlock(){
@@ -102,17 +100,4 @@ public final class PigStops extends JavaPlugin {
         reloadConfig();
     }
     public Material getPitBlock() {return pitBlock;}
-
-    /** Opens a pit game based on the default game, or using the 3rd parameter **/
-    public static void openPitGame(Player player, PitType pitType, PitGame... pitGame){
-        if(pitGame.length == 1){
-            if(PitGame.STANDARD == pitGame[0]) new PitSTANDARD(player, pitType);
-            if(PitGame.COOKIE == pitGame[0]) new PitCOOKIE(player, pitType);
-        } else if(pitGame.length > 1) {
-            getPlugin().getLogger().log(Level.SEVERE, "Error opening pit game. Please notify Pigalala.");
-        } else {
-            if(getPlugin().getDefaultPitGame() == PitGame.STANDARD) new PitSTANDARD(player, pitType);
-            if(getPlugin().getDefaultPitGame() == PitGame.COOKIE) new PitCOOKIE(player, pitType);
-        }
-    }
 }
