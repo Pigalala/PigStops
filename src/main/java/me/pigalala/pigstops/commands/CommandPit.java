@@ -1,11 +1,11 @@
-package me.pigalala.pitminigame.commands;
+package me.pigalala.pigstops.commands;
 
 import co.aikar.commands.BaseCommand;
 import co.aikar.commands.annotation.*;
-import me.pigalala.pitminigame.PigStops;
-import me.pigalala.pitminigame.enums.PitGame;
-import me.pigalala.pitminigame.enums.PitType;
-import me.pigalala.pitminigame.pit.PitManager;
+import me.pigalala.pigstops.PigStops;
+import me.pigalala.pigstops.enums.PitGame;
+import me.pigalala.pigstops.enums.PitType;
+import me.pigalala.pigstops.pit.PitManager;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 

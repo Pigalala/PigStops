@@ -1,10 +1,10 @@
-package me.pigalala.pitminigame.listeners;
+package me.pigalala.pigstops.listeners;
 
 import me.makkuusen.timing.system.event.EventDatabase;
-import me.pigalala.pitminigame.PigStops;
-import me.pigalala.pitminigame.enums.PitType;
-import me.pigalala.pitminigame.pit.Pit;
-import me.pigalala.pitminigame.pit.PitManager;
+import me.pigalala.pigstops.PigStops;
+import me.pigalala.pigstops.enums.PitType;
+import me.pigalala.pigstops.pit.Pit;
+import me.pigalala.pigstops.pit.PitManager;
 import org.bukkit.entity.Boat;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;

@@ -1,10 +1,10 @@
 name: PigStops
 version: '${project.version}'
-main: me.pigalala.pitminigame.PigStops
+main: me.pigalala.pigstops.PigStops
 api-version: 1.19
 prefix: PigStops
 authors: [ Pigalala ]
-depend: [TimingSystem]
+depend: [ TimingSystem ]
 
 commands:
   pigstop:
@@ -12,5 +12,5 @@ commands:
 
 permissions:
   pigstop.modify:
-    description: "Allows the player to set a new pit type"
+    description: "Allows the player to modify the plugin through commands"
     default: op

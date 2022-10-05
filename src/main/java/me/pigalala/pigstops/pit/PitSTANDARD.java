@@ -1,8 +1,8 @@
-package me.pigalala.pitminigame.pit;
+package me.pigalala.pigstops.pit;
 
-import me.pigalala.pitminigame.PigStops;
-import me.pigalala.pitminigame.enums.PitGame;
-import me.pigalala.pitminigame.enums.PitType;
+import me.pigalala.pigstops.PigStops;
+import me.pigalala.pigstops.enums.PitGame;
+import me.pigalala.pigstops.enums.PitType;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.Sound;

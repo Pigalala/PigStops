@@ -1,12 +1,15 @@
-package me.pigalala.pitminigame.pit;
+package me.pigalala.pigstops.pit;
 
 import me.makkuusen.timing.system.Database;
+import me.makkuusen.timing.system.LanguageManager;
 import me.makkuusen.timing.system.TPlayer;
+import me.makkuusen.timing.system.TimingSystem;
 import me.makkuusen.timing.system.event.EventDatabase;
 import me.makkuusen.timing.system.heat.Heat;
 import me.makkuusen.timing.system.participant.Driver;
-import me.pigalala.pitminigame.enums.PitGame;
-import me.pigalala.pitminigame.enums.PitType;
+import me.pigalala.pigstops.ConfigManager;
+import me.pigalala.pigstops.enums.PitGame;
+import me.pigalala.pigstops.enums.PitType;
 import org.bukkit.Bukkit;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
@@ -19,20 +22,19 @@ import java.util.*;
 
 import static me.makkuusen.timing.system.ApiUtilities.formatAsTime;
 
-import static me.pigalala.pitminigame.PigStops.getPlugin;
-import static me.pigalala.pitminigame.pit.PitManager.pitNameBase;
-import static me.pigalala.pitminigame.pit.PitManager.pitWindows;
-import static me.pigalala.pitminigame.pit.PitManager.itemsToClick;
-import static me.pigalala.pitminigame.pit.PitManager.pitTypes;
-import static me.pigalala.pitminigame.pit.PitManager.hasStarted;
-import static me.pigalala.pitminigame.pit.PitManager.playerTime;
+import static me.pigalala.pigstops.PigStops.getPlugin;
+import static me.pigalala.pigstops.pit.PitManager.pitNameBase;
+import static me.pigalala.pigstops.pit.PitManager.pitWindows;
+import static me.pigalala.pigstops.pit.PitManager.itemsToClick;
+import static me.pigalala.pigstops.pit.PitManager.pitTypes;
+import static me.pigalala.pigstops.pit.PitManager.hasStarted;
+import static me.pigalala.pigstops.pit.PitManager.playerTime;
 
 public interface Pit {
 
     private static void setHashMaps(Player player, PitType pitType, Integer toClick){
         if(getPlugin().getDefaultPitGame() == PitGame.STANDARD) itemsToClick.put(player, toClick);
         if(getPlugin().getDefaultPitGame() == PitGame.COOKIE) itemsToClick.put(player, toClick);
-        if(getPlugin().getDefaultPitGame() == PitGame.MARIANA) itemsToClick.put(player, toClick);
         hasStarted.put(player, true);
         pitTypes.put(player, pitType);
         pitWindows.put(player, null);
@@ -68,10 +70,10 @@ public interface Pit {
         hasStarted.put(player, false);
         pitWindows.put(player, null);
 
-        long finalTime = Duration.between(playerTime.get(player), Instant.now()).toMillis();
+        String finalTime = formatAsTime(Duration.between(playerTime.get(player), Instant.now()).toMillis());
 
         if(pitTypes.get(player) != PitType.REAL) {
-            player.sendMessage("§aYou finished a pigstop in §6" + formatAsTime(finalTime));
+            player.sendMessage("§aYou finished in §d" + finalTime + "§a.");
             return;
         }
 
@@ -88,7 +90,7 @@ public interface Pit {
 
             heat.getParticipants().forEach(participant -> {
                 if(participant.getTPlayer().getPlayer() == null) return;
-                participant.getTPlayer().getPlayer().sendMessage("§6" + player.getName() + " §afinished their pigstop §c" + d.getPits() + "§a in §6" + formatAsTime(finalTime) + "§a.");
+                participant.getTPlayer().getPlayer().sendMessage("§d" + d.getTPlayer().getName() + " §a has completed pigstop §d" + d.getPits() + "§a in §d" + finalTime + "§a.");
             });
         }
     }

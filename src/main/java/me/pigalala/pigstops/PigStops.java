@@ -1,11 +1,11 @@
-package me.pigalala.pitminigame;
+package me.pigalala.pigstops;
 
 import co.aikar.commands.PaperCommandManager;
 import com.google.common.collect.ImmutableList;
-import me.pigalala.pitminigame.commands.CommandPit;
-import me.pigalala.pitminigame.enums.PitGame;
-import me.pigalala.pitminigame.listeners.PitListener;
-import me.pigalala.pitminigame.pit.Pit;
+import me.pigalala.pigstops.commands.CommandPit;
+import me.pigalala.pigstops.enums.PitGame;
+import me.pigalala.pigstops.listeners.PitListener;
+import me.pigalala.pigstops.pit.Pit;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -26,37 +26,15 @@ public final class PigStops extends JavaPlugin {
     public void onEnable() {
         plugin = this;
 
-        getConfig().options().copyDefaults();
-        saveDefaultConfig();
-
         new PitListener();
 
         setupCommands();
-        loadPitBlock();
-        loadPitGame();
+        ConfigManager.onStartup();
     }
 
     @Override
     public void onDisable(){
         Bukkit.getOnlinePlayers().forEach(Pit::reset);
-    }
-
-    private void loadPitBlock(){
-        try {
-            setPitBlock(Material.valueOf(getConfig().getString("pitBlock").toUpperCase()));
-        } catch (IllegalArgumentException e) {
-            getLogger().log(Level.SEVERE, "'pitBlock' in PigStops plugin config does not exist");
-            getServer().getPluginManager().disablePlugin(this);
-        }
-    }
-
-    private void loadPitGame(){
-        try {
-            setDefaultPitGame(PitGame.valueOf(getConfig().getString("pitGame").toUpperCase()));
-        } catch (IllegalArgumentException e) {
-            getLogger().log(Level.SEVERE, "'pitGame' in PigStops plugin config does not exist");
-            getServer().getPluginManager().disablePlugin(this);
-        }
     }
 
     private void setupCommands(){
