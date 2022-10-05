@@ -53,7 +53,7 @@ public class PitSTANDARD implements Pit {
 
         // PADDLES
         Damageable paddleDamage = (Damageable) paddle.getItemMeta();
-        paddleDamage.setDamage(new Random().nextInt(10,59));
+        paddleDamage.setDamage(new Random().nextInt(30,59));
         paddleDamage.setDisplayName("Worn Paddle");
         paddleDamage.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
         paddleDamage.addItemFlags(ItemFlag.HIDE_ENCHANTS);

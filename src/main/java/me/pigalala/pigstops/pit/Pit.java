@@ -90,7 +90,7 @@ public interface Pit {
 
             heat.getParticipants().forEach(participant -> {
                 if(participant.getTPlayer().getPlayer() == null) return;
-                participant.getTPlayer().getPlayer().sendMessage("§d" + d.getTPlayer().getName() + " §a has completed pigstop §d" + d.getPits() + "§a in §d" + finalTime + "§a.");
+                participant.getTPlayer().getPlayer().sendMessage("§d" + d.getTPlayer().getName() + "§a has completed pigstop §d" + d.getPits() + "§a in §d" + finalTime + "§a.");
             });
         }
     }
