@@ -7,7 +7,9 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public class PitManager {
 
@@ -37,5 +39,12 @@ public class PitManager {
         if(defaultPitGame == PitGame.STANDARD) PitSTANDARD.onItemClick(player, clickedItem);
         if(defaultPitGame == PitGame.COOKIE) PitCOOKIE.onItemClick(player, clickedItem);
         if(defaultPitGame == PitGame.MARIANA) PitMARIANA.onItemClick(player, clickedItem, slot[0]);
+    }
+
+    public static List<PitGame> cancelGames() {
+        List<PitGame> games = new ArrayList<>();
+        games.add(PitGame.MARIANA);
+
+        return games;
     }
 }

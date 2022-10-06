@@ -24,7 +24,12 @@ public class PitListener implements Listener {
     public void onPitWindowClick(InventoryClickEvent e) {
         Player player = (Player) e.getWhoClicked();
         if (e.getView().getTitle().startsWith(PitManager.pitNameBase)) {
-            e.setCancelled(true);
+            PitManager.cancelGames().forEach(game -> {
+                if(PigStops.getPlugin().getDefaultPitGame() == game) {
+                    e.setCancelled(true);
+                }
+            });
+
             if(e.getCurrentItem() == null) return;
             PitManager.onItemClick(player, e.getCurrentItem(), e.getSlot());
         }
