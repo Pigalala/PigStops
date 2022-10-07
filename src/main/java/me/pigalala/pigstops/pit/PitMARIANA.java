@@ -87,7 +87,7 @@ public class PitMARIANA extends Pit {
         if(clickedItem.getType() != background.getType()){
             if(clickedItem.getItemMeta().getDisplayName().equals("§dMariana51")){
                 clickedItem.setAmount(clickedItem.getAmount() - 1);
-                if(clickedItem.getAmount() != 4) {
+                if(clickedItem.getAmount() != 0) {
                     player.playSound(player.getLocation(), Sound.BLOCK_GRINDSTONE_USE, SoundCategory.MASTER, 1f, 1.5f);
                     return;
                 }
