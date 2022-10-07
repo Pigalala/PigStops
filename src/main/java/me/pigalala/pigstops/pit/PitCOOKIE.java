@@ -1,5 +1,6 @@
 package me.pigalala.pigstops.pit;
 
+import me.pigalala.pigstops.PitPlayer;
 import me.pigalala.pigstops.enums.PitGame;
 import me.pigalala.pigstops.enums.PitType;
 import org.bukkit.Material;
@@ -15,7 +16,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-public class PitCOOKIE implements Pit {
+import static me.pigalala.pigstops.pit.PitManager.hasPitPlayer;
+
+public class PitCOOKIE extends Pit {
 
     private final ItemStack background = new ItemStack(Material.LIGHT_BLUE_STAINED_GLASS_PANE);
     private final ItemStack cookie = new ItemStack(Material.COOKIE);
@@ -56,19 +59,22 @@ public class PitCOOKIE implements Pit {
         cookie.setItemMeta(cookieMeta);
     }
 
-    public static void onItemClick(Player player, ItemStack clickedItem){
+    public static void onItemClick(Player player, ItemStack clickedItem, Integer slot){
+        if(hasPitPlayer(player)) return;
+        PitPlayer pp = PitManager.getPitPlayer(player);
+
         if(clickedItem.getType() == Material.COOKIE){
             ItemMeta cookieMeta = clickedItem.getItemMeta();
             if(cookieMeta.hasEnchants()) return;
             cookieMeta.addEnchant(Enchantment.LUCK, 1, true);
             clickedItem.setItemMeta(cookieMeta);
 
-            Pit.getItemsToClick().put(player, Pit.getItemsToClick().get(player) - 1);
+            pp.setItemsToClick(pp.getItemsToClick() - 1);
             player.playSound(player, Sound.BLOCK_BAMBOO_HIT, SoundCategory.MASTER, 0.5f, 1f);
         }
 
         if(Pit.isFinished(player)){
-            player.playSound(player, Sound.BLOCK_SMITHING_TABLE_USE, SoundCategory.MASTER, 0.5f, 1f);
+            player.playSound(player, Sound.BLOCK_SMITHING_TABLE_USE, SoundCategory.MASTER, 1f, 1f);
             Pit.finishPits(player);
         }
 

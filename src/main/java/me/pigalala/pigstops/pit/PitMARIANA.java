@@ -1,35 +1,34 @@
 package me.pigalala.pigstops.pit;
 
-import me.pigalala.pigstops.PigStops;
+import me.pigalala.pigstops.PitPlayer;
 import me.pigalala.pigstops.enums.PitGame;
 import me.pigalala.pigstops.enums.PitType;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.SoundCategory;
-import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.SkullMeta;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-public class PitMARIANA implements Pit {
+import static me.pigalala.pigstops.pit.PitManager.hasPitPlayer;
+
+public class PitMARIANA extends Pit {
     private static final ItemStack background = new ItemStack(Material.RED_STAINED_GLASS_PANE);
+    private static final ItemStack marianaHead = new ItemStack(Material.PLAYER_HEAD, 9);
+    private static final ItemStack fakeHead = new ItemStack(Material.PLAYER_HEAD, 9);
 
-    private final Material[] flowers = {Material.PEONY, Material.POPPY};
-    private final String[] flowerNames = {"Flower", "XD Flower", "Poopoo Flower", "Funny Flower"};
-
-    private final Integer windowSize = 54;
-    private final Integer toClick = 52;
-    private final Player player;
+    private final Integer windowSize = 27;
+    private final Integer toClick = 8;
 
     public PitMARIANA(Player player, PitType pitType){
-        this.player = player;
         setItemMetas();
         Pit.createWindow(player, pitType, setContents(), PitGame.MARIANA.name(), windowSize, toClick);
     }
@@ -41,16 +40,21 @@ public class PitMARIANA implements Pit {
             items.add(background);
         }
 
-        for (int i = 0; i < toClick; i++) {
+        for (int i = 0; i < toClick - 1; i++) {
             int rand = new Random().nextInt(0, windowSize);
             if(usedSlots.contains(rand)) {
                 i--;
             }
-            ItemStack flower = new ItemStack(flowers[new Random().nextInt(0, flowers.length)]);
-            ItemMeta flowerMeta = flower.getItemMeta();
-            flowerMeta.setDisplayName(flowerNames[new Random().nextInt(0, flowerNames.length)]);
-            flower.setItemMeta(flowerMeta);
-            items.set(rand, flower);
+            items.set(rand, marianaHead);
+            usedSlots.add(rand);
+        }
+
+        for (int i = 0; i < 1; i++) {
+            int rand = new Random().nextInt(0, windowSize);
+            if(usedSlots.contains(rand)) {
+                i--;
+            }
+            items.set(rand, fakeHead);
             usedSlots.add(rand);
         }
 
@@ -63,23 +67,38 @@ public class PitMARIANA implements Pit {
         backgroundMeta.setDisplayName(" ");
         background.setItemMeta(backgroundMeta);
 
-        // Flower meta set in setContents()
+        // Mariana Head
+        SkullMeta marianaMeta = (SkullMeta) marianaHead.getItemMeta();
+        marianaMeta.setDisplayName("§dMariana52");
+        marianaMeta.setOwningPlayer(Bukkit.getOfflinePlayer("Mariana52"));
+        marianaHead.setItemMeta(marianaMeta);
+
+        // FAKE HEAD
+        SkullMeta fakeMeta = (SkullMeta) fakeHead.getItemMeta();
+        fakeMeta.setDisplayName("§dMariana51");
+        fakeMeta.setOwningPlayer(Bukkit.getOfflinePlayer("Mariana52"));
+        fakeHead.setItemMeta(fakeMeta);
     }
 
     public static void onItemClick(Player player, ItemStack clickedItem, Integer slot){
-        if(clickedItem.getType() != background.getType()){
-            Pit.getPitWindows().get(player).setItem(slot, new ItemStack(Material.AIR));
+        if(hasPitPlayer(player)) return;
+        PitPlayer pp = PitManager.getPitPlayer(player);
 
-            player.playSound(player.getLocation(), Sound.BLOCK_BAMBOO_HIT, SoundCategory.MASTER, 1f, 1f);
-            Pit.getItemsToClick().put(player, Pit.getItemsToClick().get(player) - 1);
+        if(clickedItem.getType() != background.getType()){
+            if(clickedItem.getItemMeta().getDisplayName().equals("§dMariana51")){
+                clickedItem.setAmount(clickedItem.getAmount() - 1);
+                if(clickedItem.getAmount() != 4) {
+                    player.playSound(player.getLocation(), Sound.BLOCK_GRINDSTONE_USE, SoundCategory.MASTER, 1f, 1.5f);
+                    return;
+                }
+            }
+            pp.getPitWindow().setItem(slot, new ItemStack(Material.AIR));
+            pp.setItemsToClick(pp.getItemsToClick() - 1);
+            player.playSound(player.getLocation(), Sound.BLOCK_BAMBOO_HIT, SoundCategory.MASTER, 1f, 1.5f);
 
             if(Pit.isFinished(player)){
-                for (int i = 0; i < 3; i++) {
-                    Bukkit.getScheduler().runTaskLater(PigStops.getPlugin(), () -> {
-                        player.playSound(player, Sound.BLOCK_SMITHING_TABLE_USE, SoundCategory.MASTER, 0.5f, 1f);
-                    },1);
-                }
                 Pit.finishPits(player);
+                player.playSound(player, Sound.BLOCK_SMITHING_TABLE_USE, SoundCategory.MASTER, 1f, 1f);
             }
         } else {
             Pit.shuffleItems(player);

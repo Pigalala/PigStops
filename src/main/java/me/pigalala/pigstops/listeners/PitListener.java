@@ -2,6 +2,7 @@ package me.pigalala.pigstops.listeners;
 
 import me.makkuusen.timing.system.event.EventDatabase;
 import me.pigalala.pigstops.PigStops;
+import me.pigalala.pigstops.PitPlayer;
 import me.pigalala.pigstops.enums.PitType;
 import me.pigalala.pigstops.pit.Pit;
 import me.pigalala.pigstops.pit.PitManager;
@@ -11,6 +12,8 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.vehicle.VehicleMoveEvent;
 import org.bukkit.util.Vector;
 
@@ -21,15 +24,22 @@ public class PitListener implements Listener {
     }
 
     @EventHandler
+    public void onJoin(PlayerJoinEvent e) {
+        new PitPlayer(e.getPlayer());
+    }
+
+    @EventHandler
+    public void onLeave(PlayerQuitEvent e) {
+        if(PitManager.hasPitPlayer(e.getPlayer())) {
+            PitManager.getPitPlayer(e.getPlayer()).delete();
+        }
+    }
+
+    @EventHandler
     public void onPitWindowClick(InventoryClickEvent e) {
         Player player = (Player) e.getWhoClicked();
         if (e.getView().getTitle().startsWith(PitManager.pitNameBase)) {
-            PitManager.cancelGames().forEach(game -> {
-                if(PigStops.getPlugin().getDefaultPitGame() == game) {
-                    e.setCancelled(true);
-                }
-            });
-
+            e.setCancelled(true);
             if(e.getCurrentItem() == null) return;
             PitManager.onItemClick(player, e.getCurrentItem(), e.getSlot());
         }

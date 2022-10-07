@@ -5,7 +5,7 @@ import me.makkuusen.timing.system.TPlayer;
 import me.makkuusen.timing.system.event.EventDatabase;
 import me.makkuusen.timing.system.heat.Heat;
 import me.makkuusen.timing.system.participant.Driver;
-import me.pigalala.pigstops.enums.PitGame;
+import me.pigalala.pigstops.PitPlayer;
 import me.pigalala.pigstops.enums.PitType;
 import org.bukkit.Bukkit;
 import org.bukkit.Sound;
@@ -18,59 +18,52 @@ import java.time.Instant;
 import java.util.*;
 
 import static me.makkuusen.timing.system.ApiUtilities.formatAsTime;
-
-import static me.pigalala.pigstops.PigStops.getPlugin;
+import static me.pigalala.pigstops.pit.PitManager.hasPitPlayer;
 import static me.pigalala.pigstops.pit.PitManager.pitNameBase;
-import static me.pigalala.pigstops.pit.PitManager.pitWindows;
-import static me.pigalala.pigstops.pit.PitManager.itemsToClick;
-import static me.pigalala.pigstops.pit.PitManager.pitTypes;
-import static me.pigalala.pigstops.pit.PitManager.hasStarted;
-import static me.pigalala.pigstops.pit.PitManager.playerTime;
 
-public interface Pit {
-
-    private static void setHashMaps(Player player, PitType pitType, Integer toClick){
-        if(getPlugin().getDefaultPitGame() == PitGame.STANDARD) itemsToClick.put(player, toClick);
-        if(getPlugin().getDefaultPitGame() == PitGame.COOKIE) itemsToClick.put(player, toClick);
-        if(getPlugin().getDefaultPitGame() == PitGame.MARIANA) itemsToClick.put(player, toClick);
-        hasStarted.put(player, true);
-        pitTypes.put(player, pitType);
-        pitWindows.put(player, null);
-        playerTime.put(player, Instant.now());
+public abstract class Pit {
+    public static Boolean isFinished(Player player){
+        if(hasPitPlayer(player)) return false;
+        return PitManager.getPitPlayer(player).getItemsToClick() <= 0;
     }
 
-    static Boolean isFinished(Player player){
-        return itemsToClick.get(player) <= 0;
-    }
-
-    static void reset(Player player){
-        hasStarted.put(player, false);
-        pitWindows.put(player, null);
+    public static void reset(Player player){
+        if(hasPitPlayer(player)) return;
+        PitManager.getPitPlayer(player).setHasStarted(false);
     }
 
     /** Creates a pigstop inventory and displays it to the player. Also includes all setup needed **/
-    static void createWindow(Player player, PitType pitType, ItemStack[] contents, String windowName, Integer windowSize, Integer toClick){
-        if(hasStarted.get(player) != null) {
-            if(hasStarted.get(player)) return;
+    public static void createWindow(Player player, PitType pitType, ItemStack[] contents, String windowName, Integer windowSize, Integer toClick){
+        if(hasPitPlayer(player)) return;
+        PitPlayer pp = PitManager.getPitPlayer(player);
+
+        if(pp.hasStarted()) {
+            return;
         }
 
-        setHashMaps(player, pitType, toClick);
         Inventory pitWindow = Bukkit.createInventory(player, windowSize, pitNameBase + windowName);
+
+        pp.setPitWindow(pitWindow);
+        pp.setHasStarted(true);
+        pp.setStartingTime(Instant.now());
+        pp.setPitType(pitType);
+        pp.setItemsToClick(toClick);
 
         pitWindow.setContents(contents);
         player.openInventory(pitWindow);
-        pitWindows.put(player, pitWindow);
     }
 
     /** Finishes a player's pigstop. Includes closing inventory, displaying finish time, passing pits and resetting player for next time **/
-    static void finishPits(Player player){
+    public static void finishPits(Player player){
+        if(hasPitPlayer(player)) return;
+        PitPlayer pp = PitManager.getPitPlayer(player);
+        pp.setHasStarted(false);
+        pp.setPitWindow(null);
         player.closeInventory();
-        hasStarted.put(player, false);
-        pitWindows.put(player, null);
 
-        String finalTime = formatAsTime(Duration.between(playerTime.get(player), Instant.now()).toMillis());
+        String finalTime = formatAsTime(Duration.between(pp.getStartingTime(), Instant.now()).toMillis());
 
-        if(pitTypes.get(player) != PitType.REAL) {
+        if(pp.getPitType() != PitType.REAL) {
             player.sendMessage("§aYou finished in §d" + finalTime + "§a.");
             return;
         }
@@ -93,19 +86,14 @@ public interface Pit {
         }
     }
 
-    static void shuffleItems(Player player){
-        List<ItemStack> shuffled = new ArrayList<>(Arrays.stream(pitWindows.get(player).getContents()).toList());
+    public static void shuffleItems(Player player){
+        if(hasPitPlayer(player)) {return;}
+        PitPlayer pp = PitManager.getPitPlayer(player);
+        List<ItemStack> shuffled = new ArrayList<>(Arrays.stream(pp.getPitWindow().getContents()).toList());
         Collections.shuffle(shuffled);
 
-        pitWindows.get(player).setContents(shuffled.toArray(new ItemStack[0]));
-        player.openInventory(pitWindows.get(player));
+        pp.getPitWindow().setContents(shuffled.toArray(new ItemStack[0]));
+        player.openInventory(pp.getPitWindow());
         player.playSound(player, Sound.BLOCK_NOTE_BLOCK_PLING, 0.5f, 0.5f);
-    }
-
-    static HashMap<Player, Integer> getItemsToClick(){
-        return itemsToClick;
-    }
-    static HashMap<Player, Inventory> getPitWindows(){
-        return pitWindows;
     }
 }

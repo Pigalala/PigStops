@@ -5,17 +5,11 @@ import com.google.common.collect.ImmutableList;
 import me.pigalala.pigstops.commands.CommandPit;
 import me.pigalala.pigstops.enums.PitGame;
 import me.pigalala.pigstops.listeners.PitListener;
-import me.pigalala.pigstops.pit.Pit;
 import me.pigalala.pigstops.pit.PitManager;
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Locale;
-import java.util.logging.Level;
+import java.util.*;
 
 public final class PigStops extends JavaPlugin {
 
@@ -31,11 +25,6 @@ public final class PigStops extends JavaPlugin {
 
         setupCommands();
         ConfigManager.onStartup();
-    }
-
-    @Override
-    public void onDisable(){
-        Bukkit.getOnlinePlayers().forEach(Pit::reset);
     }
 
     private void setupCommands(){

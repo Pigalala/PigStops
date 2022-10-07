@@ -1,6 +1,7 @@
 package me.pigalala.pigstops.pit;
 
 import me.pigalala.pigstops.PigStops;
+import me.pigalala.pigstops.PitPlayer;
 import me.pigalala.pigstops.enums.PitGame;
 import me.pigalala.pigstops.enums.PitType;
 import org.bukkit.Bukkit;
@@ -18,7 +19,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-public class PitSTANDARD implements Pit {
+import static me.pigalala.pigstops.pit.PitManager.hasPitPlayer;
+
+public class PitSTANDARD extends Pit {
     private final ItemStack background = new ItemStack(Material.LIGHT_BLUE_STAINED_GLASS_PANE);
     private final ItemStack paddle = new ItemStack(Material.WOODEN_SHOVEL);
 
@@ -60,7 +63,10 @@ public class PitSTANDARD implements Pit {
         paddle.setItemMeta(paddleDamage);
     }
 
-    public static void onItemClick(Player player, ItemStack clickedItem){
+    public static void onItemClick(Player player, ItemStack clickedItem, Integer slot){
+        if(hasPitPlayer(player)) return;
+        PitPlayer pp = PitManager.getPitPlayer(player);
+
         if(clickedItem.getType() == Material.WOODEN_SHOVEL){
             Damageable paddleMeta = (Damageable) clickedItem.getItemMeta();
             if(paddleMeta.hasEnchants()) return;
@@ -69,18 +75,14 @@ public class PitSTANDARD implements Pit {
             paddleMeta.setDamage(1);
             clickedItem.setItemMeta(paddleMeta);
 
-            if(Pit.getItemsToClick().get(player) == 2){
+            if(pp.getItemsToClick() == 2){
                 player.playSound(player.getLocation(), Sound.BLOCK_GRINDSTONE_USE, SoundCategory.MASTER, 0.5f, 1f);
             }
 
-            Pit.getItemsToClick().put(player, Pit.getItemsToClick().get(player) - 1);
+            pp.setItemsToClick(pp.getItemsToClick() - 1);
 
             if(Pit.isFinished(player)){
-                for (int i = 0; i < 3; i++) {
-                    Bukkit.getScheduler().runTaskLater(PigStops.getPlugin(), () -> {
-                        player.playSound(player, Sound.BLOCK_SMITHING_TABLE_USE, SoundCategory.MASTER, 0.5f, 1f);
-                    },1);
-                }
+                player.playSound(player, Sound.BLOCK_SMITHING_TABLE_USE, SoundCategory.MASTER, 1f, 1f);
                 Pit.finishPits(player);
             }
         }
