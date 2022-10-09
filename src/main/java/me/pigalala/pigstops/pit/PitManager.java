@@ -7,6 +7,8 @@ import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -25,16 +27,19 @@ public class PitManager {
 
     /** Opens a pit game based on the default game, or using the 3rd parameter **/
     public static void openPitGame(Player player, PitType pitType) {
-        if(defaultPitGame == PitGame.STANDARD) new PitSTANDARD(player, pitType);
-        if(defaultPitGame == PitGame.COOKIE) new PitCOOKIE(player, pitType);
-        if(defaultPitGame == PitGame.MARIANA) new PitMARIANA(player, pitType);
+        switch (defaultPitGame) {
+            case STANDARD -> new PitSTANDARD(player, pitType);
+            case COOKIE -> new PitCOOKIE(player, pitType);
+            case MARIANA -> new PitMARIANA(player, pitType);
+        }
     }
 
-    public static void onItemClick(Player player, ItemStack clickedItem, Integer... slot) {
-        Integer s = slot[0];
-        if(defaultPitGame == PitGame.STANDARD) PitSTANDARD.onItemClick(player, clickedItem, s);
-        if(defaultPitGame == PitGame.COOKIE) PitCOOKIE.onItemClick(player, clickedItem, s);
-        if(defaultPitGame == PitGame.MARIANA) PitMARIANA.onItemClick(player, clickedItem, s);
+    public static void onItemClick(Player player, ItemStack clickedItem, Integer s) {
+        switch (defaultPitGame) {
+            case STANDARD -> PitSTANDARD.onItemClick(player, clickedItem, s);
+            case COOKIE -> PitCOOKIE.onItemClick(player, clickedItem, s);
+            case MARIANA -> PitMARIANA.onItemClick(player, clickedItem, s);
+        }
     }
 
     public static void addPitPlayer(Player player, PitPlayer pitPlayer) {
