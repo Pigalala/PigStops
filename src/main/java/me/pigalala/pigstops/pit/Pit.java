@@ -57,8 +57,7 @@ public abstract class Pit {
     public static void finishPits(Player player){
         if(hasPitPlayer(player)) return;
         PitPlayer pp = PitManager.getPitPlayer(player);
-        pp.setHasStarted(false);
-        pp.setPitWindow(null);
+        pp.reset();
         player.closeInventory();
 
         String finalTime = formatAsTime(Duration.between(pp.getStartingTime(), Instant.now()).toMillis());

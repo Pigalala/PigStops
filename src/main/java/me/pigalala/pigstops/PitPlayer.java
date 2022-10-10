@@ -18,7 +18,6 @@ public class PitPlayer {
 
     public PitPlayer(Player player){
         this.player = player;
-
         PitManager.addPitPlayer(player, this);
     }
 
@@ -28,10 +27,14 @@ public class PitPlayer {
         PitManager.removePitPlayer(this);
     }
 
+    public void reset() {
+        this.hasStarted = false;
+        this.pitWindow = null;
+    }
+
     public void setItemsToClick(Integer itemsToClick) {
         this.itemsToClick = itemsToClick;
     }
-
     public Integer getItemsToClick() {
         return itemsToClick;
     }
@@ -39,7 +42,6 @@ public class PitPlayer {
     public void setStartingTime(Instant time) {
         this.startingTime = time;
     }
-
     public Instant getStartingTime() {
         return startingTime;
     }
@@ -47,7 +49,6 @@ public class PitPlayer {
     public void setPitWindow(Inventory pitWindow) {
         this.pitWindow = pitWindow;
     }
-
     public Inventory getPitWindow() {
         return pitWindow;
     }
@@ -55,7 +56,6 @@ public class PitPlayer {
     public void setHasStarted(Boolean t) {
         this.hasStarted = t;
     }
-
     public Boolean hasStarted() {
         return hasStarted;
     }
@@ -63,7 +63,6 @@ public class PitPlayer {
     public void setPitType(PitType pitType) {
         this.pitType = pitType;
     }
-
     public PitType getPitType() {
         return pitType;
     }
