@@ -85,7 +85,7 @@ public abstract class Pit {
         }
     }
 
-    public static void shuffleItems(Player player){
+    public static void shuffleItems(Player player, Boolean playFailSound){
         if(hasPitPlayer(player)) {return;}
         PitPlayer pp = PitManager.getPitPlayer(player);
         List<ItemStack> shuffled = new ArrayList<>(Arrays.stream(pp.getPitWindow().getContents()).toList());
@@ -93,6 +93,6 @@ public abstract class Pit {
 
         pp.getPitWindow().setContents(shuffled.toArray(new ItemStack[0]));
         player.openInventory(pp.getPitWindow());
-        player.playSound(player, Sound.BLOCK_NOTE_BLOCK_PLING, 0.5f, 0.5f);
+        if(playFailSound) player.playSound(player, Sound.BLOCK_NOTE_BLOCK_PLING, 0.5f, 0.5f);
     }
 }

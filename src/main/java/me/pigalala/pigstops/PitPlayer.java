@@ -1,7 +1,7 @@
 package me.pigalala.pigstops;
 
 import me.pigalala.pigstops.enums.PitType;
-import me.pigalala.pigstops.pit.PitManager;
+import me.pigalala.pigstops.pit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 

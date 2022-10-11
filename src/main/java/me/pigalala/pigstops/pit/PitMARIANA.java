@@ -101,7 +101,7 @@ public class PitMARIANA extends Pit {
                 player.playSound(player, Sound.BLOCK_SMITHING_TABLE_USE, SoundCategory.MASTER, 1f, 1f);
             }
         } else {
-            Pit.shuffleItems(player);
+            Pit.shuffleItems(player, true);
         }
     }
 }

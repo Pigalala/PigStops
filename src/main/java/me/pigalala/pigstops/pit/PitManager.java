@@ -31,6 +31,7 @@ public class PitManager {
             case STANDARD -> new PitSTANDARD(player, pitType);
             case COOKIE -> new PitCOOKIE(player, pitType);
             case MARIANA -> new PitMARIANA(player, pitType);
+            case ONFISHE -> new PitONFISHE(player, pitType);
         }
     }
 
@@ -39,6 +40,7 @@ public class PitManager {
             case STANDARD -> PitSTANDARD.onItemClick(player, clickedItem, s);
             case COOKIE -> PitCOOKIE.onItemClick(player, clickedItem, s);
             case MARIANA -> PitMARIANA.onItemClick(player, clickedItem, s);
+            case ONFISHE -> PitONFISHE.onItemClick(player, clickedItem, s);
         }
     }
 

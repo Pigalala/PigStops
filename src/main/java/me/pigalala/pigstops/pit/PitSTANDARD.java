@@ -87,7 +87,7 @@ public class PitSTANDARD extends Pit {
             }
         }
         if(clickedItem.getType() == Material.LIGHT_BLUE_STAINED_GLASS_PANE) {
-            Pit.shuffleItems(player);
+            Pit.shuffleItems(player, true);
         }
     }
 }
