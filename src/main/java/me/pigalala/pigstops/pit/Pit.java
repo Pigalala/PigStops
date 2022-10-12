@@ -8,6 +8,7 @@ import me.makkuusen.timing.system.participant.Driver;
 import me.pigalala.pigstops.ConfigManager;
 import me.pigalala.pigstops.PitPlayer;
 import me.pigalala.pigstops.enums.PitType;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
@@ -43,7 +44,7 @@ public abstract class Pit {
             return;
         }
 
-        Inventory pitWindow = Bukkit.createInventory(player, windowSize, pitNameBase + windowName);
+        Inventory pitWindow = Bukkit.createInventory(player, windowSize, Component.text(pitNameBase + windowName));
 
         pp.setPitWindow(pitWindow);
         pp.setHasStarted(true);
@@ -65,7 +66,7 @@ public abstract class Pit {
         String finalTime = formatAsTime(Duration.between(pp.getStartingTime(), Instant.now()).toMillis());
 
         if(pp.getPitType() != PitType.REAL) {
-            player.sendMessage(ConfigManager.getValue("messages.finishes.finishSolo",
+            player.sendMessage(ConfigManager.getCustomMessage("messages.finishes.finishSolo",
                     "%TIME%", finalTime));
             return;
         }
@@ -83,7 +84,7 @@ public abstract class Pit {
 
             heat.getParticipants().forEach(participant -> {
                 if(participant.getTPlayer().getPlayer() == null) return;
-                participant.getTPlayer().getPlayer().sendMessage(ConfigManager.getValue("messages.finishes.finishRace",
+                participant.getTPlayer().getPlayer().sendMessage(ConfigManager.getCustomMessage("messages.finishes.finishRace",
                         "%PLAYER%", d.getTPlayer().getName(),
                         "%PITS%", String.valueOf(d.getPits()),
                         "%TIME%", finalTime));

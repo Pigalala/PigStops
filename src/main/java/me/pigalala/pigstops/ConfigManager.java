@@ -39,9 +39,9 @@ public class ConfigManager {
         }
     }
 
-    public static String getValue(String messagePath, String... replacements) {
+    public static String getCustomMessage(String messagePath, String... replacements) {
         if(replacements.length % 2 != 0) {
-            PigStops.getPlugin().getLogger().log(Level.WARNING, "Message replacements uneven, please contact Pigalala#3520", new Exception());
+            PigStops.getPlugin().getLogger().log(Level.WARNING, "Message replacements uneven, please contact Pigalala#3520");
             return null;
         }
 
