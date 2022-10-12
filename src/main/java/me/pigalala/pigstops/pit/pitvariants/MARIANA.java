@@ -1,15 +1,15 @@
-package me.pigalala.pigstops.pit;
+package me.pigalala.pigstops.pit.pitvariants;
 
 import me.pigalala.pigstops.PitPlayer;
 import me.pigalala.pigstops.enums.PitGame;
 import me.pigalala.pigstops.enums.PitType;
-import net.kyori.adventure.text.Component;
+import me.pigalala.pigstops.pit.Pit;
+import me.pigalala.pigstops.pit.PitManager;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.SoundCategory;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
@@ -20,7 +20,7 @@ import java.util.Random;
 
 import static me.pigalala.pigstops.pit.PitManager.hasPitPlayer;
 
-public class PitMARIANA extends Pit {
+public class MARIANA extends Pit {
     private static final ItemStack background = new ItemStack(Material.RED_STAINED_GLASS_PANE);
     private static final ItemStack marianaHead = new ItemStack(Material.PLAYER_HEAD, 9);
     private static final ItemStack fakeHead = new ItemStack(Material.PLAYER_HEAD, 9);
@@ -28,7 +28,7 @@ public class PitMARIANA extends Pit {
     private final Integer windowSize = 27;
     private final Integer toClick = 8;
 
-    public PitMARIANA(Player player, PitType pitType){
+    public MARIANA(Player player, PitType pitType){
         setItemMetas();
         Pit.createWindow(player, pitType, setContents(), PitGame.MARIANA.name(), windowSize, toClick);
     }

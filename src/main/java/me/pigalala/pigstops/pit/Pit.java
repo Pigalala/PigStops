@@ -5,6 +5,7 @@ import me.makkuusen.timing.system.TPlayer;
 import me.makkuusen.timing.system.event.EventDatabase;
 import me.makkuusen.timing.system.heat.Heat;
 import me.makkuusen.timing.system.participant.Driver;
+import me.pigalala.pigstops.ConfigManager;
 import me.pigalala.pigstops.PitPlayer;
 import me.pigalala.pigstops.enums.PitType;
 import org.bukkit.Bukkit;
@@ -22,6 +23,7 @@ import static me.pigalala.pigstops.pit.PitManager.hasPitPlayer;
 import static me.pigalala.pigstops.pit.PitManager.pitNameBase;
 
 public abstract class Pit {
+
     public static Boolean isFinished(Player player){
         if(hasPitPlayer(player)) return false;
         return PitManager.getPitPlayer(player).getItemsToClick() <= 0;
@@ -63,7 +65,8 @@ public abstract class Pit {
         String finalTime = formatAsTime(Duration.between(pp.getStartingTime(), Instant.now()).toMillis());
 
         if(pp.getPitType() != PitType.REAL) {
-            player.sendMessage("§aYou finished in §d" + finalTime + "§a.");
+            player.sendMessage(ConfigManager.getValue("messages.finishes.finishSolo",
+                    "%TIME%", finalTime));
             return;
         }
 
@@ -80,7 +83,10 @@ public abstract class Pit {
 
             heat.getParticipants().forEach(participant -> {
                 if(participant.getTPlayer().getPlayer() == null) return;
-                participant.getTPlayer().getPlayer().sendMessage("§d" + d.getTPlayer().getName() + "§a has completed pigstop §d" + d.getPits() + "§a in §d" + finalTime + "§a.");
+                participant.getTPlayer().getPlayer().sendMessage(ConfigManager.getValue("messages.finishes.finishRace",
+                        "%PLAYER%", d.getTPlayer().getName(),
+                        "%PITS%", String.valueOf(d.getPits()),
+                        "%TIME%", finalTime));
             });
         }
     }

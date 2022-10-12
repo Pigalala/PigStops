@@ -1,8 +1,10 @@
-package me.pigalala.pigstops.pit;
+package me.pigalala.pigstops.pit.pitvariants;
 
 import me.pigalala.pigstops.PitPlayer;
 import me.pigalala.pigstops.enums.PitGame;
 import me.pigalala.pigstops.enums.PitType;
+import me.pigalala.pigstops.pit.Pit;
+import me.pigalala.pigstops.pit.PitManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Material;
@@ -18,14 +20,14 @@ import java.util.Random;
 
 import static me.pigalala.pigstops.pit.PitManager.hasPitPlayer;
 
-public class PitONFISHE extends Pit {
+public class ONFISHE extends Pit {
     private static final ItemStack background = new ItemStack(Material.LIGHT_BLUE_STAINED_GLASS_PANE);
     private static final ItemStack onFishe = new ItemStack(Material.PUFFERFISH);
 
     private static final Integer windowSize = 54;
     private static final Integer toClick = 10;
 
-    public PitONFISHE(Player player, PitType pitType) {
+    public ONFISHE(Player player, PitType pitType) {
         if(PitManager.hasPitPlayer(player)) return;
         setItemMetas();
         Pit.createWindow(player, pitType, setContents(), PitGame.ONFISHE.name(), windowSize, toClick);

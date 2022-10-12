@@ -1,8 +1,10 @@
-package me.pigalala.pigstops.pit;
+package me.pigalala.pigstops.pit.pitvariants;
 
 import me.pigalala.pigstops.PitPlayer;
 import me.pigalala.pigstops.enums.PitGame;
 import me.pigalala.pigstops.enums.PitType;
+import me.pigalala.pigstops.pit.Pit;
+import me.pigalala.pigstops.pit.PitManager;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.SoundCategory;
@@ -18,12 +20,12 @@ import java.util.Random;
 
 import static me.pigalala.pigstops.pit.PitManager.hasPitPlayer;
 
-public class PitCOOKIE extends Pit {
+public class COOKIE extends Pit {
 
     private final ItemStack background = new ItemStack(Material.LIGHT_BLUE_STAINED_GLASS_PANE);
     private final ItemStack cookie = new ItemStack(Material.COOKIE);
 
-    public PitCOOKIE(Player player, PitType pitType){
+    public COOKIE(Player player, PitType pitType){
         setItemMetas();
         Pit.createWindow(player, pitType, setContents(), PitGame.COOKIE.name(), 27, 10);
     }
