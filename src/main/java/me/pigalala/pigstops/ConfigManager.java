@@ -10,9 +10,8 @@ import java.util.logging.Level;
 public class ConfigManager {
 
     private static final PigStops plugin = PigStops.getPlugin();
-    private static final FileConfiguration config = PigStops.getPlugin().getConfig();
 
-    private final String currentVersion = "1.1";
+    private static final FileConfiguration config = PigStops.getPlugin().getConfig();
 
     public ConfigManager(){
         plugin.saveDefaultConfig();
