@@ -1,8 +1,8 @@
 package me.pigalala.pigstops.enums;
 
 public enum PitGame {
-    STANDARD(),
-    COOKIE(),
-    MARIANA(),
-    ONFISHE();
+    STANDARD,
+    COOKIE,
+    MARIANA,
+    ONFISHE
 }

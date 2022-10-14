@@ -22,7 +22,7 @@ import static me.pigalala.pigstops.pit.PitManager.hasPitPlayer;
 
 public class ONFISHE extends Pit {
     private static final ItemStack background = new ItemStack(Material.LIGHT_BLUE_STAINED_GLASS_PANE);
-    private static final ItemStack onFishe = new ItemStack(Material.PUFFERFISH);
+    private static final ItemStack onFishe = new ItemStack(Material.PUFFERFISH_BUCKET);
 
     private static final Integer windowSize = 54;
     private static final Integer toClick = 10;

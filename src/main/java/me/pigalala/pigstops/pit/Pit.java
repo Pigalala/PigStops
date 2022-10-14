@@ -66,7 +66,7 @@ public abstract class Pit {
         String finalTime = formatAsTime(Duration.between(pp.getStartingTime(), Instant.now()).toMillis());
 
         if(pp.getPitType() != PitType.REAL) {
-            player.sendMessage(ConfigManager.getCustomMessage("messages.finishes.finishSolo",
+            player.sendMessage(ConfigManager.getCustomMessage("&aYou finished in &d%TIME%&a.",
                     "%TIME%", finalTime));
             return;
         }
@@ -84,7 +84,7 @@ public abstract class Pit {
 
             heat.getParticipants().forEach(participant -> {
                 if(participant.getTPlayer().getPlayer() == null) return;
-                participant.getTPlayer().getPlayer().sendMessage(ConfigManager.getCustomMessage("messages.finishes.finishRace",
+                participant.getTPlayer().getPlayer().sendMessage(ConfigManager.getCustomMessage("&d%PLAYER% &ahas completed pigstop &d%PITS% &ain &d%TIME%&a.",
                         "%PLAYER%", d.getTPlayer().getName(),
                         "%PITS%", String.valueOf(d.getPits()),
                         "%TIME%", finalTime));

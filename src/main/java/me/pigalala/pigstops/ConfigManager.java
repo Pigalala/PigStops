@@ -10,10 +10,9 @@ import java.util.logging.Level;
 public class ConfigManager {
 
     private static final PigStops plugin = PigStops.getPlugin();
+    private static final FileConfiguration config = plugin.getConfig();
 
-    private static final FileConfiguration config = PigStops.getPlugin().getConfig();
-
-    public ConfigManager(){
+    public static void onStartup() {
         plugin.saveDefaultConfig();
 
         loadPitBlock();
@@ -38,14 +37,7 @@ public class ConfigManager {
         }
     }
 
-    public static String getCustomMessage(String messagePath, String... replacements) {
-        if(replacements.length % 2 != 0) {
-            PigStops.getPlugin().getLogger().log(Level.WARNING, "Message replacements uneven, please contact Pigalala#3520");
-            return null;
-        }
-
-        if(config.getString(messagePath) == null) return null;
-        String message = config.getString(messagePath);
+    public static String getCustomMessage(String message, String... replacements) {
 
         for (int i = 0; i < replacements.length; i += 2) {
             message = message.replace(replacements[i], replacements[i + 1]);

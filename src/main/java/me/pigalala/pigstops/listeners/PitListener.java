@@ -13,7 +13,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.vehicle.VehicleMoveEvent;
 import org.bukkit.util.Vector;
 
@@ -26,13 +25,6 @@ public class PitListener implements Listener {
     @EventHandler
     public void onJoin(PlayerJoinEvent e) {
         new PitPlayer(e.getPlayer());
-    }
-
-    @EventHandler
-    public void onLeave(PlayerQuitEvent e) {
-        if(PitManager.hasPitPlayer(e.getPlayer())) {
-            PitManager.getPitPlayer(e.getPlayer()).delete();
-        }
     }
 
     @EventHandler

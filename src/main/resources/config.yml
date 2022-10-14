@@ -1,11 +1,5 @@
 # PigStops Config
 
-messages:
-  finishes:
-    finishSolo: "&aYou finished in &d%TIME%&a."
-    finishRace: "&d%PLAYER% &ahas completed pigstop &d%PITS% &ain &d%TIME%&a."
-
-
 # ⬇ Recommended not to touch ⬇
 pitBlock: redstone_block
 pitGame: STANDARD

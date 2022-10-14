@@ -25,7 +25,7 @@ public final class PigStops extends JavaPlugin {
 
         setupCommands();
 
-        new ConfigManager();
+        ConfigManager.onStartup();
     }
 
     private void setupCommands() {

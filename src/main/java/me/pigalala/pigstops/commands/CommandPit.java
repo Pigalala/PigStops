@@ -9,6 +9,7 @@ import me.pigalala.pigstops.pit.PitManager;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
+import java.io.File;
 import java.util.logging.Level;
 
 @CommandAlias("pigstop|pit")
@@ -49,12 +50,14 @@ public class CommandPit extends BaseCommand {
         player.sendMessage("§aSuccessfully set pit block to " + block.toString().toLowerCase());
     }
 
-    @Subcommand("reload")
+    @Subcommand("config reload")
     @CommandPermission("pigstop.admin")
+    @CommandCompletion("")
     public static void reloadConfig(Player player) {
         PigStops plugin = PigStops.getPlugin();
         plugin.saveConfig();
         plugin.reloadConfig();
+
         player.sendMessage("§aReloaded PigStops config.");
     }
 }
