@@ -1,10 +1,11 @@
-package me.pigalala.pigstops.commands;
+package me.pigalala.pigstops;
 
 import co.aikar.commands.BaseCommand;
 import co.aikar.commands.annotation.*;
 import me.pigalala.pigstops.PigStops;
 import me.pigalala.pigstops.enums.PitGame;
 import me.pigalala.pigstops.enums.PitType;
+import me.pigalala.pigstops.pit.Pit;
 import me.pigalala.pigstops.pit.PitManager;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -17,7 +18,7 @@ public class CommandPit extends BaseCommand {
 
     @Default
     public static void practiseDefaultPit(Player player) {
-        PitManager.openPitGame(player, PitType.FAKE);
+        PitManager.getPitPlayer(player).attachPit(new Pit(PitManager.getPitPlayer(player), PitType.FAKE));
     }
 
     @Subcommand("info")

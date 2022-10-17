@@ -15,6 +15,7 @@ public class PitPlayer {
     private Boolean hasStarted = false;
     private PitType pitType;
     private Inventory pitWindow;
+    private Pit pit;
 
     public PitPlayer(Player player){
         this.player = player;
@@ -22,10 +23,6 @@ public class PitPlayer {
     }
 
     public Player getPlayer() {return player;}
-
-    public void delete(){
-        PitManager.removePitPlayer(this);
-    }
 
     public void reset() {
         this.hasStarted = false;
@@ -65,5 +62,12 @@ public class PitPlayer {
     }
     public PitType getPitType() {
         return pitType;
+    }
+
+    public void attachPit(Pit pit) {
+        this.pit = pit;
+    }
+    public Pit getAttachedPit() {
+        return pit;
     }
 }

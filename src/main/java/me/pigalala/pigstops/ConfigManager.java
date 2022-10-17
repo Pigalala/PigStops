@@ -1,5 +1,6 @@
 package me.pigalala.pigstops;
 
+import me.makkuusen.timing.system.heat.Heat;
 import me.pigalala.pigstops.enums.PitGame;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -37,6 +38,7 @@ public class ConfigManager {
         }
     }
 
+    // Parts taken from TS :)
     public static String getCustomMessage(String message, String... replacements) {
 
         for (int i = 0; i < replacements.length; i += 2) {
@@ -45,5 +47,12 @@ public class ConfigManager {
 
         message = ChatColor.translateAlternateColorCodes('&', message);
         return message;
+    }
+
+    public static void broadcastMessage(String message, Heat heat) {
+        heat.getParticipants().forEach(participant -> {
+            if(participant.getTPlayer().getPlayer() == null) return;
+            participant.getTPlayer().getPlayer().sendMessage(message);
+        });
     }
 }

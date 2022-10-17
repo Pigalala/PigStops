@@ -2,9 +2,7 @@ package me.pigalala.pigstops;
 
 import co.aikar.commands.PaperCommandManager;
 import com.google.common.collect.ImmutableList;
-import me.pigalala.pigstops.commands.CommandPit;
 import me.pigalala.pigstops.enums.PitGame;
-import me.pigalala.pigstops.listeners.PitListener;
 import me.pigalala.pigstops.pit.PitManager;
 import org.bukkit.Material;
 import org.bukkit.plugin.java.JavaPlugin;

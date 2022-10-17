@@ -2,15 +2,10 @@ package me.pigalala.pigstops.pit;
 
 import me.pigalala.pigstops.PitPlayer;
 import me.pigalala.pigstops.enums.PitGame;
-import me.pigalala.pigstops.enums.PitType;
-import me.pigalala.pigstops.pit.pitvariants.COOKIE;
-import me.pigalala.pigstops.pit.pitvariants.MARIANA;
-import me.pigalala.pigstops.pit.pitvariants.ONFISHE;
-import me.pigalala.pigstops.pit.pitvariants.STANDARD;
 import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Contract;
 
 import java.util.HashMap;
 
@@ -26,26 +21,56 @@ public class PitManager {
         defaultPitGame = game;
     }
 
-    /** Opens a pit game based on the default game, or using the 3rd parameter **/
-    public static void openPitGame(Player player, PitType pitType) {
-        switch (defaultPitGame) {
-            case STANDARD -> new STANDARD(player, pitType);
-            case COOKIE -> new COOKIE(player, pitType);
-            case MARIANA -> new MARIANA(player, pitType);
-            case ONFISHE -> new ONFISHE(player, pitType);
+    public static ItemStack[] chooseContents(PitGame pitGame) {
+        switch (pitGame) {
+            case STANDARD -> {
+                return PitVariants.STANDARD.getContents();
+            }
+            case COOKIE -> {
+                return PitVariants.COOKIE.getContents();
+            }
+            case MARIANA -> {
+                return PitVariants.MARIANA.getContents();
+            }
+            case ONFISHE -> {
+                return PitVariants.ONFISHE.getContents();
+            }
         }
+        return null;
+    }
+
+    /** FORM: [windowSize, itemsToClick] **/
+    @Contract("_ -> !null")
+    public static Integer[] chooseSizes(PitGame pitGame) {
+        switch (pitGame) {
+            case STANDARD -> {
+                return new Integer[]{PitVariants.STANDARD.windowSize, PitVariants.STANDARD.itemsToClick};
+            }
+            case COOKIE -> {
+                return new Integer[]{PitVariants.COOKIE.windowSize, PitVariants.COOKIE.toClick};
+            }
+            case MARIANA -> {
+                return new Integer[]{PitVariants.MARIANA.windowSize, PitVariants.MARIANA.toClick};
+            }
+            case ONFISHE -> {
+                return new Integer[]{PitVariants.ONFISHE.windowSize, PitVariants.ONFISHE.toClick};
+            }
+        }
+        return null;
     }
 
     public static void onItemClick(Player player, ItemStack clickedItem, Integer s) {
+        PitPlayer pp = getPitPlayer(player);
         switch (defaultPitGame) {
-            case STANDARD -> STANDARD.onItemClick(player, clickedItem, s);
-            case COOKIE -> COOKIE.onItemClick(player, clickedItem, s);
-            case MARIANA -> MARIANA.onItemClick(player, clickedItem, s);
-            case ONFISHE -> ONFISHE.onItemClick(player, clickedItem, s);
+            case STANDARD -> PitVariants.STANDARD.onItemClick(pp, clickedItem, s);
+            case COOKIE -> PitVariants.COOKIE.onItemClick(pp, clickedItem, s);
+            case MARIANA -> PitVariants.MARIANA.onItemClick(pp, clickedItem, s);
+            case ONFISHE -> PitVariants.ONFISHE.onItemClick(pp, clickedItem, s);
         }
     }
 
     public static void addPitPlayer(Player player, PitPlayer pitPlayer) {
+        if(pitPlayers.containsKey(player)) return;
         pitPlayers.put(player, pitPlayer);
     }
 
@@ -64,7 +89,8 @@ public class PitManager {
         return false;
     }
 
-    public static void removePitPlayer(PitPlayer pitPlayer) {
-        pitPlayers.remove(pitPlayer.getPlayer());
+    public static void removePitPlayer(Player player) {
+        if(!hasPitPlayer(player)) return;
+        pitPlayers.remove(player);
     }
 }

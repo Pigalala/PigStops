@@ -1,8 +1,6 @@
-package me.pigalala.pigstops.listeners;
+package me.pigalala.pigstops;
 
 import me.makkuusen.timing.system.event.EventDatabase;
-import me.pigalala.pigstops.PigStops;
-import me.pigalala.pigstops.PitPlayer;
 import me.pigalala.pigstops.enums.PitType;
 import me.pigalala.pigstops.pit.Pit;
 import me.pigalala.pigstops.pit.PitManager;
@@ -13,6 +11,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.vehicle.VehicleMoveEvent;
 import org.bukkit.util.Vector;
 
@@ -25,6 +24,11 @@ public class PitListener implements Listener {
     @EventHandler
     public void onJoin(PlayerJoinEvent e) {
         new PitPlayer(e.getPlayer());
+    }
+
+    @EventHandler
+    public void onQuit(PlayerQuitEvent e) {
+        PitManager.removePitPlayer(e.getPlayer());
     }
 
     @EventHandler
@@ -51,7 +55,7 @@ public class PitListener implements Listener {
 
         if(driver.get().getHeat().isActive()){
             if (!driver.get().getCurrentLap().isPitted()) {
-                PitManager.openPitGame(p, PitType.REAL);
+                PitManager.getPitPlayer(p).attachPit(new Pit(PitManager.getPitPlayer(p), PitType.REAL));
             }
         }
     }
@@ -59,7 +63,6 @@ public class PitListener implements Listener {
     @EventHandler
     public void onInvClose(InventoryCloseEvent e){
         if(e.getReason().equals(InventoryCloseEvent.Reason.OPEN_NEW)) return;
-
-        Pit.reset((Player) e.getPlayer());
+        PitManager.getPitPlayer((Player) e.getPlayer()).getAttachedPit().reset();
     }
 }
