@@ -6,6 +6,7 @@ import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
 
@@ -75,18 +76,14 @@ public class PitManager {
     }
 
     public static PitPlayer getPitPlayer(Player player) {
-        if(hasPitPlayer(player)) return null;
+        if(hasPitPlayer(player)) return new PitPlayer(player);
 
         return pitPlayers.get(player);
     }
 
     /** True = PP Not Found, False = PP Found **/
     public static Boolean hasPitPlayer(Player player) {
-        if(!pitPlayers.containsKey(player)){
-            player.kick(Component.text("You have been kicked xd.\nPlease contact Pigalala#3520"));
-            return true;
-        }
-        return false;
+        return !pitPlayers.containsKey(player);
     }
 
     public static void removePitPlayer(Player player) {
