@@ -30,7 +30,6 @@ public abstract class PitVariants {
 
         private static final PitVariantHandler pitVariantValues = new PitVariantHandler(STANDARD.class);
 
-        public static final String windowName = pitVariantValues.inventoryName;
         public static final int windowSize = pitVariantValues.inventorySize;
         public static final int itemsToClick = pitVariantValues.itemsToClick;
 
@@ -103,7 +102,6 @@ public abstract class PitVariants {
 
         private static final PitVariantHandler pitVariantValues = new PitVariantHandler(COOKIE.class);
 
-        public static final String windowName = pitVariantValues.inventoryName;
         public static final int windowSize = pitVariantValues.inventorySize;
         public static final int itemsToClick = pitVariantValues.itemsToClick;
 
@@ -170,7 +168,6 @@ public abstract class PitVariants {
 
         private static final PitVariantHandler pitVariantValues = new PitVariantHandler(MARIANA.class);
 
-        public static final String windowName = pitVariantValues.inventoryName;
         public static final int windowSize = pitVariantValues.inventorySize;
         public static final int itemsToClick = pitVariantValues.itemsToClick;
 
@@ -254,7 +251,6 @@ public abstract class PitVariants {
 
         private static final PitVariantHandler pitVariantValues = new PitVariantHandler(ONFISHE.class);
 
-        public static final String windowName = pitVariantValues.inventoryName;
         public static final int windowSize = pitVariantValues.inventorySize;
         public static final int itemsToClick = pitVariantValues.itemsToClick;
 
