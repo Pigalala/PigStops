@@ -1,8 +1,8 @@
 package me.pigalala.pigstops.pit;
 
 import me.pigalala.pigstops.PitPlayer;
-import me.pigalala.pigstops.annotations.PitVariant;
-import me.pigalala.pigstops.annotations.PitVariantHandler;
+import me.pigalala.pigstops.annotations.pitvariant.PitVariant;
+import me.pigalala.pigstops.annotations.pitvariant.PitVariantHandler;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Bukkit;

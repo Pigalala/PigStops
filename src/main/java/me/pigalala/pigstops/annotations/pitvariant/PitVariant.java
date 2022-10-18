@@ -1,4 +1,4 @@
-package me.pigalala.pigstops.annotations;
+package me.pigalala.pigstops.annotations.pitvariant;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

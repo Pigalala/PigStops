@@ -1,4 +1,4 @@
-package me.pigalala.pigstops.annotations;
+package me.pigalala.pigstops.annotations.pitvariant;
 
 public class PitVariantHandler {
 
