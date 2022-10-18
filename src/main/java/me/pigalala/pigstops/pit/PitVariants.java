@@ -28,10 +28,10 @@ public abstract class PitVariants {
         private static final ItemStack background = new ItemStack(Material.LIGHT_BLUE_STAINED_GLASS_PANE);
         private static final ItemStack paddle = new ItemStack(Material.WOODEN_SHOVEL);
 
-        private static final PitVariantHandler pitVariantValues = new PitVariantHandler(STANDARD.class);
+        public static final PitVariantHandler pitVariantValues = new PitVariantHandler(STANDARD.class);
 
-        public static final int windowSize = pitVariantValues.inventorySize;
-        public static final int itemsToClick = pitVariantValues.itemsToClick;
+        private static final int windowSize = pitVariantValues.inventorySize;
+        private static final int itemsToClick = pitVariantValues.itemsToClick;
 
         public static ItemStack[] getContents(){
             setItemMetas();
@@ -100,10 +100,10 @@ public abstract class PitVariants {
         private static final ItemStack background = new ItemStack(Material.LIGHT_BLUE_STAINED_GLASS_PANE);
         private static final ItemStack cookie = new ItemStack(Material.COOKIE);
 
-        private static final PitVariantHandler pitVariantValues = new PitVariantHandler(COOKIE.class);
+        public static final PitVariantHandler pitVariantValues = new PitVariantHandler(COOKIE.class);
 
-        public static final int windowSize = pitVariantValues.inventorySize;
-        public static final int itemsToClick = pitVariantValues.itemsToClick;
+        private static final int windowSize = pitVariantValues.inventorySize;
+        private static final int itemsToClick = pitVariantValues.itemsToClick;
 
         public static ItemStack[] getContents(){
             setItemMetas();
@@ -166,10 +166,10 @@ public abstract class PitVariants {
         private static final ItemStack marianaHead = new ItemStack(Material.PLAYER_HEAD, 9);
         private static final ItemStack fakeHead = new ItemStack(Material.PLAYER_HEAD, 9);
 
-        private static final PitVariantHandler pitVariantValues = new PitVariantHandler(MARIANA.class);
+        public static final PitVariantHandler pitVariantValues = new PitVariantHandler(MARIANA.class);
 
-        public static final int windowSize = pitVariantValues.inventorySize;
-        public static final int itemsToClick = pitVariantValues.itemsToClick;
+        private static final int windowSize = pitVariantValues.inventorySize;
+        private static final int itemsToClick = pitVariantValues.itemsToClick;
 
         public static ItemStack[] getContents(){
             setItemMetas();
@@ -249,10 +249,10 @@ public abstract class PitVariants {
         private static final ItemStack background = new ItemStack(Material.LIGHT_BLUE_STAINED_GLASS_PANE);
         private static final ItemStack onFishe = new ItemStack(Material.PUFFERFISH_BUCKET);
 
-        private static final PitVariantHandler pitVariantValues = new PitVariantHandler(ONFISHE.class);
+        public static final PitVariantHandler pitVariantValues = new PitVariantHandler(ONFISHE.class);
 
-        public static final int windowSize = pitVariantValues.inventorySize;
-        public static final int itemsToClick = pitVariantValues.itemsToClick;
+        private static final int windowSize = pitVariantValues.inventorySize;
+        private static final int itemsToClick = pitVariantValues.itemsToClick;
 
         public static ItemStack[] getContents(){
             setItemMetas();

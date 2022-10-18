@@ -2,11 +2,9 @@ package me.pigalala.pigstops.pit;
 
 import me.pigalala.pigstops.PitPlayer;
 import me.pigalala.pigstops.enums.PitGame;
-import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
 
@@ -45,16 +43,16 @@ public class PitManager {
     public static Integer[] chooseSizes(PitGame pitGame) {
         switch (pitGame) {
             case STANDARD -> {
-                return new Integer[]{PitVariants.STANDARD.windowSize, PitVariants.STANDARD.itemsToClick};
+                return new Integer[]{PitVariants.STANDARD.pitVariantValues.inventorySize, PitVariants.STANDARD.pitVariantValues.itemsToClick};
             }
             case COOKIE -> {
-                return new Integer[]{PitVariants.COOKIE.windowSize, PitVariants.COOKIE.itemsToClick};
+                return new Integer[]{PitVariants.COOKIE.pitVariantValues.inventorySize, PitVariants.COOKIE.pitVariantValues.itemsToClick};
             }
             case MARIANA -> {
-                return new Integer[]{PitVariants.MARIANA.windowSize, PitVariants.MARIANA.itemsToClick};
+                return new Integer[]{PitVariants.MARIANA.pitVariantValues.inventorySize, PitVariants.MARIANA.pitVariantValues.itemsToClick};
             }
             case ONFISHE -> {
-                return new Integer[]{PitVariants.ONFISHE.windowSize, PitVariants.ONFISHE.itemsToClick};
+                return new Integer[]{PitVariants.ONFISHE.pitVariantValues.inventorySize, PitVariants.ONFISHE.pitVariantValues.itemsToClick};
             }
         }
         return null;
