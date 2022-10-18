@@ -41,7 +41,7 @@ public final class PigStops extends JavaPlugin {
             Arrays.stream(Material.values()).toList().forEach(e -> {
                 if(!e.isSolid()) return;
                 if(!e.isBlock()) return;
-                blocks.add(e.toString().toLowerCase(Locale.ROOT));
+                blocks.add(e.toString().toLowerCase());
             });
             return ImmutableList.copyOf(blocks.toArray(new String[0]));
         });
