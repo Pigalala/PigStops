@@ -63,6 +63,8 @@ public class PitListener implements Listener {
     @EventHandler
     public void onInvClose(InventoryCloseEvent e){
         if(e.getReason().equals(InventoryCloseEvent.Reason.OPEN_NEW)) return;
-        PitManager.getPitPlayer((Player) e.getPlayer()).getAttachedPit().reset();
+        PitPlayer pp = PitManager.getPitPlayer((Player) e.getPlayer());
+        if (pp.getAttachedPit() == null) return;
+        pp.getAttachedPit().reset();
     }
 }
