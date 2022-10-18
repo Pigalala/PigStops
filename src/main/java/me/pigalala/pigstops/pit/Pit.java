@@ -5,9 +5,9 @@ import me.makkuusen.timing.system.TPlayer;
 import me.makkuusen.timing.system.event.EventDatabase;
 import me.makkuusen.timing.system.heat.Heat;
 import me.makkuusen.timing.system.participant.Driver;
-import me.pigalala.pigstops.ConfigManager;
 import me.pigalala.pigstops.PigStops;
 import me.pigalala.pigstops.PitPlayer;
+import me.pigalala.pigstops.Utils;
 import me.pigalala.pigstops.enums.PitGame;
 import me.pigalala.pigstops.enums.PitType;
 import net.kyori.adventure.text.Component;
@@ -66,7 +66,7 @@ public class Pit {
         String finalTime = formatAsTime(Duration.between(pp.getStartingTime(), Instant.now()).toMillis());
 
         if(pp.getPitType() != PitType.REAL) {
-            pp.getPlayer().sendMessage(ConfigManager.getCustomMessage("&aYou finished in &d%TIME%&a.",
+            pp.getPlayer().sendMessage(Utils.getCustomMessage("&aYou finished in &d%TIME%&a.",
                     "%TIME%", finalTime));
             return;
         }
@@ -82,7 +82,7 @@ public class Pit {
             d.getCurrentLap().setPitted(true);
             heat.updatePositions();
 
-            ConfigManager.broadcastMessage(ConfigManager.getCustomMessage("&d%PLAYER% &ahas completed pigstop &d%PITS% &ain &d%TIME%&a.",
+            Utils.broadcastMessage(Utils.getCustomMessage("&d%PLAYER% &ahas completed pigstop &d%PITS% &ain &d%TIME%&a.",
                     "%PLAYER%", d.getTPlayer().getName(),
                     "%PITS%", String.valueOf(d.getPits()),
                     "%TIME%", finalTime),

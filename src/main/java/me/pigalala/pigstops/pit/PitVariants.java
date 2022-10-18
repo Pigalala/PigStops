@@ -1,6 +1,8 @@
 package me.pigalala.pigstops.pit;
 
 import me.pigalala.pigstops.PitPlayer;
+import me.pigalala.pigstops.annotations.PitVariant;
+import me.pigalala.pigstops.annotations.PitVariantHandler;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Bukkit;
@@ -21,12 +23,16 @@ import java.util.Random;
 
 public abstract class PitVariants {
 
+    @PitVariant(inventoryName = "Standard", itemsToClick = 2, inventorySize = 27)
     public static class STANDARD {
         private static final ItemStack background = new ItemStack(Material.LIGHT_BLUE_STAINED_GLASS_PANE);
         private static final ItemStack paddle = new ItemStack(Material.WOODEN_SHOVEL);
 
-        public static final int windowSize = 27;
-        public static final int itemsToClick = 2;
+        private static final PitVariantHandler pitVariantValues = new PitVariantHandler(STANDARD.class);
+
+        public static final String windowName = pitVariantValues.inventoryName;
+        public static final int windowSize = pitVariantValues.inventorySize;
+        public static final int itemsToClick = pitVariantValues.itemsToClick;
 
         public static ItemStack[] getContents(){
             setItemMetas();
@@ -73,7 +79,7 @@ public abstract class PitVariants {
                 paddleMeta.setDamage(1);
                 clickedItem.setItemMeta(paddleMeta);
 
-                if(pp.getItemsToClick() == 2){
+                if(pp.getItemsToClick() >= 2){
                     player.playSound(player.getLocation(), Sound.BLOCK_GRINDSTONE_USE, SoundCategory.MASTER, 0.5f, 1f);
                 }
 
@@ -90,20 +96,24 @@ public abstract class PitVariants {
         }
     }
 
+    @PitVariant(inventoryName = "Cookie", itemsToClick = 10, inventorySize = 27)
     public static class COOKIE {
         private static final ItemStack background = new ItemStack(Material.LIGHT_BLUE_STAINED_GLASS_PANE);
         private static final ItemStack cookie = new ItemStack(Material.COOKIE);
 
-        public static final int windowSize = 27;
-        public static final int toClick = 10;
+        private static final PitVariantHandler pitVariantValues = new PitVariantHandler(COOKIE.class);
+
+        public static final String windowName = pitVariantValues.inventoryName;
+        public static final int windowSize = pitVariantValues.inventorySize;
+        public static final int itemsToClick = pitVariantValues.itemsToClick;
 
         public static ItemStack[] getContents(){
             setItemMetas();
             List<ItemStack> items = new ArrayList<>();
-            for (int i = 0; i < windowSize - toClick; i++) {
+            for (int i = 0; i < windowSize - itemsToClick; i++) {
                 items.add(background);
             }
-            for (int i = 0; i < toClick; i++) {
+            for (int i = 0; i < itemsToClick; i++) {
                 try {
                     int rand = new Random().nextInt(0, 27);
                     items.add(rand, cookie);
@@ -152,13 +162,17 @@ public abstract class PitVariants {
         }
     }
 
+    @PitVariant(inventoryName = "Mariana", itemsToClick = 8, inventorySize = 27)
     public static class MARIANA {
         private static final ItemStack background = new ItemStack(Material.RED_STAINED_GLASS_PANE);
         private static final ItemStack marianaHead = new ItemStack(Material.PLAYER_HEAD, 9);
         private static final ItemStack fakeHead = new ItemStack(Material.PLAYER_HEAD, 9);
 
-        public static final Integer windowSize = 27;
-        public static final Integer toClick = 8;
+        private static final PitVariantHandler pitVariantValues = new PitVariantHandler(MARIANA.class);
+
+        public static final String windowName = pitVariantValues.inventoryName;
+        public static final int windowSize = pitVariantValues.inventorySize;
+        public static final int itemsToClick = pitVariantValues.itemsToClick;
 
         public static ItemStack[] getContents(){
             setItemMetas();
@@ -168,7 +182,7 @@ public abstract class PitVariants {
                 items.add(background);
             }
 
-            for (int i = 0; i < toClick - 1; i++) {
+            for (int i = 0; i < itemsToClick - 1; i++) {
                 int rand = new Random().nextInt(0, windowSize);
                 if(usedSlots.contains(rand)) {
                     i--;
@@ -233,12 +247,16 @@ public abstract class PitVariants {
         }
     }
 
+    @PitVariant(inventoryName = "OnFishe", itemsToClick = 10, inventorySize = 54)
     public static class ONFISHE {
         private static final ItemStack background = new ItemStack(Material.LIGHT_BLUE_STAINED_GLASS_PANE);
         private static final ItemStack onFishe = new ItemStack(Material.PUFFERFISH_BUCKET);
 
-        public static final Integer windowSize = 54;
-        public static final Integer toClick = 10;
+        private static final PitVariantHandler pitVariantValues = new PitVariantHandler(ONFISHE.class);
+
+        public static final String windowName = pitVariantValues.inventoryName;
+        public static final int windowSize = pitVariantValues.inventorySize;
+        public static final int itemsToClick = pitVariantValues.itemsToClick;
 
         public static ItemStack[] getContents(){
             setItemMetas();

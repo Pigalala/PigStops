@@ -48,13 +48,13 @@ public class PitManager {
                 return new Integer[]{PitVariants.STANDARD.windowSize, PitVariants.STANDARD.itemsToClick};
             }
             case COOKIE -> {
-                return new Integer[]{PitVariants.COOKIE.windowSize, PitVariants.COOKIE.toClick};
+                return new Integer[]{PitVariants.COOKIE.windowSize, PitVariants.COOKIE.itemsToClick};
             }
             case MARIANA -> {
-                return new Integer[]{PitVariants.MARIANA.windowSize, PitVariants.MARIANA.toClick};
+                return new Integer[]{PitVariants.MARIANA.windowSize, PitVariants.MARIANA.itemsToClick};
             }
             case ONFISHE -> {
-                return new Integer[]{PitVariants.ONFISHE.windowSize, PitVariants.ONFISHE.toClick};
+                return new Integer[]{PitVariants.ONFISHE.windowSize, PitVariants.ONFISHE.itemsToClick};
             }
         }
         return null;
