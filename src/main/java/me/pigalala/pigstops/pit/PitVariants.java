@@ -23,7 +23,7 @@ import java.util.Random;
 
 public abstract class PitVariants {
 
-    @PitVariant(inventoryName = "Standard", itemsToClick = 2, inventorySize = 27)
+    @PitVariant(itemsToClick = 2, inventorySize = 27)
     public static class STANDARD {
         private static final ItemStack background = new ItemStack(Material.LIGHT_BLUE_STAINED_GLASS_PANE);
         private static final ItemStack paddle = new ItemStack(Material.WOODEN_SHOVEL);
@@ -96,7 +96,7 @@ public abstract class PitVariants {
         }
     }
 
-    @PitVariant(inventoryName = "Cookie", itemsToClick = 10, inventorySize = 27)
+    @PitVariant(itemsToClick = 10, inventorySize = 27)
     public static class COOKIE {
         private static final ItemStack background = new ItemStack(Material.LIGHT_BLUE_STAINED_GLASS_PANE);
         private static final ItemStack cookie = new ItemStack(Material.COOKIE);
@@ -162,7 +162,7 @@ public abstract class PitVariants {
         }
     }
 
-    @PitVariant(inventoryName = "Mariana", itemsToClick = 8, inventorySize = 27)
+    @PitVariant(itemsToClick = 8, inventorySize = 27)
     public static class MARIANA {
         private static final ItemStack background = new ItemStack(Material.RED_STAINED_GLASS_PANE);
         private static final ItemStack marianaHead = new ItemStack(Material.PLAYER_HEAD, 9);
@@ -247,7 +247,7 @@ public abstract class PitVariants {
         }
     }
 
-    @PitVariant(inventoryName = "OnFishe", itemsToClick = 10, inventorySize = 54)
+    @PitVariant(itemsToClick = 10, inventorySize = 54)
     public static class ONFISHE {
         private static final ItemStack background = new ItemStack(Material.LIGHT_BLUE_STAINED_GLASS_PANE);
         private static final ItemStack onFishe = new ItemStack(Material.PUFFERFISH_BUCKET);

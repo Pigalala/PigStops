@@ -8,7 +8,6 @@ import java.lang.annotation.Target;
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface PitVariant {
-    String inventoryName();
     int itemsToClick();
     int inventorySize();
 }
