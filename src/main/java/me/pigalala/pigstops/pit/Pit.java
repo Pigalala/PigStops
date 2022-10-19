@@ -25,9 +25,12 @@ import static me.makkuusen.timing.system.ApiUtilities.formatAsTime;
 public class Pit {
 
     private final PitPlayer pp;
+    public boolean hasStarted;
 
     public Pit(PitPlayer pp, PitType pitType) {
         this.pp = pp;
+        this.hasStarted = false;
+
         PitGame pitGame = PigStops.getPlugin().getDefaultPitGame();
         createWindow(pitType, PitManager.chooseContents(pitGame), pitGame.name(), PitManager.chooseSizes(pitGame)[0], PitManager.chooseSizes(pitGame)[1]);
     }
@@ -37,19 +40,20 @@ public class Pit {
     }
 
     public void reset(){
-        pp.setHasStarted(false);
+        hasStarted = false;
     }
 
     /** Creates a pigstop inventory and displays it to the player. Also includes all setup needed **/
     public void createWindow(PitType pitType, ItemStack[] contents, String windowName, Integer windowSize, Integer toClick){
-        if(pp.hasStarted()) {
+        if(hasStarted) {
             return;
         }
 
         Inventory pitWindow = Bukkit.createInventory(pp.getPlayer().getPlayer(), windowSize, Component.text(PitManager.pitNameBase + windowName));
 
+        hasStarted = true;
+
         pp.setPitWindow(pitWindow);
-        pp.setHasStarted(true);
         pp.setStartingTime(Instant.now());
         pp.setPitType(pitType);
         pp.setItemsToClick(toClick);
@@ -60,6 +64,7 @@ public class Pit {
 
     /** Finishes a player's PigStop. Includes closing inventory, displaying finish time, passing pits and resetting player for next time **/
     public void finishPit(){
+        hasStarted = false;
         pp.reset();
         pp.getPlayer().closeInventory();
 

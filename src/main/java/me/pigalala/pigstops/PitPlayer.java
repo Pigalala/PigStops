@@ -12,7 +12,6 @@ public class PitPlayer {
 
     private Instant startingTime;
     private Integer itemsToClick;
-    private Boolean hasStarted = false;
     private PitType pitType;
     private Inventory pitWindow;
     private Pit pit;
@@ -25,7 +24,6 @@ public class PitPlayer {
     public Player getPlayer() {return player;}
 
     public void reset() {
-        this.hasStarted = false;
         this.pitWindow = null;
     }
 
@@ -48,13 +46,6 @@ public class PitPlayer {
     }
     public Inventory getPitWindow() {
         return pitWindow;
-    }
-
-    public void setHasStarted(Boolean t) {
-        this.hasStarted = t;
-    }
-    public Boolean hasStarted() {
-        return hasStarted;
     }
 
     public void setPitType(PitType pitType) {
