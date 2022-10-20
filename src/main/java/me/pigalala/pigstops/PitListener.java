@@ -53,6 +53,8 @@ public class PitListener implements Listener {
         var driver = EventDatabase.getDriverFromRunningHeat(p.getUniqueId());
         if(!driver.isPresent()) return;
 
+        if(PitManager.getPitPlayer((Player) e.getVehicle().getPassengers().get(0)).getAttachedPit() != null) return;
+
         if(driver.get().getHeat().isActive()) {
             if (!driver.get().getCurrentLap().isPitted()) {
                 PitManager.getPitPlayer(p).attachPit(new Pit(PitManager.getPitPlayer(p), PitType.REAL));

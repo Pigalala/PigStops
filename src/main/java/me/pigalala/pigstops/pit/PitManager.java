@@ -12,7 +12,7 @@ public class PitManager {
     private static final HashMap<Player, PitPlayer> pitPlayers = new HashMap<>();
 
     /** Base name for a pigstop **/
-    public static final String pitNameBase = "§dPigStop - ";
+    public static final String pitNameBase = "§dPigStop §r- ";
 
     private static PitGame defaultPitGame;
 
@@ -34,6 +34,9 @@ public class PitManager {
             case ONFISHE -> {
                 return PitVariants.ONFISHE.getContents();
             }
+            case GREASY -> {
+                return PitVariants.GREASY.getContents();
+            }
         }
         return null;
     }
@@ -54,6 +57,9 @@ public class PitManager {
             case ONFISHE -> {
                 return new Integer[]{PitVariants.ONFISHE.pitVariantValues.inventorySize, PitVariants.ONFISHE.pitVariantValues.itemsToClick};
             }
+            case GREASY -> {
+                return new Integer[]{PitVariants.GREASY.pitVariantValues.inventorySize, PitVariants.GREASY.pitVariantValues.itemsToClick};
+            }
         }
         return null;
     }
@@ -65,6 +71,7 @@ public class PitManager {
             case COOKIE -> PitVariants.COOKIE.onItemClick(pp, clickedItem, s);
             case MARIANA -> PitVariants.MARIANA.onItemClick(pp, clickedItem, s);
             case ONFISHE -> PitVariants.ONFISHE.onItemClick(pp, clickedItem, s);
+            case GREASY -> PitVariants.GREASY.onItemClick(pp, clickedItem, s);
         }
     }
 

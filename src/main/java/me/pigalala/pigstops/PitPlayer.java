@@ -25,6 +25,7 @@ public class PitPlayer {
 
     public void reset() {
         this.pitWindow = null;
+        this.pit = null;
     }
 
     public void setItemsToClick(Integer itemsToClick) {

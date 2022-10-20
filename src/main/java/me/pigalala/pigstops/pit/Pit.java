@@ -32,7 +32,7 @@ public class Pit {
         this.hasStarted = false;
 
         PitGame pitGame = PigStops.getPlugin().getDefaultPitGame();
-        createWindow(pitType, PitManager.chooseContents(pitGame), pitGame.name(), PitManager.chooseSizes(pitGame)[0], PitManager.chooseSizes(pitGame)[1]);
+        createWindow(pitType, PitManager.chooseContents(pitGame), pitGame.getName(), PitManager.chooseSizes(pitGame)[0], PitManager.chooseSizes(pitGame)[1]);
     }
 
     public Boolean isFinished(){
