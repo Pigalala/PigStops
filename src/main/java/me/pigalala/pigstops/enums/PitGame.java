@@ -5,7 +5,7 @@ public enum PitGame {
     COOKIE("§6Cookie!!"),
     MARIANA("§dMariana"),
     ONFISHE("§bOnFishe"),
-    GREASY("§cGreasy Gamers lmao");
+    GREASY("§cGreasy Fried Chicken");
 
     private final String name;
 

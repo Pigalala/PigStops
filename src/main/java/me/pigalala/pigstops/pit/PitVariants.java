@@ -298,23 +298,10 @@ public abstract class PitVariants {
         }
     }
 
-    @PitVariant(itemsToClick = 11, inventorySize = 54)
+    @PitVariant(itemsToClick = 14, inventorySize = 54)
     public static class GREASY {
         private static final ItemStack background = new ItemStack(Material.LIGHT_BLUE_STAINED_GLASS_PANE);
-
-        private static final ItemStack comfyHead = new ItemStack(Material.PLAYER_HEAD);
-        private static final ItemStack lapisHead = new ItemStack(Material.PLAYER_HEAD);
-        private static final ItemStack bluHead = new ItemStack(Material.PLAYER_HEAD);
-        private static final ItemStack evilHead = new ItemStack(Material.PLAYER_HEAD);
-        private static final ItemStack zeqroHead = new ItemStack(Material.PLAYER_HEAD);
-        private static final ItemStack huskerHead = new ItemStack(Material.PLAYER_HEAD);
-        private static final ItemStack jmodyHead = new ItemStack(Material.PLAYER_HEAD);
-        private static final ItemStack jollyHead = new ItemStack(Material.PLAYER_HEAD);
-        private static final ItemStack rocketHead = new ItemStack(Material.PLAYER_HEAD);
-        private static final ItemStack samHead = new ItemStack(Material.PLAYER_HEAD);
-        private static final ItemStack laserHead = new ItemStack(Material.PLAYER_HEAD);
-
-        private static final ItemStack[] heads = {comfyHead, lapisHead, bluHead, evilHead, zeqroHead, huskerHead, jmodyHead, jollyHead, rocketHead, samHead, laserHead};
+        private static final ItemStack chicken = new ItemStack(Material.COOKED_CHICKEN);
 
         public static final PitVariantHandler pitVariantValues = new PitVariantHandler(GREASY.class);
 
@@ -330,13 +317,13 @@ public abstract class PitVariants {
                 items.add(background);
             }
 
-            for (int i = 0; i < heads.length; i++) {
+            for (int i = 0; i < itemsToClick; i++) {
                 int rand = new Random().nextInt(0, windowSize);
-                if (usedSlots.contains(rand)) {
+                if(usedSlots.contains(rand)) {
                     i--;
                     continue;
                 }
-                items.set(rand, heads[i]);
+                items.set(rand, chicken);
                 usedSlots.add(rand);
             }
 
@@ -349,77 +336,23 @@ public abstract class PitVariants {
             backgroundMeta.setDisplayName(" ");
             background.setItemMeta(backgroundMeta);
 
-            // COMFY HEAD
-            SkullMeta comfyMeta = (SkullMeta) comfyHead.getItemMeta();
-            comfyMeta.setOwningPlayer(Bukkit.getOfflinePlayer("Comfy_Vibes"));
-            e(comfyMeta);
-            comfyHead.setItemMeta(comfyMeta);
-
-            // LAPIS HEAD
-            SkullMeta lapisMeta = (SkullMeta) lapisHead.getItemMeta();
-            lapisMeta.setOwningPlayer(Bukkit.getOfflinePlayer("Lapis_Lettuce"));
-            e(lapisMeta);
-            lapisHead.setItemMeta(lapisMeta);
-
-            // BLU HEAD
-            SkullMeta bluMeta = (SkullMeta) bluHead.getItemMeta();
-            bluMeta.setOwningPlayer(Bukkit.getOfflinePlayer("Bluleader64"));
-            e(bluMeta);
-            bluHead.setItemMeta(bluMeta);
-
-            // EVIL HEAD
-            SkullMeta evilMeta = (SkullMeta) evilHead.getItemMeta();
-            evilMeta.setOwningPlayer(Bukkit.getOfflinePlayer("EvilScientist"));
-            e(evilMeta);
-            evilHead.setItemMeta(evilMeta);
-
-            // ZEQRO HEAD
-            SkullMeta zeqroMeta = (SkullMeta) zeqroHead.getItemMeta();
-            zeqroMeta.setOwningPlayer(Bukkit.getOfflinePlayer("ZeqroTho"));
-            e(zeqroMeta);
-            zeqroHead.setItemMeta(zeqroMeta);
-
-            // HUSKER HEAD
-            SkullMeta huskerMeta = (SkullMeta) huskerHead.getItemMeta();
-            huskerMeta.setOwningPlayer(Bukkit.getOfflinePlayer("Husker247"));
-            e(huskerMeta);
-            huskerHead.setItemMeta(huskerMeta);
-
-            // JMODY HEAD
-            SkullMeta jmodyMeta = (SkullMeta) jmodyHead.getItemMeta();
-            jmodyMeta.setOwningPlayer(Bukkit.getOfflinePlayer("Bluleader64"));
-            e(jmodyMeta);
-            jmodyHead.setItemMeta(jmodyMeta);
-
-            // JOLLY HEAD
-            SkullMeta jollyMeta = (SkullMeta) jollyHead.getItemMeta();
-            jollyMeta.setOwningPlayer(Bukkit.getOfflinePlayer("JollyTheDuck"));
-            e(jollyMeta);
-            jollyHead.setItemMeta(jollyMeta);
-
-            // ROCKET HEAD
-            SkullMeta rocketMeta = (SkullMeta) rocketHead.getItemMeta();
-            rocketMeta.setOwningPlayer(Bukkit.getOfflinePlayer("Rocket_Raze"));
-            e(rocketMeta);
-            rocketHead.setItemMeta(rocketMeta);
-
-            // SAM HEAD
-            SkullMeta samMeta = (SkullMeta) samHead.getItemMeta();
-            samMeta.setOwningPlayer(Bukkit.getOfflinePlayer("SamH3X"));
-            e(samMeta);
-            samHead.setItemMeta(samMeta);
-
-            // LASER HEAD
-            SkullMeta laserMeta = (SkullMeta) laserHead.getItemMeta();
-            laserMeta.setOwningPlayer(Bukkit.getOfflinePlayer("The_Lasersloth"));
-            e(laserMeta);
-            laserHead.setItemMeta(laserMeta);
+            // CHICKEN
+            ItemMeta chickenStartMeta = chicken.getItemMeta();
+            chickenStartMeta.setDisplayName("§cA Greasy Chicken");
+            chicken.setItemMeta(chickenStartMeta);
         }
 
         public static void onItemClick(PitPlayer pp, ItemStack clickedItem, Integer slot){
             Player player = pp.getPlayer();
 
             if(clickedItem.getType() != background.getType()) {
+                if(clickedItem.getType().equals(Material.FIRE)) {
+                    // clicked fire
+                } else if(clickedItem.getType().equals(Material.LAVA_BUCKET)) {
+
+                } else {
+                    // chicken
+                }
                 pp.setItemsToClick(pp.getItemsToClick() - 1);
                 pp.getPitWindow().setItem(slot, new ItemStack(Material.AIR));
                 player.playSound(player.getLocation(), Sound.BLOCK_HONEY_BLOCK_PLACE, SoundCategory.MASTER, 1f, 1f);
@@ -430,10 +363,6 @@ public abstract class PitVariants {
             } else {
                 pp.getAttachedPit().shuffleItems(true);
             }
-        }
-
-        private static void e(SkullMeta meta) {
-            meta.setDisplayName("§bGreasy");
         }
     }
 }
