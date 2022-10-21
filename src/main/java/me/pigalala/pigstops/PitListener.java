@@ -46,8 +46,8 @@ public class PitListener implements Listener {
         if (!(e.getVehicle() instanceof Boat b)) return;
         if (e.getVehicle().getPassengers().isEmpty()) return;
         if (e.getVehicle().getPassengers().size() == 0) return;
+        if (!(e.getVehicle().getPassengers().get(0) instanceof Player p)) return;
 
-        Player p = (Player) b.getPassengers().get(0);
         if (p.getLocation().add(new Vector(0, -1, 0)).getBlock().getType() != PigStops.getPlugin().getPitBlock()) return;
 
         var driver = EventDatabase.getDriverFromRunningHeat(p.getUniqueId());
