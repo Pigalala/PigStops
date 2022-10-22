@@ -11,8 +11,8 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
-import org.bukkit.event.vehicle.VehicleMoveEvent;
 import org.bukkit.util.Vector;
 
 public class PitListener implements Listener {
@@ -42,18 +42,16 @@ public class PitListener implements Listener {
     }
 
     @EventHandler
-    public void onMove(VehicleMoveEvent e) {
-        if (!(e.getVehicle() instanceof Boat b)) return;
-        if (e.getVehicle().getPassengers().isEmpty()) return;
-        if (e.getVehicle().getPassengers().size() == 0) return;
-        if (!(e.getVehicle().getPassengers().get(0) instanceof Player p)) return;
-
-        if (p.getLocation().add(new Vector(0, -1, 0)).getBlock().getType() != PigStops.getPlugin().getPitBlock()) return;
+    public void onMove(PlayerMoveEvent e) {
+        Player p = e.getPlayer();
+        if(!(p.getVehicle() instanceof Boat)) return;
 
         var driver = EventDatabase.getDriverFromRunningHeat(p.getUniqueId());
         if(!driver.isPresent()) return;
 
-        if(PitManager.getPitPlayer((Player) e.getVehicle().getPassengers().get(0)).getAttachedPit() != null) return;
+        if (!p.getLocation().add(new Vector(0, -2, 0)).getBlock().getType().equals(PigStops.getPlugin().getPitBlock())) return;
+
+        if(PitManager.getPitPlayer(p).getAttachedPit() != null) return;
 
         if(driver.get().getHeat().isActive()) {
             if (!driver.get().getCurrentLap().isPitted()) {
