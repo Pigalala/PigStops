@@ -49,14 +49,14 @@ public class PitListener implements Listener {
         var driver = EventDatabase.getDriverFromRunningHeat(p.getUniqueId());
         if(!driver.isPresent()) return;
 
-        if (!p.getLocation().add(new Vector(0, -2, 0)).getBlock().getType().equals(PigStops.getPlugin().getPitBlock())) return;
+        if(!driver.get().getHeat().isActive()) return;
+
+        if(!p.getLocation().add(new Vector(0, -2, 0)).getBlock().getType().equals(PigStops.getPlugin().getPitBlock())) return;
 
         if(PitManager.getPitPlayer(p).getAttachedPit() != null) return;
 
-        if(driver.get().getHeat().isActive()) {
-            if (!driver.get().getCurrentLap().isPitted()) {
-                PitManager.getPitPlayer(p).attachPit(new Pit(PitManager.getPitPlayer(p), PitType.REAL));
-            }
+        if (!driver.get().getCurrentLap().isPitted()) {
+            PitManager.getPitPlayer(p).attachPit(new Pit(PitManager.getPitPlayer(p), PitType.REAL));
         }
     }
 
@@ -64,7 +64,7 @@ public class PitListener implements Listener {
     public void onInvClose(InventoryCloseEvent e){
         if(e.getReason().equals(InventoryCloseEvent.Reason.OPEN_NEW)) return;
         PitPlayer pp = PitManager.getPitPlayer((Player) e.getPlayer());
-        if (pp.getAttachedPit() == null) return;
-        pp.getAttachedPit().reset();
+        if(pp.getAttachedPit() == null) return;
+        pp.reset();
     }
 }
