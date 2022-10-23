@@ -346,13 +346,6 @@ public abstract class PitVariants {
             Player player = pp.getPlayer();
 
             if(clickedItem.getType() != background.getType()) {
-                if(clickedItem.getType().equals(Material.FIRE)) {
-                    // clicked fire
-                } else if(clickedItem.getType().equals(Material.LAVA_BUCKET)) {
-
-                } else {
-                    // chicken
-                }
                 pp.setItemsToClick(pp.getItemsToClick() - 1);
                 pp.getPitWindow().setItem(slot, new ItemStack(Material.AIR));
                 player.playSound(player.getLocation(), Sound.BLOCK_HONEY_BLOCK_PLACE, SoundCategory.MASTER, 1f, 1f);
