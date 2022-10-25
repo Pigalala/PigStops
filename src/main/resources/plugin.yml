@@ -12,5 +12,8 @@ commands:
 
 permissions:
   pigstop.modify:
-    description: "Allows the player to modify the plugin through commands"
+    description: "Allows a player to modify the plugin through commands"
+    default: op
+  pigstop.editor:
+    description: "Allows a player to create a custom pigstop"
     default: op

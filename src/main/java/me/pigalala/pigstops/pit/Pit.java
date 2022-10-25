@@ -8,14 +8,17 @@ import me.makkuusen.timing.system.participant.Driver;
 import me.pigalala.pigstops.PigStops;
 import me.pigalala.pigstops.PitPlayer;
 import me.pigalala.pigstops.Utils;
-import me.pigalala.pigstops.enums.PitGame;
-import me.pigalala.pigstops.enums.PitType;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.*;
@@ -25,46 +28,65 @@ import static me.makkuusen.timing.system.ApiUtilities.formatAsTime;
 public class Pit {
 
     private final PitPlayer pp;
+    private final ItemStack defaultBackground = new ItemStack(Material.LIGHT_BLUE_STAINED_GLASS_PANE);
 
-    public Pit(PitPlayer pp, PitType pitType) {
+    public Pit(PitPlayer pp, PitType pitType) throws IOException {
         this.pp = pp;
+        setItemMetas();
 
-        PitGame pitGame = PigStops.getPlugin().getDefaultPitGame();
-        createWindow(pitType, PitManager.chooseContents(pitGame), pitGame.getName(), PitManager.chooseSizes(pitGame)[0], PitManager.chooseSizes(pitGame)[1]);
+        File pitGame = PigStops.getPlugin().getDefaultPitGame();
+        List<String> lines = Files.readAllLines(pitGame.toPath());
+        List<ItemStack> contentsLines = new ArrayList<>();
+        for(int i = 3; i < 57; i++) {
+            if(i > Integer.parseInt(lines.get(1)) + 2) break;
+            if(lines.get(i).equals("null")) {
+                contentsLines.add(defaultBackground);
+                continue;
+            }
+            contentsLines.add(new ItemStack(Material.valueOf(lines.get(i))));
+        }
+        createWindow(pitType, contentsLines.toArray(new ItemStack[0]), lines.get(0), Integer.parseInt(lines.get(1)), Integer.parseInt(lines.get(2)));
+    }
+
+    private void setItemMetas() {
+        ItemMeta backgroundMeta = defaultBackground.getItemMeta();
+        backgroundMeta.setDisplayName(" ");
+        defaultBackground.setItemMeta(backgroundMeta);
     }
 
     public Boolean isFinished(){
-        return pp.getItemsToClick() <= 0;
+        return pp.itemsToClick <= 0;
     }
 
     /** Creates a pigstop inventory and displays it to the player. Also includes all setup needed **/
     public void createWindow(PitType pitType, ItemStack[] contents, String windowName, Integer windowSize, Integer toClick){
 
-        Inventory pitWindow = Bukkit.createInventory(pp.getPlayer().getPlayer(), windowSize, Component.text(PitManager.pitNameBase + windowName));
+        Inventory pitWindow = Bukkit.createInventory(pp.player.getPlayer(), windowSize, Component.text(PitManager.pitNameBase + windowName));
 
-        pp.setPitWindow(pitWindow);
-        pp.setStartingTime(Instant.now());
-        pp.setPitType(pitType);
-        pp.setItemsToClick(toClick);
+        pp.pitWindow = pitWindow;
+        pp.startingTime = Instant.now();
+        pp.pitType = pitType;
+        pp.itemsToClick = toClick;
 
         pitWindow.setContents(contents);
-        pp.getPlayer().openInventory(pitWindow);
+        shuffleItems(false);
+        pp.player.openInventory(pitWindow);
     }
 
     /** Finishes a player's PigStop. Includes closing inventory, displaying finish time, passing pits and resetting player for next time **/
     public void finishPit(){
         pp.reset();
-        pp.getPlayer().closeInventory();
+        pp.player.closeInventory();
 
-        String finalTime = formatAsTime(Duration.between(pp.getStartingTime(), Instant.now()).toMillis());
+        String finalTime = formatAsTime(Duration.between(pp.startingTime, Instant.now()).toMillis());
 
-        if(pp.getPitType() != PitType.REAL) {
-            pp.getPlayer().sendMessage(Utils.getCustomMessage("&aYou finished in &d%TIME%&a.",
+        if(pp.pitType != PitType.REAL) {
+            pp.player.sendMessage(Utils.getCustomMessage("&aYou finished in &d%TIME%&a.",
                     "%TIME%", finalTime));
             return;
         }
 
-        TPlayer p = Database.getPlayer(pp.getPlayer().getUniqueId());
+        TPlayer p = Database.getPlayer(pp.player.getUniqueId());
         var driver = EventDatabase.getDriverFromRunningHeat(p.getUniqueId());
         if(!driver.isPresent()) return;
         Driver d = driver.get();
@@ -83,12 +105,28 @@ public class Pit {
         }
     }
 
+    public void onItemClicked(ItemStack clickedItem, Integer slot) {
+        if(clickedItem.getType() != defaultBackground.getType()) {
+            pp.itemsToClick -= 1;
+            pp.pitWindow.setItem(slot, new ItemStack(Material.AIR));
+
+            if(!isFinished()) {
+                pp.player.playSound(pp.player, Sound.BLOCK_BAMBOO_HIT, 1, 1);
+            } else {
+                pp.player.playSound(pp.player, Sound.BLOCK_SMITHING_TABLE_USE, 1, 1);
+                finishPit();
+            }
+        } else {
+            shuffleItems(true);
+        }
+    }
+
     public void shuffleItems(Boolean playFailSound){
-        List<ItemStack> shuffled = new ArrayList<>(Arrays.stream(pp.getPitWindow().getContents()).toList());
+        List<ItemStack> shuffled = new ArrayList<>(Arrays.stream(pp.pitWindow.getContents()).toList());
         Collections.shuffle(shuffled);
 
-        pp.getPitWindow().setContents(shuffled.toArray(new ItemStack[0]));
-        pp.getPlayer().openInventory(pp.getPitWindow());
-        if(playFailSound) pp.getPlayer().playSound(pp.getPlayer(), Sound.BLOCK_NOTE_BLOCK_PLING, 0.5f, 0.5f);
+        pp.pitWindow.setContents(shuffled.toArray(new ItemStack[0]));
+        pp.player.openInventory(pp.pitWindow);
+        if(playFailSound) pp.player.playSound(pp.player, Sound.BLOCK_NOTE_BLOCK_PLING, 0.5f, 0.5f);
     }
 }

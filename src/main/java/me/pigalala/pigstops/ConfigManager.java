@@ -1,11 +1,9 @@
 package me.pigalala.pigstops;
 
-import me.makkuusen.timing.system.heat.Heat;
-import me.pigalala.pigstops.enums.PitGame;
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 
+import java.io.File;
 import java.util.logging.Level;
 
 public class ConfigManager {
@@ -13,11 +11,16 @@ public class ConfigManager {
     private static final PigStops plugin = PigStops.getPlugin();
     private static final FileConfiguration config = plugin.getConfig();
 
+    public static final String customPSPath = plugin.getDataFolder().getPath() + File.separator + "customPS";
+
     public static void onStartup() {
         plugin.saveDefaultConfig();
 
         loadPitBlock();
         loadPitGame();
+
+        File dir = new File(customPSPath);
+        if(!dir.exists()) dir.mkdir();
     }
 
     public static void loadPitBlock(){
@@ -31,10 +34,10 @@ public class ConfigManager {
 
     public static void loadPitGame(){
         try {
-            plugin.setDefaultPitGame(PitGame.valueOf(config.getString("pitGame").toUpperCase()));
+            plugin.setDefaultPitGame(new File(config.getString("pitGame")));
         } catch (IllegalArgumentException e) {
             plugin.getLogger().log(Level.WARNING, "'pitGame' in PigStops plugin config does not exist, resetting to default.");
-            plugin.setDefaultPitGame(PitGame.STANDARD);
+            plugin.setDefaultPitGame(new File(customPSPath + File.separator + "standard.pigstop"));
         }
     }
 }

@@ -2,11 +2,14 @@ package me.pigalala.pigstops;
 
 import co.aikar.commands.PaperCommandManager;
 import com.google.common.collect.ImmutableList;
-import me.pigalala.pigstops.enums.PitGame;
-import me.pigalala.pigstops.pit.PitManager;
+import me.pigalala.pigstops.pit.CommandPit;
+import me.pigalala.pigstops.pit.PitListener;
 import org.bukkit.Material;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.util.*;
 
 public final class PigStops extends JavaPlugin {
@@ -31,11 +34,16 @@ public final class PigStops extends JavaPlugin {
 
         commandManager.getCommandCompletions().registerAsyncCompletion("pits", c -> {
             List<String> games = new ArrayList<>();
-            Arrays.stream(PitGame.values()).toList().forEach(e -> {
-                games.add(e.toString());
+            Arrays.stream(new File(ConfigManager.customPSPath).listFiles()).toList().forEach(f -> {
+                try {
+                    games.add(Files.readAllLines(f.toPath()).get(0));
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
             });
-            return ImmutableList.copyOf(games.toArray(new String[0]));
+            return games;
         });
+
         commandManager.getCommandCompletions().registerAsyncCompletion("blocks", c-> {
             List<String> blocks = new ArrayList<>();
             Arrays.stream(Material.values()).toList().forEach(e -> {
@@ -49,15 +57,14 @@ public final class PigStops extends JavaPlugin {
 
     public static PigStops getPlugin() {return plugin;}
 
-    public void setDefaultPitGame(PitGame pit) {
-        getConfig().set("pitGame", pit.name());
+    public void setDefaultPitGame(File game) {
+        getConfig().set("pitGame", game.getPath());
         saveConfig();
         reloadConfig();
-        PitManager.updatePitGame(getDefaultPitGame());
     }
 
-    public PitGame getDefaultPitGame() {
-        return PitGame.valueOf(getConfig().getString("pitGame"));
+    public File getDefaultPitGame() {
+        return new File(getConfig().getString("pitGame"));
     }
 
     public void setPitBlock(Material block) {
