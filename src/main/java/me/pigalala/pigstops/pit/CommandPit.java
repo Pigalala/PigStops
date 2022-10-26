@@ -4,9 +4,9 @@ import co.aikar.commands.BaseCommand;
 import co.aikar.commands.annotation.*;
 import me.pigalala.pigstops.ConfigManager;
 import me.pigalala.pigstops.PigStops;
+import me.pigalala.pigstops.Utils;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
@@ -78,22 +78,8 @@ public class CommandPit extends BaseCommand {
         if(isIllegalName(player, name)) return;
         File f = new File(ConfigManager.customPSPath + File.separator + name + ".pigstop");
 
-        /*
-        name
-        invsize
-        itemstoclick
-        contents (54 lines)
-         */
         try {
-            f.createNewFile();
-            FileWriter writer = new FileWriter(f);
-            String b = ChatColor.translateAlternateColorCodes('&', name) + "\n" +
-                    iSize + "\n" +
-                    1 + "\n" +
-                    ("null\n").repeat(54);
-
-            writer.write(b);
-            writer.close();
+            Utils.createNewPitFile(f.getPath(), name, iSize);
         } catch (IOException e) {
             player.sendMessage("§cAn error occurred when running this command");
             e.printStackTrace();
@@ -226,7 +212,6 @@ public class CommandPit extends BaseCommand {
 
         player.sendMessage("§aSuccessfully changed name to " + newName);
     }
-
 
     private static boolean isIllegalName(Player player, String name) {
         final int maxNameLength = 15;

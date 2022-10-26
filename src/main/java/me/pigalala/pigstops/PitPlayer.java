@@ -1,6 +1,7 @@
 package me.pigalala.pigstops;
 
 import me.pigalala.pigstops.pit.*;
+import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 
@@ -24,5 +25,15 @@ public class PitPlayer {
     public void reset() {
         pitWindow = null;
         pit = null;
+    }
+
+    public void playSound(Sound sound, Float... volumepitch) {
+        float vol = 1f, pitch = 1f;
+        if(volumepitch.length == 2) {
+            vol = volumepitch[0];
+            pitch = volumepitch[1];
+        }
+
+        player.playSound(player, sound, vol, pitch);
     }
 }

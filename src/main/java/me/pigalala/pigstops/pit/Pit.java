@@ -111,9 +111,9 @@ public class Pit {
             pp.pitWindow.setItem(slot, new ItemStack(Material.AIR));
 
             if(!isFinished()) {
-                pp.player.playSound(pp.player, Sound.BLOCK_BAMBOO_HIT, 1, 1);
+                pp.playSound(Sound.BLOCK_BAMBOO_HIT);
             } else {
-                pp.player.playSound(pp.player, Sound.BLOCK_SMITHING_TABLE_USE, 1, 1);
+                pp.playSound(Sound.BLOCK_SMITHING_TABLE_USE);
                 finishPit();
             }
         } else {
@@ -127,6 +127,6 @@ public class Pit {
 
         pp.pitWindow.setContents(shuffled.toArray(new ItemStack[0]));
         pp.player.openInventory(pp.pitWindow);
-        if(playFailSound) pp.player.playSound(pp.player, Sound.BLOCK_NOTE_BLOCK_PLING, 0.5f, 0.5f);
+        if(playFailSound) pp.playSound(Sound.BLOCK_NOTE_BLOCK_PLING, 0.5f, 0.5f);
     }
 }
