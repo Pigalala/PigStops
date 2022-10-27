@@ -2,8 +2,6 @@ package me.pigalala.pigstops;
 
 import co.aikar.commands.PaperCommandManager;
 import com.google.common.collect.ImmutableList;
-import me.pigalala.pigstops.pit.CommandPit;
-import me.pigalala.pigstops.pit.PitListener;
 import org.bukkit.Material;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -15,8 +13,6 @@ import java.util.*;
 public final class PigStops extends JavaPlugin {
 
     private static PigStops plugin;
-
-    private Material pitBlock;
 
     @Override
     public void onEnable() {
@@ -56,22 +52,4 @@ public final class PigStops extends JavaPlugin {
     }
 
     public static PigStops getPlugin() {return plugin;}
-
-    public void setDefaultPitGame(File game) {
-        getConfig().set("pitGame", game.getPath());
-        saveConfig();
-        reloadConfig();
-    }
-
-    public File getDefaultPitGame() {
-        return new File(getConfig().getString("pitGame"));
-    }
-
-    public void setPitBlock(Material block) {
-        pitBlock = block;
-        getConfig().set("pitBlock", pitBlock.name().toLowerCase());
-        saveConfig();
-        reloadConfig();
-    }
-    public Material getPitBlock() {return pitBlock;}
 }

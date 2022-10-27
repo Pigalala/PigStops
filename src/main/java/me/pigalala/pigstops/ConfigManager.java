@@ -1,5 +1,6 @@
 package me.pigalala.pigstops;
 
+import me.pigalala.pigstops.pit.PitManager;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 
@@ -25,19 +26,19 @@ public class ConfigManager {
 
     public static void loadPitBlock(){
         try {
-            plugin.setPitBlock(Material.valueOf(config.getString("pitBlock").toUpperCase()));
+            PitManager.setPitBlock(Material.valueOf(config.getString("pitBlock").toUpperCase()));
         } catch (IllegalArgumentException e) {
             plugin.getLogger().log(Level.WARNING, "'pitBlock' in PigStops plugin config does not exist, resetting to default.");
-            plugin.setPitBlock(Material.REDSTONE_BLOCK);
+            PitManager.setPitBlock(Material.REDSTONE_BLOCK);
         }
     }
 
     public static void loadPitGame(){
         try {
-            plugin.setDefaultPitGame(new File(config.getString("pitGame")));
+            PitManager.setDefaultPitGame(new File(config.getString("pitGame")));
         } catch (IllegalArgumentException e) {
             plugin.getLogger().log(Level.WARNING, "'pitGame' in PigStops plugin config does not exist, resetting to default.");
-            plugin.setDefaultPitGame(new File(customPSPath + File.separator + "standard.pigstop"));
+            PitManager.setDefaultPitGame(new File(customPSPath + File.separator + "standard.pigstop"));
         }
     }
 }

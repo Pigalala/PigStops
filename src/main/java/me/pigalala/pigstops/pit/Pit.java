@@ -34,7 +34,7 @@ public class Pit {
         this.pp = pp;
         setItemMetas();
 
-        File pitGame = PigStops.getPlugin().getDefaultPitGame();
+        File pitGame = PitManager.getDefaultPitGame();
         List<String> lines = Files.readAllLines(pitGame.toPath());
         List<ItemStack> contentsLines = new ArrayList<>();
         for(int i = 3; i < 57; i++) {

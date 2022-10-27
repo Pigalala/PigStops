@@ -1,10 +1,14 @@
-package me.pigalala.pigstops.pit;
+package me.pigalala.pigstops;
 
 import co.aikar.commands.BaseCommand;
 import co.aikar.commands.annotation.*;
 import me.pigalala.pigstops.ConfigManager;
 import me.pigalala.pigstops.PigStops;
 import me.pigalala.pigstops.Utils;
+import me.pigalala.pigstops.pit.Pit;
+import me.pigalala.pigstops.pit.PitFile;
+import me.pigalala.pigstops.pit.PitManager;
+import me.pigalala.pigstops.pit.PitType;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -17,6 +21,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @CommandAlias("pigstop|pit")
@@ -24,7 +29,7 @@ public class CommandPit extends BaseCommand {
 
     @Default
     public static void practiseDefaultPit(Player player) throws IOException {
-        if(!PigStops.getPlugin().getDefaultPitGame().exists()) {
+        if(!PitManager.getDefaultPitGame().exists()) {
             player.sendMessage("§cThere is no pit game available. Please contact a server admin.");
             return;
         }
@@ -41,7 +46,7 @@ public class CommandPit extends BaseCommand {
             player.sendMessage("§cThat pit game does not exist");
             return;
         }
-        PigStops.getPlugin().setDefaultPitGame(f);
+        PitManager.setDefaultPitGame(f);
         player.sendMessage("§aSet new pit game to " + Files.readAllLines(f.toPath()).get(0));
     }
 
@@ -57,7 +62,7 @@ public class CommandPit extends BaseCommand {
             return;
         }
 
-        PigStops.getPlugin().setPitBlock(block);
+        PitManager.setPitBlock(block);
         player.sendMessage("§aSuccessfully set pit block to " + block.toString().toLowerCase());
     }
 
@@ -76,10 +81,9 @@ public class CommandPit extends BaseCommand {
         }
 
         if(isIllegalName(player, name)) return;
-        File f = new File(ConfigManager.customPSPath + File.separator + name + ".pigstop");
 
         try {
-            Utils.createNewPitFile(f.getPath(), name, iSize);
+            new PitFile(ConfigManager.customPSPath + File.separator + name + ".pigstop", name, iSize);
         } catch (IOException e) {
             player.sendMessage("§cAn error occurred when running this command");
             e.printStackTrace();
@@ -154,16 +158,13 @@ public class CommandPit extends BaseCommand {
 
         try {
             List<String> lines = Files.readAllLines(f.toPath());
-            FileWriter writer = new FileWriter(f);
+            List<String> contents = new ArrayList<>();
 
-            writer.write(lines.get(0) + "\n");
-            writer.write(size + "\n");
-
-            for(int i = 2; i < lines.size(); i++) {
-                writer.write(lines.get(i) + "\n");
+            for (int i = 3; i < lines.size(); i++) {
+                contents.add(lines.get(i));
             }
 
-            writer.close();
+            PitFile.updateContents(f, lines.get(0), String.valueOf(size), lines.get(2), contents);
         } catch (IOException e) {
             player.sendMessage("§cAn error occurred processing this command");
             e.printStackTrace();
@@ -187,23 +188,20 @@ public class CommandPit extends BaseCommand {
 
         if(isIllegalName(player, newName)) return;
 
-        if(PigStops.getPlugin().getDefaultPitGame().equals(f)) isDefault = true;
+        if(PitManager.getDefaultPitGame().equals(f)) isDefault = true;
 
         try {
-            f.renameTo(new File(ConfigManager.customPSPath + File.separator + newName + ".pigstop"));
-            f = new File(ConfigManager.customPSPath + File.separator + newName + ".pigstop");
-            List<String> lines = Files.readAllLines(f.toPath());
-            FileWriter writer = new FileWriter(f);
+            File newFile = PitFile.renameFile(f, newName);
+            List<String> lines = PitFile.readFile(newFile);
+            List<String> contents = new ArrayList<>();
 
-            writer.write(newName + "\n");
-
-            for(int i = 1; i < lines.size(); i++) {
-                writer.write(lines.get(i) + "\n");
+            for (int i = 3; i < lines.size(); i++) {
+                contents.add(lines.get(i));
             }
 
-            writer.close();
+            PitFile.updateContents(newFile, newName, lines.get(1), lines.get(2), contents);
 
-            if(isDefault) PigStops.getPlugin().setDefaultPitGame(f);
+            if(isDefault) PitManager.setDefaultPitGame(newFile);
         } catch (IOException e) {
             player.sendMessage("§cAn error occurred processing this command");
             e.printStackTrace();
