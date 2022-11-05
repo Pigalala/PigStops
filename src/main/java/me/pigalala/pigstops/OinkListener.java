@@ -63,6 +63,7 @@ public class OinkListener implements Listener {
         if(!p.getLocation().add(new Vector(0, -2, 0)).getBlock().getType().equals(PitManager.getPitBlock())) return;
 
         if(PitManager.getPitPlayer(p).pit != null) return;
+        if(driver.get().getCurrentLap() == null) return;
 
         if (!driver.get().getCurrentLap().isPitted()) {
             PitManager.getPitPlayer(p).pit = new Pit(PitManager.getPitPlayer(p), PitType.REAL);
