@@ -1,5 +1,7 @@
 # PigStops Config
 
-# ⬇ Recommended not to touch ⬇
+
+# Recommended not to touch
 pitBlock: redstone_block
 pitGame: null
+version: 1.0

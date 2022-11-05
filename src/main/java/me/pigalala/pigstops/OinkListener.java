@@ -1,13 +1,8 @@
 package me.pigalala.pigstops;
 
 import me.makkuusen.timing.system.event.EventDatabase;
-import me.pigalala.pigstops.ConfigManager;
-import me.pigalala.pigstops.PigStops;
-import me.pigalala.pigstops.PitPlayer;
-import me.pigalala.pigstops.pit.Pit;
-import me.pigalala.pigstops.pit.PitFile;
-import me.pigalala.pigstops.pit.PitManager;
-import me.pigalala.pigstops.pit.PitType;
+import me.pigalala.pigstops.pit.*;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Boat;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -18,19 +13,20 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.util.Vector;
 
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class PitListener implements Listener {
+public class OinkListener implements Listener {
 
-    public PitListener(){
+    public OinkListener(){
         PigStops.getPlugin().getServer().getPluginManager().registerEvents(this, PigStops.getPlugin());
     }
 
@@ -55,7 +51,7 @@ public class PitListener implements Listener {
     }
 
     @EventHandler
-    public void onMove(PlayerMoveEvent e) throws IOException {
+    public void onMove(PlayerMoveEvent e) {
         Player p = e.getPlayer();
         if(!(p.getVehicle() instanceof Boat)) return;
 
@@ -79,7 +75,7 @@ public class PitListener implements Listener {
         if(pp.isEditing) {
             pp.isEditing = false;
             List<ItemStack> contents = Arrays.stream(e.getInventory().getContents()).toList();
-            File f = new File(ConfigManager.customPSPath + File.separator + e.getView().getTitle() + ".pigstop");
+            File f = new File(OinkConfig.customPSPath + File.separator + e.getView().getTitle().replaceAll("§6", "") + ".pigstop");
 
             try {
                 List<String> lines = Files.readAllLines(f.toPath());
@@ -95,19 +91,21 @@ public class PitListener implements Listener {
                 int r = 3;
                 for (ItemStack item: contents) {
                     if(item == null) {
-                        c.add("null\n");
+                        c.add(Utils.defaultContentLine);
                         r++;
                         continue;
                     }
-                    c.add(item.getType() + "\n");
+                    ItemMeta meta = item.getItemMeta();
+                    PitItem h = new PitItem(item.getType().ordinal(), meta.hasEnchants());
+                    c.add(h.toFileLine());
                     r++;
                 }
                 // fill in empty things
                 for (int i = r; i < 57; i++) {
-                    c.add("null\n");
+                    c.add(Utils.defaultContentLine);
                 }
 
-                PitFile.updateContents(f, lines.get(0), lines.get(1), String.valueOf(t), c);
+                Utils.updateContents(f, lines.get(0), lines.get(1), String.valueOf(t), Integer.valueOf(lines.get(3)), c);
             } catch (IOException d) {
                 d.printStackTrace();
                 return;

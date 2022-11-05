@@ -8,6 +8,8 @@ import org.bukkit.entity.Player;
 import java.io.File;
 import java.util.HashMap;
 
+import static me.pigalala.pigstops.PigStops.pitGames;
+
 public abstract class PitManager {
 
     private static final PigStops plugin = PigStops.getPlugin();
@@ -40,14 +42,21 @@ public abstract class PitManager {
     }
 
 
-    public static void setDefaultPitGame(File game) {
+    public static void setDefaultPitGame(PitGame game) {
         plugin.getConfig().set("pitGame", game.getPath());
         plugin.saveConfig();
         plugin.reloadConfig();
     }
+    public static void setDefaultPitGame(File file) {
+        plugin.getConfig().set("pitGame", file.getPath());
+        plugin.saveConfig();
+        plugin.reloadConfig();
+    }
 
-    public static File getDefaultPitGame() {
-        return new File(plugin.getConfig().getString("pitGame"));
+    public static PitGame getDefaultPitGame() {
+        File f = new File(plugin.getConfig().getString("pitGame"));
+
+        return pitGames.get(new PitGame(f).name);
     }
 
 

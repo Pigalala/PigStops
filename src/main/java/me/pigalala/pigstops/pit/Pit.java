@@ -5,7 +5,6 @@ import me.makkuusen.timing.system.TPlayer;
 import me.makkuusen.timing.system.event.EventDatabase;
 import me.makkuusen.timing.system.heat.Heat;
 import me.makkuusen.timing.system.participant.Driver;
-import me.pigalala.pigstops.PigStops;
 import me.pigalala.pigstops.PitPlayer;
 import me.pigalala.pigstops.Utils;
 import net.kyori.adventure.text.Component;
@@ -16,9 +15,6 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.*;
@@ -28,24 +24,24 @@ import static me.makkuusen.timing.system.ApiUtilities.formatAsTime;
 public class Pit {
 
     private final PitPlayer pp;
-    private final ItemStack defaultBackground = new ItemStack(Material.LIGHT_BLUE_STAINED_GLASS_PANE);
+    private final PitGame pitGame = PitManager.getDefaultPitGame();
+    private final ItemStack defaultBackground = new ItemStack(Utils.getMaterialFromI(pitGame.backgroundItem));
 
-    public Pit(PitPlayer pp, PitType pitType) throws IOException {
+    public Pit(PitPlayer pp, PitType pitType) {
         this.pp = pp;
         setItemMetas();
 
-        File pitGame = PitManager.getDefaultPitGame();
-        List<String> lines = Files.readAllLines(pitGame.toPath());
         List<ItemStack> contentsLines = new ArrayList<>();
-        for(int i = 3; i < 57; i++) {
-            if(i > Integer.parseInt(lines.get(1)) + 2) break;
-            if(lines.get(i).equals("null")) {
+        for(PitItem item : pitGame.contents) {
+            if(contentsLines.size() >= pitGame.inventorySize) break;
+            if(item.itemType == Integer.parseInt("000")) {
                 contentsLines.add(defaultBackground);
-                continue;
+            } else {
+                contentsLines.add(item.toItemStack());
             }
-            contentsLines.add(new ItemStack(Material.valueOf(lines.get(i))));
         }
-        createWindow(pitType, contentsLines.toArray(new ItemStack[0]), lines.get(0), Integer.parseInt(lines.get(1)), Integer.parseInt(lines.get(2)));
+
+        createWindow(pitType, contentsLines.toArray(new ItemStack[0]), pitGame.name, pitGame.inventorySize, pitGame.itemsToClick);
     }
 
     private void setItemMetas() {
@@ -58,7 +54,7 @@ public class Pit {
         return pp.itemsToClick <= 0;
     }
 
-    /** Creates a pigstop inventory and displays it to the player. Also includes all setup needed **/
+    /** Creates a pigstop inventory and displays it to the player. **/
     public void createWindow(PitType pitType, ItemStack[] contents, String windowName, Integer windowSize, Integer toClick){
 
         Inventory pitWindow = Bukkit.createInventory(pp.player.getPlayer(), windowSize, Component.text(PitManager.pitNameBase + windowName));
