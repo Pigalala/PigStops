@@ -3,6 +3,8 @@ package me.pigalala.pigstops;
 import me.makkuusen.timing.system.event.EventDatabase;
 import me.pigalala.pigstops.pit.*;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Boat;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -73,46 +75,6 @@ public class OinkListener implements Listener {
     @EventHandler
     public void onInvClose(InventoryCloseEvent e){
         PitPlayer pp = PitManager.getPitPlayer((Player) e.getPlayer());
-        if(pp.isEditing) {
-            pp.isEditing = false;
-            List<ItemStack> contents = Arrays.stream(e.getInventory().getContents()).toList();
-            File f = new File(OinkConfig.customPSPath + File.separator + e.getView().getTitle().replaceAll("§6", "") + ".pigstop");
-
-            try {
-                List<String> lines = Files.readAllLines(f.toPath());
-                List<String> c = new ArrayList<>();
-
-                int t = Integer.parseInt(lines.get(1));
-                for (ItemStack item: contents) {
-                    if(item == null) {
-                        t--;
-                    }
-                }
-
-                int r = 3;
-                for (ItemStack item: contents) {
-                    if(item == null) {
-                        c.add(Utils.defaultContentLine);
-                        r++;
-                        continue;
-                    }
-                    ItemMeta meta = item.getItemMeta();
-                    PitItem h = new PitItem(item.getType().ordinal(), meta.hasEnchants());
-                    c.add(h.toFileLine());
-                    r++;
-                }
-                // fill in empty things
-                for (int i = r; i < 57; i++) {
-                    c.add(Utils.defaultContentLine);
-                }
-
-                Utils.updateContents(f, lines.get(0), lines.get(1), String.valueOf(t), Integer.valueOf(lines.get(3)), c);
-            } catch (IOException d) {
-                d.printStackTrace();
-                return;
-            }
-            return;
-        }
 
         if(e.getReason().equals(InventoryCloseEvent.Reason.OPEN_NEW)) return;
         if(pp.pit == null) return;

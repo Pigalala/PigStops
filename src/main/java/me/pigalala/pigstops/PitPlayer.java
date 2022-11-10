@@ -15,7 +15,7 @@ public class PitPlayer {
     public PitType pitType;
     public Inventory pitWindow;
     public Pit pit;
-    public boolean isEditing = false;
+    public PitEditor editor;
 
     public PitPlayer(Player player){
         this.player = player;
@@ -35,5 +35,9 @@ public class PitPlayer {
         }
 
         player.playSound(player, sound, vol, pitch);
+    }
+
+    public void newEditor(PitGame game) {
+        this.editor = new PitEditor(this, game);
     }
 }

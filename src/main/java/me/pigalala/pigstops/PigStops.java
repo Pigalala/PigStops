@@ -6,19 +6,17 @@ import me.pigalala.pigstops.pit.PitGame;
 import org.bukkit.Material;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
 import java.util.*;
 
 public final class PigStops extends JavaPlugin {
 
     private static PigStops plugin;
-    public static HashMap<String, PitGame> pitGames = new HashMap<>();
+    public static HashMap<String, PitGame> pitGames;
 
     @Override
     public void onEnable() {
         plugin = this;
+        pitGames = new HashMap<>();
 
         new OinkListener();
 
@@ -35,6 +33,7 @@ public final class PigStops extends JavaPlugin {
         commandManager.getCommandCompletions().registerAsyncCompletion("items", c -> {
             List<String> e = new ArrayList<>();
             for(Material v : Material.values()) {
+                if(v == Material.AIR) continue;
                 e.add(v.toString().toLowerCase());
             }
             return e;

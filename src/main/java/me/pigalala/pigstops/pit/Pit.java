@@ -25,22 +25,22 @@ public class Pit {
 
     private final PitPlayer pp;
     private final PitGame pitGame = PitManager.getDefaultPitGame();
-    private final ItemStack defaultBackground = new ItemStack(Utils.getMaterialFromI(pitGame.backgroundItem));
+    private final ItemStack defaultBackground = new ItemStack(pitGame.backgroundItem);
 
     public Pit(PitPlayer pp, PitType pitType) {
         this.pp = pp;
         setItemMetas();
+        pitGame.update();
 
         List<ItemStack> contentsLines = new ArrayList<>();
-        for(PitItem item : pitGame.contents) {
+        for(ItemStack item : pitGame.contents) {
             if(contentsLines.size() >= pitGame.inventorySize) break;
-            if(item.itemType == Integer.parseInt("000")) {
+            if(item.getType().equals(Material.AIR)) {
                 contentsLines.add(defaultBackground);
             } else {
-                contentsLines.add(item.toItemStack());
+                contentsLines.add(item);
             }
         }
-
         createWindow(pitType, contentsLines.toArray(new ItemStack[0]), pitGame.name, pitGame.inventorySize, pitGame.itemsToClick);
     }
 

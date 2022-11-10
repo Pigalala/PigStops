@@ -6,10 +6,10 @@ import me.pigalala.pigstops.pit.*;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 
 import java.io.File;
 import java.io.IOException;
@@ -77,14 +77,7 @@ public class OinkCommand extends BaseCommand {
 
         if(isIllegalName(player, name)) return;
 
-        try {
-            new PitGame(OinkConfig.customPSPath + File.separator + name + ".pigstop", name, iSize);
-        } catch (IOException e) {
-            player.sendMessage("§cAn error occurred when running this command");
-            e.printStackTrace();
-            return;
-        }
-
+        new PitGame(OinkConfig.customPSPath + File.separator + name + ".pigstop", name, iSize);
         player.sendMessage("§aSuccessfully created game: " + name);
     }
 
@@ -109,28 +102,9 @@ public class OinkCommand extends BaseCommand {
     public static void designPit(Player player, String game) {
         if(!pitGames.containsKey(game)) {
             player.sendMessage("§cThis pitgame does not exist");
+            return;
         }
-        PitGame pitGame = pitGames.get(game);
-
-        PitManager.getPitPlayer(player).isEditing = true;
-
-        List<PitItem> contents = pitGame.contents;
-        List<ItemStack> processedContents = new ArrayList<>();
-
-        for(PitItem item : contents) {
-            if(item.itemType == Integer.parseInt("000")) continue;
-
-            ItemStack itemStack = item.toItemStack();
-            ItemMeta e = itemStack.getItemMeta();
-            e.setDisplayName(new ItemStack(Utils.getMaterialFromI(item.itemType)).getItemMeta().getDisplayName());
-            itemStack.setItemMeta(e);
-            processedContents.add(itemStack);
-        }
-
-        Inventory editInventory = Bukkit.createInventory(player, pitGame.inventorySize, Component.text("§6" + pitGame.name));
-        editInventory.setContents(processedContents.toArray(new ItemStack[0]));
-
-        player.openInventory(editInventory);
+        PitManager.getPitPlayer(player).newEditor(pitGames.get(game));
     }
 
     @Subcommand("editor set inventorysize")
@@ -154,19 +128,13 @@ public class OinkCommand extends BaseCommand {
             return;
         }
 
+        YamlConfiguration yamlConfig = YamlConfiguration.loadConfiguration(f);
+        yamlConfig.set("invsize", size);
+
         try {
-            List<String> lines = Files.readAllLines(f.toPath());
-            List<String> contents = new ArrayList<>();
-
-            for (int i = 4; i < lines.size(); i++) {
-                contents.add(lines.get(i));
-            }
-
-            Utils.updateContents(f, lines.get(0), String.valueOf(size), lines.get(2), Integer.valueOf(lines.get(3)), contents);
+            yamlConfig.save(f);
+            pitGames.get(game).update();
         } catch (IOException e) {
-            player.sendMessage("§cAn error occurred processing this command");
-            e.printStackTrace();
-            return;
         }
 
         player.sendMessage("§aSuccessfully change pit inventory size to " + size);
@@ -192,63 +160,16 @@ public class OinkCommand extends BaseCommand {
             return;
         }
 
+        YamlConfiguration yamlConfig = YamlConfiguration.loadConfiguration(f);
+
+        yamlConfig.set("background", new ItemStack(mat));
+
         try {
-            List<String> lines = Files.readAllLines(f.toPath());
-            List<String> contents = new ArrayList<>();
-
-            for (int i = 4; i < lines.size(); i++) {
-                contents.add(lines.get(i));
-            }
-
-            Utils.updateContents(f, lines.get(0), lines.get(1), lines.get(2), mat.ordinal(), contents);
+            yamlConfig.save(f);
+            pitGames.get(game).update();
         } catch (IOException e) {
-            player.sendMessage("§cAn error occurred processing this command");
-            e.printStackTrace();
-            return;
         }
-
         player.sendMessage("§aSuccessfully change background item to " + item);
-    }
-
-    @Subcommand("editor set name")
-    @CommandPermission("pigstop.editor")
-    @CommandCompletion("@pits name")
-    public static void setName(Player player, String game, String newName) {
-        File f = new File(OinkConfig.customPSPath + File.separator + game + ".pigstop");
-        boolean isDefault = false;
-
-        if(!f.exists()) {
-            player.sendMessage("§cThat game does not exist");
-            return;
-        }
-
-        if(isIllegalName(player, newName)) return;
-
-        if(PitManager.getDefaultPitGame().equals(pitGames.get(game))) isDefault = true;
-
-        try {
-            File newFile = Utils.renameFile(f, newName);
-
-            pitGames.get(game).delete();
-            PitGame gamee = new PitGame(newFile);
-
-            List<String> lines = Utils.readFile(newFile);
-            List<String> contents = new ArrayList<>();
-
-            for (int i = 4; i < lines.size(); i++) {
-                contents.add(lines.get(i));
-            }
-
-            Utils.updateContents(newFile, newName, lines.get(1), lines.get(2), Integer.valueOf(lines.get(3)), contents);
-
-            if(isDefault) PitManager.setDefaultPitGame(gamee);
-        } catch (IOException e) {
-            player.sendMessage("§cAn error occurred processing this command");
-            e.printStackTrace();
-            return;
-        }
-
-        player.sendMessage("§aSuccessfully changed name to " + newName);
     }
 
     private static boolean isIllegalName(Player player, String name) {
