@@ -5,6 +5,7 @@ import me.makkuusen.timing.system.TPlayer;
 import me.makkuusen.timing.system.event.EventDatabase;
 import me.makkuusen.timing.system.heat.Heat;
 import me.makkuusen.timing.system.participant.Driver;
+import me.pigalala.pigstops.PigStops;
 import me.pigalala.pigstops.PitPlayer;
 import me.pigalala.pigstops.Utils;
 import net.kyori.adventure.text.Component;
@@ -24,24 +25,27 @@ import static me.makkuusen.timing.system.ApiUtilities.formatAsTime;
 public class Pit {
 
     private final PitPlayer pp;
-    private final PitGame pitGame = PitManager.getDefaultPitGame();
-    private final ItemStack defaultBackground = new ItemStack(pitGame.backgroundItem);
+    private final ItemStack defaultBackground;
 
     public Pit(PitPlayer pp, PitType pitType) {
         this.pp = pp;
+        PitGame pitGame = PigStops.defaultPitGame;
+        defaultBackground = pitGame.backgroundItem;
+
         setItemMetas();
-        pitGame.update();
 
         List<ItemStack> contentsLines = new ArrayList<>();
+        int itc = 0;
         for(ItemStack item : pitGame.contents) {
             if(contentsLines.size() >= pitGame.inventorySize) break;
             if(item.getType().equals(Material.AIR)) {
                 contentsLines.add(defaultBackground);
             } else {
                 contentsLines.add(item);
+                itc++;
             }
         }
-        createWindow(pitType, contentsLines.toArray(new ItemStack[0]), pitGame.name, pitGame.inventorySize, pitGame.itemsToClick);
+        createWindow(pitType, contentsLines.toArray(new ItemStack[0]), pitGame.name, pitGame.inventorySize, itc);
     }
 
     private void setItemMetas() {
@@ -57,7 +61,7 @@ public class Pit {
     /** Creates a pigstop inventory and displays it to the player. **/
     public void createWindow(PitType pitType, ItemStack[] contents, String windowName, Integer windowSize, Integer toClick){
 
-        Inventory pitWindow = Bukkit.createInventory(pp.player.getPlayer(), windowSize, Component.text(PitManager.pitNameBase + windowName));
+        Inventory pitWindow = Bukkit.createInventory(pp.player.getPlayer(), windowSize, Component.text(Utils.pitNameBase + windowName));
 
         pp.pitWindow = pitWindow;
         pp.startingTime = Instant.now();
@@ -119,10 +123,11 @@ public class Pit {
 
     public void shuffleItems(Boolean playFailSound){
         List<ItemStack> shuffled = new ArrayList<>(Arrays.stream(pp.pitWindow.getContents()).toList());
-        Collections.shuffle(shuffled);
+        do {
+            Collections.shuffle(shuffled);
+        } while(shuffled.equals(Arrays.stream(pp.pitWindow.getContents()).toList()));
 
         pp.pitWindow.setContents(shuffled.toArray(new ItemStack[0]));
-        pp.player.openInventory(pp.pitWindow);
         if(playFailSound) pp.playSound(Sound.BLOCK_NOTE_BLOCK_PLING, 0.5f, 0.5f);
     }
 }

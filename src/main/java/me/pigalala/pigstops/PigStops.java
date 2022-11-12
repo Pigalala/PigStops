@@ -4,6 +4,7 @@ import co.aikar.commands.PaperCommandManager;
 import com.google.common.collect.ImmutableList;
 import me.pigalala.pigstops.pit.PitGame;
 import org.bukkit.Material;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.*;
@@ -11,22 +12,23 @@ import java.util.*;
 public final class PigStops extends JavaPlugin {
 
     private static PigStops plugin;
-    public static HashMap<String, PitGame> pitGames;
+    public static final HashMap<Player, PitPlayer> pitPlayers = new HashMap<>();
+    public static final HashMap<String, PitGame> pitGames = new HashMap<>();
+    public static PitGame defaultPitGame;
+
+    public static Material pitBlock;
 
     @Override
     public void onEnable() {
         plugin = this;
-        pitGames = new HashMap<>();
 
-        new OinkListener();
-
-        OinkConfig.onStartup();
         setupCommands();
+        new OinkListener();
+        OinkConfig.onStartup();
     }
 
     private void setupCommands() {
         PaperCommandManager commandManager = new PaperCommandManager(plugin);
-        commandManager.registerCommand(new OinkCommand());
 
         commandManager.getCommandCompletions().registerAsyncCompletion("pits", c -> pitGames.keySet());
 
@@ -39,7 +41,7 @@ public final class PigStops extends JavaPlugin {
             return e;
         });
 
-        commandManager.getCommandCompletions().registerAsyncCompletion("blocks", c-> {
+        commandManager.getCommandCompletions().registerAsyncCompletion("blocks", c -> {
             List<String> blocks = new ArrayList<>();
             Arrays.stream(Material.values()).toList().forEach(e -> {
                 if(!e.isSolid()) return;
@@ -48,6 +50,11 @@ public final class PigStops extends JavaPlugin {
             });
             return ImmutableList.copyOf(blocks.toArray(new String[0]));
         });
+
+        commandManager.getCommandContexts().registerContext(PitGame.class, PitGame.getPitGameContextResolver());
+        commandManager.getCommandContexts().registerContext(Material.class, OinkCommand.getMaterialContextResolver());
+
+        commandManager.registerCommand(new OinkCommand());
     }
 
     public static PigStops getPlugin() {return plugin;}

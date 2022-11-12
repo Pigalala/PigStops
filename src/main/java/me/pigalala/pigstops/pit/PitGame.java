@@ -1,6 +1,10 @@
 package me.pigalala.pigstops.pit;
 
+import co.aikar.commands.BukkitCommandExecutionContext;
+import co.aikar.commands.InvalidCommandArgument;
+import co.aikar.commands.contexts.ContextResolver;
 import me.pigalala.pigstops.Utils;
+import org.bukkit.Material;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.inventory.ItemStack;
 
@@ -9,21 +13,23 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import static me.pigalala.pigstops.PigStops.defaultPitGame;
 import static me.pigalala.pigstops.PigStops.pitGames;
 
 public class PitGame {
 
-    private String path;
+    private File file;
+    private YamlConfiguration pitFile;
 
     public String name;
     public int inventorySize;
-    public int itemsToClick;
     public ItemStack backgroundItem;
     public List<ItemStack> contents = new ArrayList<>();
 
     public PitGame(File f) {
-        path = f.getPath();
-        update();
+        file = f;
+        pitFile = YamlConfiguration.loadConfiguration(file);
+        firstTimeSetup();
         pitGames.put(name, this);
     }
 
@@ -33,31 +39,62 @@ public class PitGame {
     }
 
     public void delete() {
-        if(new File(path).exists()) {
-            new File(path).delete();
-        }
+        if(file.exists()) file.delete();
+        if(defaultPitGame == this) defaultPitGame = null;
         pitGames.remove(name, this);
     }
 
     public String getPath() {
-        return path;
+        return file.getPath();
     }
 
-    public void update() {
-        YamlConfiguration yamlConfig = YamlConfiguration.loadConfiguration(new File(path));
-        name = yamlConfig.getString("name");
-        inventorySize = yamlConfig.getInt("invsize");
-        itemsToClick = yamlConfig.getInt("itc");
-        backgroundItem = yamlConfig.getItemStack("background");
-
-        contents = new ArrayList<>();
+    public void setContents(List<ItemStack> contents) {
+        this.contents = contents;
         for(int i = 0; i < 54; i++) {
-            contents.add(yamlConfig.getItemStack("item" + i));
+            if(contents.get(i).getType().equals(Material.AIR)) {
+                pitFile.set("item" + i, new ItemStack(Material.AIR));
+                continue;
+            }
+            pitFile.set("item" + i, contents.get(i));
         }
+        saveModifications();
+    }
 
+    public void setBackgroundItem(ItemStack backgroundItem) {
+        pitFile.set("background", backgroundItem);
+        saveModifications();
+        this.backgroundItem = backgroundItem;
+    }
+
+    public void setInventorySize(Integer size) {
+        pitFile.set("invsize", size);
+        saveModifications();
+        this.inventorySize = size;
+    }
+
+    private void saveModifications() {
         try {
-            yamlConfig.save(new File(path));
+            pitFile.save(file);
         } catch (IOException e) {
+            e.printStackTrace();
         }
+    }
+
+    private void firstTimeSetup() {
+        this.name = pitFile.getString("name");
+        setInventorySize(pitFile.getInt("invsize"));
+        setBackgroundItem(pitFile.getItemStack("background"));
+
+        for(int i = 0; i < 54; i++) {
+            contents.add(pitFile.getItemStack("item" + i));
+        }
+    }
+
+    public static ContextResolver<PitGame, BukkitCommandExecutionContext> getPitGameContextResolver() {
+        return c -> {
+            PitGame game = pitGames.get(c.popFirstArg());
+            if(game == null) throw new InvalidCommandArgument();
+            return game;
+        };
     }
 }

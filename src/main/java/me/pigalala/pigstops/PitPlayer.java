@@ -19,7 +19,7 @@ public class PitPlayer {
 
     public PitPlayer(Player player){
         this.player = player;
-        PitManager.addPitPlayer(player, this);
+        PigStops.pitPlayers.put(player, this);
     }
 
     public void reset() {

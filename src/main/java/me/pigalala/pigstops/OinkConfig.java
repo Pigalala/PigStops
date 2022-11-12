@@ -1,7 +1,6 @@
 package me.pigalala.pigstops;
 
 import me.pigalala.pigstops.pit.PitGame;
-import me.pigalala.pigstops.pit.PitManager;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 
@@ -9,6 +8,7 @@ import java.io.File;
 import java.util.Arrays;
 import java.util.logging.Level;
 
+import static me.pigalala.pigstops.PigStops.defaultPitGame;
 import static me.pigalala.pigstops.PigStops.pitGames;
 
 public abstract class OinkConfig {
@@ -32,17 +32,18 @@ public abstract class OinkConfig {
 
     public static void loadPitBlock(){
         try {
-            PitManager.setPitBlock(Material.valueOf(config.getString("pitBlock").toUpperCase()));
-
+            Utils.setPitBlock(Material.valueOf(config.getString("pitBlock").toUpperCase()));
         } catch (IllegalArgumentException e) {
             plugin.getLogger().log(Level.WARNING, "'pitBlock' in PigStops plugin config does not exist.");
-            PitManager.setPitBlock(Material.REDSTONE_BLOCK);
+            Utils.setPitBlock(Material.REDSTONE_BLOCK);
         }
     }
 
     public static void loadPitGame(){
         try {
-            PitManager.setDefaultPitGame(new File(config.getString("pitGame")));
+            File fi = new File(config.getString("pitGame"));
+            if(!fi.exists()) throw new NullPointerException();
+            PigStops.defaultPitGame = new PitGame(fi);
 
             Arrays.stream(new File(OinkConfig.customPSPath).listFiles()).toList().forEach(f -> {
                 if(f == null) return;
@@ -52,7 +53,11 @@ public abstract class OinkConfig {
 
         } catch (IllegalArgumentException | NullPointerException e) {
             plugin.getLogger().log(Level.WARNING, "'pitGame' in PigStops plugin config does not exist.");
-            PitManager.setDefaultPitGame(new File(customPSPath + File.separator + "standard.pigstop"));
+
+            plugin.getConfig().set("pitGame", "");
+            plugin.saveConfig();
+            plugin.reloadConfig();
+            defaultPitGame = null;
         }
     }
 

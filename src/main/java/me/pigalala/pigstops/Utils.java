@@ -11,6 +11,8 @@ import java.io.IOException;
 
 public abstract class Utils {
 
+    public static final String pitNameBase = "§dPigStop §r- §d";
+
     public static String getCustomMessage(String message, String... replacements) {
 
         for (int i = 0; i < replacements.length; i += 2) {
@@ -33,13 +35,13 @@ public abstract class Utils {
         try {
             f.createNewFile();
         } catch (IOException e) {
+            e.printStackTrace();
         }
 
         YamlConfiguration yamlConfig = YamlConfiguration.loadConfiguration(f);
 
         yamlConfig.set("name", name);
         yamlConfig.set("invsize", invSize);
-        yamlConfig.set("itc", 1);
         yamlConfig.set("background", new ItemStack(Material.GRAY_STAINED_GLASS_PANE));
 
         for (int i = 0; i < 54; i++) {
@@ -49,6 +51,14 @@ public abstract class Utils {
         try {
             yamlConfig.save(f);
         } catch (IOException e) {
+            e.printStackTrace();
         }
+    }
+
+    public static void setPitBlock(Material block) {
+        PigStops.pitBlock = block;
+        PigStops.getPlugin().getConfig().set("pitBlock", PigStops.pitBlock.name().toLowerCase());
+        PigStops.getPlugin().saveConfig();
+        PigStops.getPlugin().reloadConfig();
     }
 }

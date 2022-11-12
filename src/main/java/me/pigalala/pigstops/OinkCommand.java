@@ -1,47 +1,40 @@
 package me.pigalala.pigstops;
 
 import co.aikar.commands.BaseCommand;
+import co.aikar.commands.BukkitCommandExecutionContext;
+import co.aikar.commands.InvalidCommandArgument;
 import co.aikar.commands.annotation.*;
+import co.aikar.commands.contexts.ContextResolver;
 import me.pigalala.pigstops.pit.*;
-import net.kyori.adventure.text.Component;
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.util.ArrayList;
-import java.util.List;
-
-import static me.pigalala.pigstops.PigStops.pitGames;
+import static me.pigalala.pigstops.PigStops.getPlugin;
 
 @CommandAlias("pigstop|pit")
 public class OinkCommand extends BaseCommand {
 
     @Default
     public static void practiseDefaultPit(Player player) {
-        if(PitManager.getDefaultPitGame() == null) {
+        if(PigStops.defaultPitGame == null) {
             player.sendMessage("§cThere is no pit game available. Please contact a server admin.");
             return;
         }
 
-        PitManager.getPitPlayer(player).pit = new Pit(PitManager.getPitPlayer(player), PitType.FAKE);
+        PigStops.pitPlayers.get(player).pit = new Pit(PigStops.pitPlayers.get(player), PitType.FAKE);
     }
 
     @Subcommand("setgame")
     @CommandCompletion("@pits")
     @CommandPermission("pigstop.admin")
-    public static void setNewGame(Player player, String game) {
-        if(!pitGames.containsKey(game)) {
-            player.sendMessage("§cThis pitgame does not exist");
-            return;
-        }
+    public static void setNewGame(Player player, PitGame game) {
+        getPlugin().getConfig().set("pitGame", game.getPath());
+        getPlugin().saveConfig();
+        getPlugin().reloadConfig();
 
-        PitManager.setDefaultPitGame(pitGames.get(game));
+        PigStops.defaultPitGame = game;
         player.sendMessage("§aSuccessfully updated pitgame");
     }
 
@@ -57,119 +50,71 @@ public class OinkCommand extends BaseCommand {
             return;
         }
 
-        PitManager.setPitBlock(block);
+        Utils.setPitBlock(block);
         player.sendMessage("§aSuccessfully set pit block to " + block.toString().toLowerCase());
     }
 
-    @Subcommand("editor create")
-    @CommandCompletion("name inventorySize")
+    @Subcommand("editor")
     @CommandPermission("pigstop.editor")
-    public static void createPitGame(Player player, String name, @Optional Integer invSize) {
-        int iSize;
+    public class Editor extends BaseCommand {
+        @Subcommand("create")
+        @CommandCompletion("name inventorySize")
+        public static void createPitGame (Player player, String name, @Optional Integer invSize){
+            int iSize;
 
-        if(invSize == null) iSize = 27;
-        else if(invSize % 9 == 0) {
-            iSize = invSize;
-        } else {
-            player.sendMessage("§cInventory Size must be a multiple of 9");
-            return;
+            if (invSize == null) iSize = 27;
+            else if (invSize % 9 == 0) {
+                iSize = invSize;
+            } else {
+                player.sendMessage("§cInventory Size must be a multiple of 9");
+                return;
+            }
+
+            if (isIllegalName(player, name)) return;
+
+            new PitGame(OinkConfig.customPSPath + File.separator + name + ".pigstop", name, iSize);
+            player.sendMessage("§aSuccessfully created game: " + name);
         }
 
-        if(isIllegalName(player, name)) return;
-
-        new PitGame(OinkConfig.customPSPath + File.separator + name + ".pigstop", name, iSize);
-        player.sendMessage("§aSuccessfully created game: " + name);
-    }
-
-    @Subcommand("editor delete")
-    @CommandPermission("pigstop.editor")
-    @CommandCompletion("@pits")
-    public static void deletePit(Player player, String name) {
-        if(!pitGames.containsKey(name)) {
-            player.sendMessage("§cThis pitgame does not exist");
-            return;
+        @Subcommand("delete")
+        @CommandCompletion("@pits")
+        public static void deletePit (Player player, PitGame game){
+            game.delete();
+            player.sendMessage("§aSuccessfully deleted " + game.name);
         }
 
-        PitGame game = pitGames.get(name);
-
-        game.delete();
-        player.sendMessage("§aSuccessfully deleted " + game.name);
-    }
-
-    @Subcommand("editor design")
-    @CommandPermission("pigstop.editor")
-    @CommandCompletion("@pits")
-    public static void designPit(Player player, String game) {
-        if(!pitGames.containsKey(game)) {
-            player.sendMessage("§cThis pitgame does not exist");
-            return;
-        }
-        PitManager.getPitPlayer(player).newEditor(pitGames.get(game));
-    }
-
-    @Subcommand("editor set inventorysize")
-    @CommandPermission("pigstop.editor")
-    @CommandCompletion("@pits 9|18|27|36|45|54")
-    public static void setInventorySize(Player player, String game, Integer size) {
-        File f = new File(OinkConfig.customPSPath + File.separator + game + ".pigstop");
-
-        if(!f.exists()) {
-            player.sendMessage("§cThat game does not exist");
-            return;
+        @Subcommand("design")
+        @CommandCompletion("@pits")
+        public static void designPit (Player player, PitGame game){
+            PigStops.pitPlayers.get(player).newEditor(game);
         }
 
-        if(size > 54) {
-            player.sendMessage("§cInventory size must be lower than 54");
-            return;
+        @Subcommand("set")
+        public class Set extends BaseCommand {
+            @Subcommand("inventorysize")
+            @CommandCompletion("@pits 9|18|27|36|45|54")
+            public static void setInventorySize(Player player, PitGame game, Integer size) {
+                if(size > 54) {
+                    player.sendMessage("§cInventory size must be lower than 54");
+                    return;
+                }
+
+                if(size % 9 != 0) {
+                    player.sendMessage("§cInventory size must be a multiple of 9");
+                    return;
+                }
+
+                game.setInventorySize(size);
+                player.sendMessage("§aSuccessfully change pit inventory size to " + size);
+            }
+
+            @Subcommand("background")
+            @CommandCompletion("@pits @items")
+            public static void setBackgroundItem(Player player, PitGame game, Material itemMat) {
+                game.setBackgroundItem(new ItemStack(itemMat));
+                player.sendMessage("§aSuccessfully change background item to " + itemMat.toString().toLowerCase());
+            }
         }
-
-        if(size % 9 != 0) {
-            player.sendMessage("§cInventory size must be a multiple of 9");
-            return;
-        }
-
-        YamlConfiguration yamlConfig = YamlConfiguration.loadConfiguration(f);
-        yamlConfig.set("invsize", size);
-
-        try {
-            yamlConfig.save(f);
-            pitGames.get(game).update();
-        } catch (IOException e) {
-        }
-
-        player.sendMessage("§aSuccessfully change pit inventory size to " + size);
-    }
-
-    @Subcommand("editor set background")
-    @CommandPermission("pigstop.editor")
-    @CommandCompletion("@pits @items")
-    public static void setBackgroundItem(Player player, String game, String item) {
-        File f = new File(OinkConfig.customPSPath + File.separator + game + ".pigstop");
-
-        if(!f.exists()) {
-            player.sendMessage("§cThat game does not exist");
-            return;
-        }
-
-        Material mat;
-        try {
-            mat = Material.valueOf(item.toUpperCase());
-        } catch (IllegalArgumentException e) {
-            e.printStackTrace();
-            player.sendMessage("§cThat item doesn't exist");
-            return;
-        }
-
-        YamlConfiguration yamlConfig = YamlConfiguration.loadConfiguration(f);
-
-        yamlConfig.set("background", new ItemStack(mat));
-
-        try {
-            yamlConfig.save(f);
-            pitGames.get(game).update();
-        } catch (IOException e) {
-        }
-        player.sendMessage("§aSuccessfully change background item to " + item);
     }
 
     private static boolean isIllegalName(Player player, String name) {
@@ -192,5 +137,15 @@ public class OinkCommand extends BaseCommand {
         }
 
         return false;
+    }
+
+    public static ContextResolver<Material, BukkitCommandExecutionContext> getMaterialContextResolver() {
+        return c -> {
+            try {
+                return Material.valueOf(c.popFirstArg().toUpperCase());
+            } catch (IllegalArgumentException e) {
+                throw new InvalidCommandArgument();
+            }
+        };
     }
 }
