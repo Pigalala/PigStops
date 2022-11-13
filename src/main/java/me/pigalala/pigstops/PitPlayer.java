@@ -3,28 +3,16 @@ package me.pigalala.pigstops;
 import me.pigalala.pigstops.pit.*;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.Inventory;
-
-import java.time.Instant;
 
 public class PitPlayer {
     public final Player player;
 
-    public Instant startingTime;
-    public Integer itemsToClick;
-    public PitType pitType;
-    public Inventory pitWindow;
     public Pit pit;
     public PitEditor editor;
 
     public PitPlayer(Player player){
         this.player = player;
         PigStops.pitPlayers.put(player, this);
-    }
-
-    public void reset() {
-        pitWindow = null;
-        pit = null;
     }
 
     public void playSound(Sound sound, Float... volumepitch) {

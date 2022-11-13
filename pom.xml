@@ -81,15 +81,15 @@
 
     <dependencies>
         <dependency>
-            <groupId>io.papermc.paper</groupId>
-            <artifactId>paper-api</artifactId>
-            <version>1.19.2-R0.1-SNAPSHOT</version>
+            <groupId>com.github.Makkuusen</groupId>
+            <artifactId>TimingSystem</artifactId>
+            <version>master-ed0d2ccc16-1</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>com.github.Makkuusen</groupId>
-            <artifactId>TimingSystem</artifactId>
-            <version>66710cf</version>
+            <groupId>io.papermc.paper</groupId>
+            <artifactId>paper-api</artifactId>
+            <version>1.19.2-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
         <dependency>

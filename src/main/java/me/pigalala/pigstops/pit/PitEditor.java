@@ -6,6 +6,7 @@ import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.Inventory;
@@ -40,11 +41,9 @@ public class PitEditor implements Listener {
 
     @EventHandler
     public void onInvClose(InventoryCloseEvent e) {
-        if(!e.getPlayer().equals(pp.player)) return;
-        if(!PigStops.pitGames.containsKey(e.getView().getTitle().replaceAll("§6", ""))) return;
+        if(!e.getPlayer().equals(pp.player) || !PigStops.pitGames.containsKey(e.getView().getTitle().replaceAll("§6", ""))) return;
 
         List<ItemStack> newContents = new ArrayList<>();
-
         for(ItemStack item : e.getInventory().getContents()) {
             if(item == null) continue;
             newContents.add(item);
@@ -56,5 +55,6 @@ public class PitEditor implements Listener {
 
         pitGame.setContents(newContents);
         pp.editor = null;
+        HandlerList.unregisterAll(this);
     }
 }

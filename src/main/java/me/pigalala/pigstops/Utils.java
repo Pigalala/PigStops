@@ -11,7 +11,7 @@ import java.io.IOException;
 
 public abstract class Utils {
 
-    public static final String pitNameBase = "§dPigStop §r- §d";
+    public static final String pitNameBase = "§dPigStops §r- §d";
 
     public static String getCustomMessage(String message, String... replacements) {
 

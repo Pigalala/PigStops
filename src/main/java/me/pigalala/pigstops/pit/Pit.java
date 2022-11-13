@@ -1,7 +1,7 @@
 package me.pigalala.pigstops.pit;
 
-import me.makkuusen.timing.system.Database;
 import me.makkuusen.timing.system.TPlayer;
+import me.makkuusen.timing.system.api.TimingSystemAPI;
 import me.makkuusen.timing.system.event.EventDatabase;
 import me.makkuusen.timing.system.heat.Heat;
 import me.makkuusen.timing.system.participant.Driver;
@@ -12,6 +12,11 @@ import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.Sound;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.HandlerList;
+import org.bukkit.event.Listener;
+import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -22,17 +27,24 @@ import java.util.*;
 
 import static me.makkuusen.timing.system.ApiUtilities.formatAsTime;
 
-public class Pit {
+public class Pit implements Listener {
 
     private final PitPlayer pp;
     private final ItemStack defaultBackground;
 
+    private int itemsToClick;
+    private Instant startTime;
+    private PitType pitType;
+    private Inventory pitWindow;
+
     public Pit(PitPlayer pp, PitType pitType) {
         this.pp = pp;
+        this.pitType = pitType;
         PitGame pitGame = PigStops.defaultPitGame;
         defaultBackground = pitGame.backgroundItem;
 
         setItemMetas();
+        PigStops.getPlugin().getServer().getPluginManager().registerEvents(this, PigStops.getPlugin());
 
         List<ItemStack> contentsLines = new ArrayList<>();
         int itc = 0;
@@ -45,7 +57,8 @@ public class Pit {
                 itc++;
             }
         }
-        createWindow(pitType, contentsLines.toArray(new ItemStack[0]), pitGame.name, pitGame.inventorySize, itc);
+        this.itemsToClick = itc;
+        createWindow(contentsLines.toArray(new ItemStack[0]), pitGame.name, pitGame.inventorySize);
     }
 
     private void setItemMetas() {
@@ -55,38 +68,34 @@ public class Pit {
     }
 
     public Boolean isFinished(){
-        return pp.itemsToClick <= 0;
+        return itemsToClick <= 0;
     }
 
-    /** Creates a pigstop inventory and displays it to the player. **/
-    public void createWindow(PitType pitType, ItemStack[] contents, String windowName, Integer windowSize, Integer toClick){
+    private void createWindow(ItemStack[] contents, String windowName, Integer windowSize){
 
         Inventory pitWindow = Bukkit.createInventory(pp.player.getPlayer(), windowSize, Component.text(Utils.pitNameBase + windowName));
 
-        pp.pitWindow = pitWindow;
-        pp.startingTime = Instant.now();
-        pp.pitType = pitType;
-        pp.itemsToClick = toClick;
+        this.pitWindow = pitWindow;
+        this.startTime = Instant.now();
 
         pitWindow.setContents(contents);
         shuffleItems(false);
         pp.player.openInventory(pitWindow);
     }
 
-    /** Finishes a player's PigStop. Includes closing inventory, displaying finish time, passing pits and resetting player for next time **/
-    public void finishPit(){
-        pp.reset();
+    public void finishPit() {
+        pp.pit = null;
         pp.player.closeInventory();
 
-        String finalTime = formatAsTime(Duration.between(pp.startingTime, Instant.now()).toMillis());
+        String finalTime = formatAsTime(Duration.between(startTime, Instant.now()).toMillis());
 
-        if(pp.pitType != PitType.REAL) {
+        if(pitType != PitType.REAL) {
             pp.player.sendMessage(Utils.getCustomMessage("&aYou finished in &d%TIME%&a.",
                     "%TIME%", finalTime));
             return;
         }
 
-        TPlayer p = Database.getPlayer(pp.player.getUniqueId());
+        TPlayer p = TimingSystemAPI.getTPlayer(pp.player.getUniqueId());
         var driver = EventDatabase.getDriverFromRunningHeat(p.getUniqueId());
         if(!driver.isPresent()) return;
         Driver d = driver.get();
@@ -103,12 +112,18 @@ public class Pit {
                     "%TIME%", finalTime),
                     heat);
         }
+
+        HandlerList.unregisterAll(this);
     }
 
-    public void onItemClicked(ItemStack clickedItem, Integer slot) {
-        if(clickedItem.getType() != defaultBackground.getType()) {
-            pp.itemsToClick -= 1;
-            pp.pitWindow.setItem(slot, new ItemStack(Material.AIR));
+    @EventHandler
+    public void onItemClicked(InventoryClickEvent e) {
+        if(e.getCurrentItem() == null || e.getWhoClicked() != pp.player || !e.getView().getTitle().startsWith("§dPigStops")) return;
+        e.setCancelled(true);
+
+        if(e.getCurrentItem().getType() != defaultBackground.getType()) {
+            itemsToClick -= 1;
+            pitWindow.setItem(e.getSlot(), new ItemStack(Material.AIR));
 
             if(!isFinished()) {
                 pp.playSound(Sound.BLOCK_BAMBOO_HIT);
@@ -121,13 +136,20 @@ public class Pit {
         }
     }
 
+    @EventHandler
+    public void onInvClose(InventoryCloseEvent e){
+        if(e.getPlayer() != pp.player || e.getInventory() != pitWindow) return;
+        pp.pit = null;
+        HandlerList.unregisterAll(this);
+    }
+
     public void shuffleItems(Boolean playFailSound){
-        List<ItemStack> shuffled = new ArrayList<>(Arrays.stream(pp.pitWindow.getContents()).toList());
+        List<ItemStack> shuffled = new ArrayList<>(Arrays.stream(pitWindow.getContents()).toList());
         do {
             Collections.shuffle(shuffled);
-        } while(shuffled.equals(Arrays.stream(pp.pitWindow.getContents()).toList()));
+        } while(shuffled.equals(Arrays.stream(pitWindow.getContents()).toList()));
 
-        pp.pitWindow.setContents(shuffled.toArray(new ItemStack[0]));
+        pitWindow.setContents(shuffled.toArray(new ItemStack[0]));
         if(playFailSound) pp.playSound(Sound.BLOCK_NOTE_BLOCK_PLING, 0.5f, 0.5f);
     }
 }

@@ -30,16 +30,6 @@ public class OinkListener implements Listener {
     }
 
     @EventHandler
-    public void onPitWindowClick(InventoryClickEvent e) {
-        PitPlayer pp = PigStops.pitPlayers.get((Player) e.getWhoClicked());
-        if (e.getView().getTitle().startsWith(Utils.pitNameBase)) {
-            e.setCancelled(true);
-            if(e.getCurrentItem() == null) return;
-            pp.pit.onItemClicked(e.getCurrentItem(), e.getSlot());
-        }
-    }
-
-    @EventHandler
     public void onMove(PlayerMoveEvent e) {
         Player p = e.getPlayer();
         if(!(p.getVehicle() instanceof Boat)) return;
@@ -57,14 +47,5 @@ public class OinkListener implements Listener {
         if (!driver.get().getCurrentLap().isPitted()) {
             PigStops.pitPlayers.get(p).pit = new Pit(PigStops.pitPlayers.get(p), PitType.REAL);
         }
-    }
-
-    @EventHandler
-    public void onInvClose(InventoryCloseEvent e){
-        PitPlayer pp = PigStops.pitPlayers.get((Player) e.getPlayer());
-
-        if(e.getReason().equals(InventoryCloseEvent.Reason.OPEN_NEW)) return;
-        if(pp.pit == null) return;
-        pp.reset();
     }
 }
