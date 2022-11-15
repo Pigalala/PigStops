@@ -23,7 +23,7 @@ public class OinkCommand extends BaseCommand {
             return;
         }
 
-        PigStops.pitPlayers.get(player).pit = new Pit(PigStops.pitPlayers.get(player), PitType.FAKE);
+        PigStops.pitPlayers.get(player).pit = new Pit(PigStops.pitPlayers.get(player), Pit.Type.FAKE);
     }
 
     @Subcommand("setgame")
@@ -52,6 +52,12 @@ public class OinkCommand extends BaseCommand {
 
         Utils.setPitBlock(block);
         player.sendMessage("§aSuccessfully set pit block to " + block.toString().toLowerCase());
+    }
+
+    @Subcommand("debugmode")
+    @CommandCompletion("pigstop.admin")
+    public static void toggleTestMode(Player player) {
+        player.sendMessage("§aDebugMode has been " + (PitPlayer.of(player).toggleDebugMode() ? "enabled" : "disabled"));
     }
 
     @Subcommand("editor")

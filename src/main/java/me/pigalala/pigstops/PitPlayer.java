@@ -4,11 +4,15 @@ import me.pigalala.pigstops.pit.*;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 
+import java.util.List;
+
 public class PitPlayer {
-    public final Player player;
+    private final Player player;
 
     public Pit pit;
     public PitEditor editor;
+
+    private boolean debugMode;
 
     public PitPlayer(Player player){
         this.player = player;
@@ -25,7 +29,37 @@ public class PitPlayer {
         player.playSound(player, sound, vol, pitch);
     }
 
-    public void newEditor(PitGame game) {
+    public void newPit(Pit.Type pitType) {
+        pit = new Pit(this, pitType);
+    }
+
+    public PitEditor newEditor(PitGame game) {
         this.editor = new PitEditor(this, game);
+        return editor;
+    }
+
+    public boolean toggleDebugMode() {
+        debugMode = !debugMode;
+        return debugMode;
+    }
+
+    public boolean isInDebugMode() {
+        return debugMode;
+    }
+
+    public boolean isPitting() {
+        return pit != null;
+    }
+
+    public Player getPlayer() {
+        return player;
+    }
+
+    public static PitPlayer of(Player player) {
+        return PigStops.pitPlayers.get(player);
+    }
+
+    public static List<PitPlayer> getAll() {
+        return (List<PitPlayer>) PigStops.pitPlayers.values();
     }
 }

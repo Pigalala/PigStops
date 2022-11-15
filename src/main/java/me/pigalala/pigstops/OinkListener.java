@@ -1,13 +1,11 @@
 package me.pigalala.pigstops;
 
-import me.makkuusen.timing.system.event.EventDatabase;
+import me.makkuusen.timing.system.api.TimingSystemAPI;
 import me.pigalala.pigstops.pit.*;
+import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Boat;
-import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
@@ -31,21 +29,25 @@ public class OinkListener implements Listener {
 
     @EventHandler
     public void onMove(PlayerMoveEvent e) {
-        Player p = e.getPlayer();
-        if(!(p.getVehicle() instanceof Boat)) return;
+        PitPlayer pp = PitPlayer.of(e.getPlayer());
+        if(!pp.getPlayer().getLocation().add(new Vector(0, -2, 0)).getBlock().getType().equals(PigStops.pitBlock) || pp.isPitting()) return;
 
-        var driver = EventDatabase.getDriverFromRunningHeat(p.getUniqueId());
-        if(!driver.isPresent()) return;
-
-        if(!driver.get().getHeat().isActive()) return;
-
-        if(!p.getLocation().add(new Vector(0, -2, 0)).getBlock().getType().equals(PigStops.pitBlock)) return;
-
-        if(PigStops.pitPlayers.get(p).pit != null) return;
-        if(driver.get().getCurrentLap() == null) return;
-
-        if (!driver.get().getCurrentLap().isPitted()) {
-            PigStops.pitPlayers.get(p).pit = new Pit(PigStops.pitPlayers.get(p), PitType.REAL);
+        if(!(pp.getPlayer().getVehicle() instanceof Boat)) {
+            if(!pp.isInDebugMode()) return;
+            pp.getPlayer().sendActionBar(Component.text("§aYou are standing on a pitblock"));
+            return;
         }
+
+        var driver = TimingSystemAPI.getDriverFromRunningHeat(pp.getPlayer().getUniqueId());
+        if(!driver.isPresent()) {
+            if(pp.isInDebugMode()) {
+                pp.newPit(Pit.Type.FAKE);
+                pp.getPlayer().sendMessage("§aDebugMode has been " + (pp.toggleDebugMode() ? "enabled" : "disabled"));
+            }
+            return;
+        }
+
+        if(!driver.get().getHeat().isActive() || driver.get().getCurrentLap() == null) return;
+        if (!driver.get().getCurrentLap().isPitted()) pp.newPit(Pit.Type.REAL);
     }
 }

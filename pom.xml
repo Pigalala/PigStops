@@ -6,7 +6,7 @@
 
     <groupId>me.pigalala</groupId>
     <artifactId>PigStops</artifactId>
-    <version>2.0.2</version>
+    <version>2.0.3</version>
     <packaging>jar</packaging>
 
     <name>PigStops</name>
@@ -83,7 +83,7 @@
         <dependency>
             <groupId>com.github.Makkuusen</groupId>
             <artifactId>TimingSystem</artifactId>
-            <version>master-ed0d2ccc16-1</version>
+            <version>6e3e0a0</version>
             <scope>provided</scope>
         </dependency>
         <dependency>

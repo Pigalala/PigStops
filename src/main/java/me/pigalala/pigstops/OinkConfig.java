@@ -62,9 +62,6 @@ public abstract class OinkConfig {
     }
 
     private static void updateConfig() {
-        if(!config.isSet("version")) {
-            config.set("version", "2.0.0");
-        }
         if(!config.isSet("pitBlock")) {
             config.set("pitBlock", "");
         }

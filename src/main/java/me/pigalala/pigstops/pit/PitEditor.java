@@ -29,19 +29,19 @@ public class PitEditor implements Listener {
     }
 
     public void open() {
-        Inventory editInventory = Bukkit.createInventory(pp.player, pitGame.inventorySize, Component.text("§6" + pitGame.name));
+        Inventory editInventory = Bukkit.createInventory(pp.getPlayer(), pitGame.inventorySize, Component.text("§6" + pitGame.name));
 
         List<ItemStack> items = new ArrayList<>();
         for(int i = 0; i < pitGame.inventorySize; i++) {
             items.add(pitGame.contents.get(i));
         }
         editInventory.setContents(items.toArray(new ItemStack[0]));
-        pp.player.openInventory(editInventory);
+        pp.getPlayer().openInventory(editInventory);
     }
 
     @EventHandler
     public void onInvClose(InventoryCloseEvent e) {
-        if(!e.getPlayer().equals(pp.player) || !PigStops.pitGames.containsKey(e.getView().getTitle().replaceAll("§6", ""))) return;
+        if(!e.getPlayer().equals(pp.getPlayer()) || !PigStops.pitGames.containsKey(e.getView().getTitle().replaceAll("§6", ""))) return;
 
         List<ItemStack> newContents = new ArrayList<>();
         for(ItemStack item : e.getInventory().getContents()) {
