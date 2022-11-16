@@ -7,11 +7,11 @@ import co.aikar.commands.annotation.*;
 import co.aikar.commands.contexts.ContextResolver;
 import me.pigalala.pigstops.pit.*;
 import org.bukkit.Material;
+import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import java.io.File;
-import static me.pigalala.pigstops.PigStops.getPlugin;
 
 @CommandAlias("pigstop|pit")
 public class OinkCommand extends BaseCommand {
@@ -30,11 +30,7 @@ public class OinkCommand extends BaseCommand {
     @CommandCompletion("@pits")
     @CommandPermission("pigstop.admin")
     public static void setNewGame(Player player, PitGame game) {
-        getPlugin().getConfig().set("pitGame", game.getPath());
-        getPlugin().saveConfig();
-        getPlugin().reloadConfig();
-
-        PigStops.defaultPitGame = game;
+        Utils.setDefaultPitGame(game);
         player.sendMessage("§aSuccessfully updated pitgame");
     }
 
@@ -56,7 +52,7 @@ public class OinkCommand extends BaseCommand {
 
     @Subcommand("debugmode")
     @CommandCompletion("pigstop.admin")
-    public static void toggleTestMode(Player player) {
+    public static void toggleDebugMode(Player player) {
         player.sendMessage("§aDebugMode has been " + (PitPlayer.of(player).toggleDebugMode() ? "enabled" : "disabled"));
     }
 
@@ -97,6 +93,16 @@ public class OinkCommand extends BaseCommand {
 
         @Subcommand("set")
         public class Set extends BaseCommand {
+
+            @Subcommand("name")
+            @CommandCompletion("@pits newname")
+            public static void updatePitName(Player player, PitGame game, String newName) {
+                if(isIllegalName(player, newName)) return;
+
+                game.setName(newName);
+                player.sendMessage("§aPitGame has been updated");
+            }
+
             @Subcommand("inventorysize")
             @CommandCompletion("@pits 9|18|27|36|45|54")
             public static void setInventorySize(Player player, PitGame game, Integer size) {
@@ -149,6 +155,16 @@ public class OinkCommand extends BaseCommand {
         return c -> {
             try {
                 return Material.valueOf(c.popFirstArg().toUpperCase());
+            } catch (IllegalArgumentException e) {
+                throw new InvalidCommandArgument();
+            }
+        };
+    }
+
+    public static ContextResolver<Sound, BukkitCommandExecutionContext> getSoundContextResolver() {
+        return c -> {
+            try {
+                return Sound.valueOf(c.popFirstArg().toUpperCase());
             } catch (IllegalArgumentException e) {
                 throw new InvalidCommandArgument();
             }

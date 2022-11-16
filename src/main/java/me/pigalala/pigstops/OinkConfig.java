@@ -8,7 +8,6 @@ import java.io.File;
 import java.util.Arrays;
 import java.util.logging.Level;
 
-import static me.pigalala.pigstops.PigStops.defaultPitGame;
 import static me.pigalala.pigstops.PigStops.pitGames;
 
 public abstract class OinkConfig {
@@ -30,7 +29,7 @@ public abstract class OinkConfig {
         updateConfig();
     }
 
-    public static void loadPitBlock(){
+    public static void loadPitBlock() {
         try {
             Utils.setPitBlock(Material.valueOf(config.getString("pitBlock").toUpperCase()));
         } catch (IllegalArgumentException e) {
@@ -39,7 +38,7 @@ public abstract class OinkConfig {
         }
     }
 
-    public static void loadPitGame(){
+    public static void loadPitGame() {
         try {
             File fi = new File(config.getString("pitGame"));
             if(!fi.exists()) throw new NullPointerException();
@@ -53,11 +52,7 @@ public abstract class OinkConfig {
 
         } catch (IllegalArgumentException | NullPointerException e) {
             plugin.getLogger().log(Level.WARNING, "'pitGame' in PigStops plugin config does not exist.");
-
-            plugin.getConfig().set("pitGame", "");
-            plugin.saveConfig();
-            plugin.reloadConfig();
-            defaultPitGame = null;
+            Utils.setDefaultPitGame(null);
         }
     }
 

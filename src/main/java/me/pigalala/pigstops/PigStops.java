@@ -4,6 +4,7 @@ import co.aikar.commands.PaperCommandManager;
 import com.google.common.collect.ImmutableList;
 import me.pigalala.pigstops.pit.PitGame;
 import org.bukkit.Material;
+import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -53,6 +54,7 @@ public final class PigStops extends JavaPlugin {
 
         commandManager.getCommandContexts().registerContext(PitGame.class, PitGame.getPitGameContextResolver());
         commandManager.getCommandContexts().registerContext(Material.class, OinkCommand.getMaterialContextResolver());
+        commandManager.getCommandContexts().registerContext(Sound.class, OinkCommand.getSoundContextResolver());
 
         commandManager.registerCommand(new OinkCommand());
     }

@@ -3,6 +3,7 @@ package me.pigalala.pigstops.pit;
 import co.aikar.commands.BukkitCommandExecutionContext;
 import co.aikar.commands.InvalidCommandArgument;
 import co.aikar.commands.contexts.ContextResolver;
+import me.pigalala.pigstops.OinkConfig;
 import me.pigalala.pigstops.Utils;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -70,6 +71,25 @@ public class PitGame {
         pitFile.set("invsize", size);
         saveModifications();
         this.inventorySize = size;
+    }
+
+    public void setName(String newName) {
+        String oldName = this.name;
+        boolean b = defaultPitGame == this;
+        pitFile.set("name", newName);
+
+        file.renameTo(new File(OinkConfig.customPSPath + File.separator + newName + ".pigstop"));
+        new File(OinkConfig.customPSPath + File.separator + oldName + ".pigstop").delete();
+
+        this.file = new File(OinkConfig.customPSPath + File.separator + newName + ".pigstop");
+        this.pitFile = YamlConfiguration.loadConfiguration(file);
+
+        pitGames.remove(oldName);
+        this.name = newName;
+        pitGames.put(newName, this);
+
+        if(b) Utils.setDefaultPitGame(this);
+        saveModifications();
     }
 
     private void saveModifications() {

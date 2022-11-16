@@ -47,7 +47,6 @@ public class OinkListener implements Listener {
             return;
         }
 
-        if(!driver.get().getHeat().isActive() || driver.get().getCurrentLap() == null) return;
-        if (!driver.get().getCurrentLap().isPitted()) pp.newPit(Pit.Type.REAL);
+        if(driver.get().getHeat().isActive() && driver.get().getCurrentLap() != null && !driver.get().getCurrentLap().isPitted()) pp.newPit(Pit.Type.REAL);
     }
 }

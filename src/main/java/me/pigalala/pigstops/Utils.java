@@ -1,6 +1,7 @@
 package me.pigalala.pigstops;
 
 import me.makkuusen.timing.system.heat.Heat;
+import me.pigalala.pigstops.pit.PitGame;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -8,6 +9,8 @@ import org.bukkit.inventory.ItemStack;
 
 import java.io.File;
 import java.io.IOException;
+
+import static me.pigalala.pigstops.PigStops.getPlugin;
 
 public abstract class Utils {
 
@@ -53,6 +56,15 @@ public abstract class Utils {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public static void setDefaultPitGame(PitGame pitGame) {
+        if(pitGame == null) getPlugin().getConfig().set("pitgame", "");
+        else getPlugin().getConfig().set("pitGame", pitGame.getPath());
+
+        getPlugin().saveConfig();
+        getPlugin().reloadConfig();
+        PigStops.defaultPitGame = pitGame;
     }
 
     public static void setPitBlock(Material block) {
