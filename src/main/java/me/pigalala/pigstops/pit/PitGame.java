@@ -11,7 +11,6 @@ import org.bukkit.inventory.ItemStack;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 import static me.pigalala.pigstops.PigStops.defaultPitGame;
@@ -25,7 +24,7 @@ public class PitGame {
     public String name;
     public int inventorySize;
     public ItemStack backgroundItem;
-    public List<ItemStack> contents = new ArrayList<>();
+    public List<ItemStack> contents;
 
     public PitGame(File f) {
         file = f;

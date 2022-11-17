@@ -23,9 +23,9 @@ public final class PigStops extends JavaPlugin {
     public void onEnable() {
         plugin = this;
 
+        OinkConfig.onStartup();
         setupCommands();
         new OinkListener();
-        OinkConfig.onStartup();
     }
 
     private void setupCommands() {

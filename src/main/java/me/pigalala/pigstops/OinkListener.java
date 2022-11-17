@@ -1,6 +1,7 @@
 package me.pigalala.pigstops;
 
-import me.makkuusen.timing.system.api.TimingSystemAPI;
+import me.makkuusen.timing.system.event.EventDatabase;
+import me.makkuusen.timing.system.participant.Driver;
 import me.pigalala.pigstops.pit.*;
 import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Boat;
@@ -10,6 +11,8 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.util.Vector;
+
+import java.util.Optional;
 
 public class OinkListener implements Listener {
 
@@ -38,7 +41,7 @@ public class OinkListener implements Listener {
             return;
         }
 
-        var driver = TimingSystemAPI.getDriverFromRunningHeat(pp.getPlayer().getUniqueId());
+        Optional<Driver> driver = EventDatabase.getDriverFromRunningHeat(pp.getPlayer().getUniqueId());
         if(!driver.isPresent()) {
             if(pp.isInDebugMode()) {
                 pp.newPit(Pit.Type.FAKE);

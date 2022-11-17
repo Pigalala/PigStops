@@ -1,7 +1,8 @@
 package me.pigalala.pigstops.pit;
 
+import me.makkuusen.timing.system.Database;
 import me.makkuusen.timing.system.TPlayer;
-import me.makkuusen.timing.system.api.TimingSystemAPI;
+import me.makkuusen.timing.system.TimingSystem;
 import me.makkuusen.timing.system.event.EventDatabase;
 import me.makkuusen.timing.system.heat.Heat;
 import me.makkuusen.timing.system.participant.Driver;
@@ -105,7 +106,7 @@ public class Pit implements Listener {
             return;
         }
 
-        TPlayer p = TimingSystemAPI.getTPlayer(pp.getPlayer().getUniqueId());
+        TPlayer p = Database.getPlayer(pp.getPlayer().getUniqueId());
         var driver = EventDatabase.getDriverFromRunningHeat(p.getUniqueId());
         if(!driver.isPresent()) return;
         Driver d = driver.get();
@@ -117,9 +118,9 @@ public class Pit implements Listener {
             heat.updatePositions();
 
             Utils.broadcastMessage(Utils.getCustomMessage("%PLAYER% &ahas completed pigstop %PITS% &ain %TIME%&a.",
-                    "%PLAYER%", p.getColorCode() + p.getName(),
-                    "%PITS%", p.getColorCode() + d.getPits(),
-                    "%TIME%", p.getColorCode() + finalTime),
+                    "%PLAYER%", "&d" + p.getName(),
+                    "%PITS%", "&d" + d.getPits(),
+                    "%TIME%", "&d" + finalTime),
                     heat);
         }
     }

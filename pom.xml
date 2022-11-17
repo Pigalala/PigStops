@@ -83,7 +83,7 @@
         <dependency>
             <groupId>com.github.Makkuusen</groupId>
             <artifactId>TimingSystem</artifactId>
-            <version>6e3e0a0</version>
+            <version>66710cf</version>
             <scope>provided</scope>
         </dependency>
         <dependency>

@@ -40,14 +40,12 @@ public abstract class OinkConfig {
 
     public static void loadPitGame() {
         try {
-            File fi = new File(config.getString("pitGame"));
-            if(!fi.exists()) throw new NullPointerException();
-            PigStops.defaultPitGame = new PitGame(fi);
-
             Arrays.stream(new File(OinkConfig.customPSPath).listFiles()).toList().forEach(f -> {
                 if(f == null) return;
                 PitGame pitGame = new PitGame(f);
                 pitGames.put(pitGame.name, pitGame);
+
+                if(f.getPath() == config.getString("pitGame")) PigStops.defaultPitGame = pitGame;
             });
 
         } catch (IllegalArgumentException | NullPointerException e) {
