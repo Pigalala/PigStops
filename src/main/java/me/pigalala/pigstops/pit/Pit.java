@@ -68,6 +68,12 @@ public class Pit implements Listener {
             }
         }
         this.itemsToClick = itc;
+
+        if(itc == 0) {
+            // No items setup
+            return new ItemStack[]{defaultBackground};
+        }
+
         return contentsLines.toArray(new ItemStack[0]);
     }
 
@@ -150,7 +156,7 @@ public class Pit implements Listener {
         end();
     }
 
-    private void shuffleItems(Boolean playFailSound){
+    private void shuffleItems(Boolean playFailSound) {
         List<ItemStack> shuffled = new ArrayList<>(Arrays.stream(pitWindow.getContents()).toList());
         do {
             Collections.shuffle(shuffled);
