@@ -2,6 +2,7 @@ package me.pigalala.pigstops;
 
 import co.aikar.commands.PaperCommandManager;
 import com.google.common.collect.ImmutableList;
+import me.pigalala.pigstops.pit.Modifications;
 import me.pigalala.pigstops.pit.PitGame;
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -52,9 +53,19 @@ public final class PigStops extends JavaPlugin {
             return ImmutableList.copyOf(blocks.toArray(new String[0]));
         });
 
+        commandManager.getCommandCompletions().registerAsyncCompletion("modifiers", c -> {
+            List<String> mods = new ArrayList<>();
+            for(Modifications mod : Arrays.stream(Modifications.values()).toList()) {
+                mods.add(mod.toString().toLowerCase());
+            }
+
+            return mods;
+        });
+
         commandManager.getCommandContexts().registerContext(PitGame.class, PitGame.getPitGameContextResolver());
         commandManager.getCommandContexts().registerContext(Material.class, OinkCommand.getMaterialContextResolver());
         commandManager.getCommandContexts().registerContext(Sound.class, OinkCommand.getSoundContextResolver());
+        commandManager.getCommandContexts().registerContext(Modifications.class, Modifications.getModificationsContextResolver());
 
         commandManager.registerCommand(new OinkCommand());
     }

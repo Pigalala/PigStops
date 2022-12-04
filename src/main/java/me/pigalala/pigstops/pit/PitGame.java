@@ -92,6 +92,33 @@ public class PitGame {
         saveModifications();
     }
 
+    public void setModification(char mod, Modifications modification) {
+        if(mod == '+') {
+            if(hasModification(modification)) return;
+            pitFile.set("modifications", pitFile.getString("modifications").concat(modification.getId()));
+        } else {
+            pitFile.set("modifications", pitFile.getString("modifications").replace(modification.getId(), ""));
+        }
+
+        saveModifications();
+    }
+
+    public boolean hasModification(Modifications modification) {
+        return pitFile.getString("modifications").contains(modification.getId());
+    }
+
+    public String getModifiersIds() {
+        return pitFile.getString("modifications");
+    }
+
+    public void update() {
+        if(!pitFile.isSet("modifications")) {
+            pitFile.set("modifications", "ab");
+        }
+
+        saveModifications();
+    }
+
     private void saveModifications() {
         try {
             pitFile.save(file);

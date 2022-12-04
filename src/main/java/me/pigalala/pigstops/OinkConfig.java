@@ -3,6 +3,7 @@ package me.pigalala.pigstops;
 import me.pigalala.pigstops.pit.PitGame;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;
 import java.util.Arrays;
@@ -47,6 +48,7 @@ public abstract class OinkConfig {
             Arrays.stream(new File(OinkConfig.customPSPath).listFiles()).toList().forEach(f -> {
                 if(f == null) return;
                 PitGame pitGame = new PitGame(f);
+                pitGame.update();
                 pitGames.put(pitGame.name, pitGame);
             });
 
@@ -57,6 +59,9 @@ public abstract class OinkConfig {
     }
 
     private static void updateConfig() {
+        if(!config.isSet("version")) {
+            config.set("version", "2.0.4");
+        }
         if(!config.isSet("pitBlock")) {
             config.set("pitBlock", "");
         }

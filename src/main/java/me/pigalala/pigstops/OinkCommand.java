@@ -126,13 +126,55 @@ public class OinkCommand extends BaseCommand {
                 game.setBackgroundItem(new ItemStack(itemMat));
                 player.sendMessage("§aSuccessfully change background item to " + itemMat.toString().toLowerCase());
             }
+
+            @Subcommand("modifiers")
+            @CommandCompletion("@pits +/- @modifiers")
+            public static void setModifier(Player player, PitGame pitGame, char change, Modifications modification) {
+                if(change == '+' || change == '-') {
+                    pitGame.setModification(change, modification);
+                    player.sendMessage("§aSuccessfully modified " + pitGame.name);
+                    return;
+                }
+
+                player.sendMessage("§cPlease use a + or - to set a modifier");
+            }
+        }
+
+        @Subcommand("info")
+        @CommandPermission("pigstop.editor")
+        public class Info extends BaseCommand {
+
+            @Subcommand("modifiers")
+            @CommandCompletion("@pits")
+            public static void listModifiers(Player player, PitGame pitGame) {
+                StringBuilder message = new StringBuilder("§7---------------\n§aModifiers of §d" + pitGame.name + "§a:\n");
+
+                for(Modifications modification : Modifications.values()) {
+                    message.append("§d").append(modification.toString().toLowerCase()).append(" §a: ").append(pitGame.hasModification(modification) ? "✓" : "§c×").append("\n");
+                }
+
+                player.sendMessage(message.append("§7---------------").toString());
+            }
+
+            @Subcommand("modifiers")
+            @CommandCompletion("@pits")
+            public static void listDebug(Player player, PitGame pitGame) {
+                StringBuilder message = new StringBuilder("§7---------------\n§6Modifiers of §d" + pitGame.name + "§a:\n");
+
+                for(Modifications modification : Modifications.values()) {
+                    message.append("§d").append(modification.toString().toLowerCase()).append(" §7: ").append(pitGame.hasModification(modification) ? "§a✓" : "§c×").append("\n");
+                }
+
+                player.sendMessage(message.append("§7---------------").toString());
+            }
+
         }
     }
 
     private static boolean isIllegalName(Player player, String name) {
         final int maxNameLength = 15;
 
-        if(!name.matches("[a-zA-Z0-9]+")){
+        if(!name.matches("[a-zA-Z0-9]+")) {
             player.sendMessage("§cThat name is not allowed");
             return true;
         }

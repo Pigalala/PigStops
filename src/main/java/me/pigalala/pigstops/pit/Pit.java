@@ -95,7 +95,7 @@ public class Pit implements Listener {
         this.startTime = Instant.now();
 
         pitWindow.setContents(contents);
-        shuffleItems(false);
+        if(pitGame.hasModification(Modifications.RANDOMISE_ON_START)) shuffleItems(false);
         pp.getPlayer().openInventory(pitWindow);
     }
 
@@ -157,12 +157,15 @@ public class Pit implements Listener {
     }
 
     private void shuffleItems(Boolean playFailSound) {
-        List<ItemStack> shuffled = new ArrayList<>(Arrays.stream(pitWindow.getContents()).toList());
-        do {
-            Collections.shuffle(shuffled);
-        } while(shuffled.equals(Arrays.stream(pitWindow.getContents()).toList()));
+        if(pitGame.hasModification(Modifications.RANDOMISE_ON_FAIL)) {
+            List<ItemStack> shuffled = new ArrayList<>(Arrays.stream(pitWindow.getContents()).toList());
+            do {
+                Collections.shuffle(shuffled);
+            } while(shuffled.equals(Arrays.stream(pitWindow.getContents()).toList()));
 
-        pitWindow.setContents(shuffled.toArray(new ItemStack[0]));
+            pitWindow.setContents(shuffled.toArray(new ItemStack[0]));
+        }
+
         if(playFailSound) pp.playSound(Sound.BLOCK_NOTE_BLOCK_PLING, 0.5f, 0.5f);
     }
 
