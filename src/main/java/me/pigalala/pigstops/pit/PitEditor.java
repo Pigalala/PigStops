@@ -45,7 +45,10 @@ public class PitEditor implements Listener {
 
         List<ItemStack> newContents = new ArrayList<>();
         for(ItemStack item : e.getInventory().getContents()) {
-            if(item == null) continue;
+            if(item == null) {
+                newContents.add(new ItemStack(Material.AIR));
+                continue;
+            }
             newContents.add(item);
         }
 

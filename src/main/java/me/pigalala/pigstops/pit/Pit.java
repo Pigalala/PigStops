@@ -19,6 +19,7 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import java.time.Duration;
@@ -132,7 +133,7 @@ public class Pit implements Listener {
 
     @EventHandler
     public void onItemClicked(InventoryClickEvent e) {
-        if(e.getCurrentItem() == null || e.getWhoClicked() != pp.getPlayer() || !e.getView().getTitle().startsWith("§dPigStops")) return;
+        if(e.getCurrentItem() == null || e.getWhoClicked() != pp.getPlayer() || !e.getView().getTitle().startsWith("§dPigStops") || e.getClickedInventory() instanceof PlayerInventory) return;
         e.setCancelled(true);
 
         if(e.getCurrentItem().getType() != defaultBackground.getType()) {
