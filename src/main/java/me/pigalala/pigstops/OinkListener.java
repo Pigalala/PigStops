@@ -24,7 +24,7 @@ public class OinkListener implements Listener {
 
     @EventHandler
     public void onQuit(PlayerQuitEvent e) {
-        PigStops.pitPlayers.remove(e.getPlayer());
+        PitPlayer.getAll().remove(e.getPlayer());
     }
 
     @EventHandler

@@ -23,7 +23,7 @@ public class OinkCommand extends BaseCommand {
             return;
         }
 
-        PigStops.pitPlayers.get(player).pit = new Pit(PigStops.pitPlayers.get(player), Pit.Type.FAKE);
+        PitPlayer.of(player).pit = new Pit(PitPlayer.of(player), Pit.Type.FAKE);
     }
 
     @Subcommand("setgame")
@@ -88,7 +88,7 @@ public class OinkCommand extends BaseCommand {
         @Subcommand("design")
         @CommandCompletion("@pits")
         public static void designPit (Player player, PitGame game){
-            PigStops.pitPlayers.get(player).newEditor(game);
+            PitPlayer.of(player).newEditor(game);
         }
 
         @Subcommand("set")
@@ -147,19 +147,7 @@ public class OinkCommand extends BaseCommand {
             @Subcommand("modifiers")
             @CommandCompletion("@pits")
             public static void listModifiers(Player player, PitGame pitGame) {
-                StringBuilder message = new StringBuilder("§7---------------\n§aModifiers of §d" + pitGame.name + "§a:\n");
-
-                for(Modifications modification : Modifications.values()) {
-                    message.append("§d").append(modification.toString().toLowerCase()).append(" §a: ").append(pitGame.hasModification(modification) ? "✓" : "§c×").append("\n");
-                }
-
-                player.sendMessage(message.append("§7---------------").toString());
-            }
-
-            @Subcommand("modifiers")
-            @CommandCompletion("@pits")
-            public static void listDebug(Player player, PitGame pitGame) {
-                StringBuilder message = new StringBuilder("§7---------------\n§6Modifiers of §d" + pitGame.name + "§a:\n");
+                StringBuilder message = new StringBuilder("§7---------------\n§aModifiers of §6" + pitGame.name + "§7:\n");
 
                 for(Modifications modification : Modifications.values()) {
                     message.append("§d").append(modification.toString().toLowerCase()).append(" §7: ").append(pitGame.hasModification(modification) ? "§a✓" : "§c×").append("\n");
