@@ -1,13 +1,9 @@
 package me.pigalala.pigstops;
 
 import co.aikar.commands.BaseCommand;
-import co.aikar.commands.BukkitCommandExecutionContext;
-import co.aikar.commands.InvalidCommandArgument;
 import co.aikar.commands.annotation.*;
-import co.aikar.commands.contexts.ContextResolver;
 import me.pigalala.pigstops.pit.*;
 import org.bukkit.Material;
-import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
@@ -179,25 +175,5 @@ public class OinkCommand extends BaseCommand {
         }
 
         return false;
-    }
-
-    public static ContextResolver<Material, BukkitCommandExecutionContext> getMaterialContextResolver() {
-        return c -> {
-            try {
-                return Material.valueOf(c.popFirstArg().toUpperCase());
-            } catch (IllegalArgumentException e) {
-                throw new InvalidCommandArgument();
-            }
-        };
-    }
-
-    public static ContextResolver<Sound, BukkitCommandExecutionContext> getSoundContextResolver() {
-        return c -> {
-            try {
-                return Sound.valueOf(c.popFirstArg().toUpperCase());
-            } catch (IllegalArgumentException e) {
-                throw new InvalidCommandArgument();
-            }
-        };
     }
 }

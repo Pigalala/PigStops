@@ -25,6 +25,7 @@ public class PitGame {
     public String name;
     public int inventorySize;
     public ItemStack backgroundItem;
+    public String modifications;
     public List<ItemStack> contents = new ArrayList<>();
 
     public PitGame(File f) {
@@ -96,19 +97,17 @@ public class PitGame {
         if(mod == '+') {
             if(hasModification(modification)) return;
             pitFile.set("modifications", pitFile.getString("modifications").concat(modification.getId()));
-        } else {
+            this.modifications = this.modifications.concat(modification.getId());
+        } else if(mod == '-') {
             pitFile.set("modifications", pitFile.getString("modifications").replace(modification.getId(), ""));
-        }
+            this.modifications = this.modifications.replace(modification.getId(), "");
+        } else throw new RuntimeException("Pigalala was stupid");
 
         saveModifications();
     }
 
     public boolean hasModification(Modifications modification) {
-        return pitFile.getString("modifications").contains(modification.getId());
-    }
-
-    public String getModifiersIds() {
-        return pitFile.getString("modifications");
+        return modifications.contains(modification.getId());
     }
 
     public void update() {
@@ -129,8 +128,9 @@ public class PitGame {
 
     private void firstTimeSetup() {
         this.name = pitFile.getString("name");
-        setInventorySize(pitFile.getInt("invsize"));
-        setBackgroundItem(pitFile.getItemStack("background"));
+        this.inventorySize = pitFile.getInt("invsize");
+        this.backgroundItem = pitFile.getItemStack("background");
+        this.modifications = pitFile.getString("modifications");
 
         for(int i = 0; i < 54; i++) {
             contents.add(pitFile.getItemStack("item" + i));
