@@ -1,8 +1,7 @@
 package me.pigalala.pigstops;
 
-import co.aikar.commands.PaperCommandManager;
 import com.google.common.collect.ImmutableList;
-import commands.OinkCommandManager;
+import me.pigalala.oinkutilities.commands.OinkCommandManager;
 import me.pigalala.pigstops.pit.Modifications;
 import me.pigalala.pigstops.pit.PitGame;
 import org.bukkit.Material;
