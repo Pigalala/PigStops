@@ -1,6 +1,8 @@
 package me.pigalala.pigstops;
 
 import me.pigalala.pigstops.pit.*;
+import me.pigalala.pigstops.pit.management.PitEditor;
+import me.pigalala.pigstops.pit.management.PitGame;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 
@@ -33,6 +35,10 @@ public class PitPlayer {
         pit = new Pit(this, pitType);
     }
 
+    public Pit getPit() {
+        return pit;
+    }
+
     public PitEditor newEditor(PitGame game) {
         this.editor = new PitEditor(this, game);
         return editor;
@@ -56,7 +62,10 @@ public class PitPlayer {
     }
 
     public static PitPlayer of(Player player) {
-        return PigStops.pitPlayers.get(player);
+        PitPlayer pp = PigStops.pitPlayers.get(player);
+
+        if(pp == null) return new PitPlayer(player);
+        return pp;
     }
 
     public static List<PitPlayer> getAll() {

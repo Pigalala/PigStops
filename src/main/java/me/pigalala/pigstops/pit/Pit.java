@@ -8,10 +8,13 @@ import me.makkuusen.timing.system.participant.Driver;
 import me.pigalala.pigstops.PigStops;
 import me.pigalala.pigstops.PitPlayer;
 import me.pigalala.pigstops.Utils;
+import me.pigalala.pigstops.pit.management.Modifications;
+import me.pigalala.pigstops.pit.management.PitGame;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.Sound;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
@@ -44,6 +47,8 @@ public class Pit implements Listener {
     private Instant startTime;
     private Inventory pitWindow;
 
+    private final List<PitPlayer> spectators = new ArrayList<>();
+
     public Pit(PitPlayer pp, Type pitType) {
         this.pp = pp;
         this.pitType = pitType;
@@ -51,6 +56,8 @@ public class Pit implements Listener {
         this.defaultBackground = pitGame.backgroundItem;
 
         setItemMetas();
+        registerSpectators();
+
         PigStops.getPlugin().getServer().getPluginManager().registerEvents(this, PigStops.getPlugin());
 
         createWindow(registerContents(), pitGame.name, pitGame.inventorySize);
@@ -78,6 +85,17 @@ public class Pit implements Listener {
         return contentsLines.toArray(new ItemStack[0]);
     }
 
+    private void registerSpectators() {
+        for(Player p : Bukkit.getOnlinePlayers()) {
+            PitPlayer pp = PitPlayer.of(p);
+
+            if(p.getSpectatorTarget() != this.pp.getPlayer()) continue;
+            // pp is a spectator
+            spectators.add(pp);
+        }
+        spectators.forEach(p -> p.pit = this);
+    }
+
     private void setItemMetas() {
         ItemMeta backgroundMeta = defaultBackground.getItemMeta();
         backgroundMeta.setDisplayName(" ");
@@ -89,20 +107,20 @@ public class Pit implements Listener {
     }
 
     private void createWindow(ItemStack[] contents, String windowName, Integer windowSize){
-
-        Inventory pitWindow = Bukkit.createInventory(pp.getPlayer(), windowSize, Component.text(Utils.pitNameBase + windowName));
+        Inventory pitWindow = Bukkit.createInventory(null, windowSize, Component.text(Utils.pitNameBase + windowName));
 
         this.pitWindow = pitWindow;
         this.startTime = Instant.now();
 
         pitWindow.setContents(contents);
         if(pitGame.hasModification(Modifications.RANDOMISE_ON_START)) shuffleItems(false);
+
         pp.getPlayer().openInventory(pitWindow);
+        spectators.forEach(pitPlayer -> pitPlayer.getPlayer().openInventory(pitWindow));
     }
 
     public void finishPit() {
         end();
-        pp.getPlayer().closeInventory();
 
         String finalTime = formatAsTime(Duration.between(startTime, Instant.now()).toMillis());
 
@@ -142,8 +160,10 @@ public class Pit implements Listener {
 
             if(!isFinished()) {
                 pp.playSound(Sound.BLOCK_BAMBOO_HIT);
+                spectators.forEach(ppp -> ppp.playSound(Sound.BLOCK_BAMBOO_HIT));
             } else {
                 pp.playSound(Sound.BLOCK_SMITHING_TABLE_USE);
+                spectators.forEach(ppp -> ppp.playSound(Sound.BLOCK_SMITHING_TABLE_USE));
                 finishPit();
             }
         } else {
@@ -153,8 +173,10 @@ public class Pit implements Listener {
 
     @EventHandler
     public void onInvClose(InventoryCloseEvent e) {
-        if(e.getPlayer() != pp.getPlayer() || e.getInventory() != pitWindow) return;
-        end();
+        if(e.getInventory() != pitWindow || isFinished()) return;
+
+        if(e.getPlayer() == pp.getPlayer()) end();
+        else removeSpectator(PitPlayer.of((Player) e.getPlayer()));
     }
 
     private void shuffleItems(Boolean playFailSound) {
@@ -167,11 +189,23 @@ public class Pit implements Listener {
             pitWindow.setContents(shuffled.toArray(new ItemStack[0]));
         }
 
-        if(playFailSound) pp.playSound(Sound.BLOCK_NOTE_BLOCK_PLING, 0.5f, 0.5f);
+        if(playFailSound) {
+            pp.playSound(Sound.BLOCK_NOTE_BLOCK_PLING, 0.5f, 0.5f);
+            spectators.forEach(p -> p.playSound(Sound.BLOCK_NOTE_BLOCK_PLING, 0.5f, 0.5f));
+        }
     }
 
     private void end() {
         pp.pit = null;
+        pp.getPlayer().closeInventory();
+        spectators.forEach(p -> {
+            p.pit = null;
+            p.getPlayer().closeInventory();
+        });
         HandlerList.unregisterAll(this);
+    }
+
+    public void removeSpectator(PitPlayer pp) {
+        spectators.remove(pp);
     }
 }

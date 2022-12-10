@@ -1,4 +1,4 @@
-package me.pigalala.pigstops.pit;
+package me.pigalala.pigstops.pit.management;
 
 import co.aikar.commands.BukkitCommandExecutionContext;
 import co.aikar.commands.InvalidCommandArgument;

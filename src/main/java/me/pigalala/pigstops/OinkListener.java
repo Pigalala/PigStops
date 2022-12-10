@@ -1,9 +1,11 @@
 package me.pigalala.pigstops;
 
+import com.destroystokyo.paper.event.player.PlayerStopSpectatingEntityEvent;
 import me.makkuusen.timing.system.api.TimingSystemAPI;
 import me.pigalala.pigstops.pit.*;
 import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Boat;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
@@ -48,5 +50,15 @@ public class OinkListener implements Listener {
         }
 
         if(driver.get().getHeat().isActive() && driver.get().getCurrentLap() != null && !driver.get().getCurrentLap().isPitted()) pp.newPit(Pit.Type.REAL);
+    }
+
+    @EventHandler
+    public void onStopSpectating(PlayerStopSpectatingEntityEvent e) {
+        if(!(e.getSpectatorTarget() instanceof Player t)) return;
+        PitPlayer spectator = PitPlayer.of(e.getPlayer());
+        PitPlayer target = PitPlayer.of(t);
+
+        if(!target.isPitting()) return;
+        target.getPit().removeSpectator(spectator);
     }
 }

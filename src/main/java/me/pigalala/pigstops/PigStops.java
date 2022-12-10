@@ -2,8 +2,8 @@ package me.pigalala.pigstops;
 
 import com.google.common.collect.ImmutableList;
 import me.pigalala.oinkutilities.commands.OinkCommandManager;
-import me.pigalala.pigstops.pit.Modifications;
-import me.pigalala.pigstops.pit.PitGame;
+import me.pigalala.pigstops.pit.management.Modifications;
+import me.pigalala.pigstops.pit.management.PitGame;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;

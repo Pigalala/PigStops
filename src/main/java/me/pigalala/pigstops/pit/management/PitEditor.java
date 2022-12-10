@@ -1,4 +1,4 @@
-package me.pigalala.pigstops.pit;
+package me.pigalala.pigstops.pit.management;
 
 import me.pigalala.pigstops.PigStops;
 import me.pigalala.pigstops.PitPlayer;

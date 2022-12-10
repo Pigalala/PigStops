@@ -1,7 +1,7 @@
 package me.pigalala.pigstops;
 
 import me.makkuusen.timing.system.heat.Heat;
-import me.pigalala.pigstops.pit.PitGame;
+import me.pigalala.pigstops.pit.management.PitGame;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.YamlConfiguration;
