@@ -6,7 +6,7 @@ import me.pigalala.pigstops.pit.management.PitGame;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 
-import java.util.List;
+import java.util.HashMap;
 
 public class PitPlayer {
     private final Player player;
@@ -68,7 +68,7 @@ public class PitPlayer {
         return pp;
     }
 
-    public static List<PitPlayer> getAll() {
-        return (List<PitPlayer>) PigStops.pitPlayers.values();
+    public static HashMap<Player, PitPlayer> getAll() {
+        return PigStops.pitPlayers;
     }
 }

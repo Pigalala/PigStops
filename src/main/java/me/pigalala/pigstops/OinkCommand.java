@@ -2,7 +2,8 @@ package me.pigalala.pigstops;
 
 import co.aikar.commands.BaseCommand;
 import co.aikar.commands.annotation.*;
-import me.pigalala.pigstops.pit.*;
+import me.pigalala.pigstops.pit.Pit;
+import me.pigalala.pigstops.pit.management.*;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;

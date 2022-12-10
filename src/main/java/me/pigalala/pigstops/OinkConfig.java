@@ -1,9 +1,8 @@
 package me.pigalala.pigstops;
 
-import me.pigalala.pigstops.pit.PitGame;
+import me.pigalala.pigstops.pit.management.PitGame;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;
 import java.util.Arrays;
