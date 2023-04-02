@@ -47,7 +47,7 @@ public class Pit implements Listener {
     private int itemsToClick;
     private int maxItemToClick;
     private int clicks;
-    private float accuracy;
+    private int accuracy;
 
     private Instant startTime;
     private Inventory pitWindow;
