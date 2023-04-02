@@ -25,6 +25,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.ItemMeta;
 
+import java.text.DecimalFormat;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.*;
@@ -44,6 +45,10 @@ public class Pit implements Listener {
     private final Type pitType;
 
     private int itemsToClick;
+    private int maxItemToClick;
+    private int clicks;
+    private float accuracy;
+
     private Instant startTime;
     private Inventory pitWindow;
 
@@ -76,6 +81,7 @@ public class Pit implements Listener {
             }
         }
         this.itemsToClick = itc;
+        this.maxItemToClick = itemsToClick;
 
         if(itc == 0) {
             // No items setup
@@ -124,9 +130,13 @@ public class Pit implements Listener {
 
         String finalTime = formatAsTime(Duration.between(startTime, Instant.now()).toMillis());
 
+        accuracy = Math.round((float) maxItemToClick / (float) clicks * 100f);
+
+
         if(pitType != Type.REAL) {
-            pp.getPlayer().sendMessage(Utils.getCustomMessage("&aYou finished in &d%TIME%&a.",
-                    "%TIME%", finalTime));
+            pp.getPlayer().sendMessage(Utils.getCustomMessage("&7PigStops » &a%TIME%&7 |&a%ACC% &7ACC|",
+                    "%TIME%", finalTime,
+                    "%ACC%", accuracy + "%"));
             return;
         }
 
@@ -141,9 +151,10 @@ public class Pit implements Listener {
             d.getCurrentLap().setPitted(true);
             heat.updatePositions();
 
-            Utils.broadcastMessage(Utils.getCustomMessage("%PLAYER% &ahas completed pigstop %PITS% &ain %TIME%&a.",
+            Utils.broadcastMessage(Utils.getCustomMessage("&7PigStop %PIT% &7» %PLAYER%&7 &7in %TIME%&7 |%ACC% &7ACC|",
                     "%PLAYER%", p.getColorCode() + p.getName(),
-                    "%PITS%", p.getColorCode() + d.getPits(),
+                    "%PIT%", p.getColorCode() + d.getPits(),
+                    "%ACC%", p.getColorCode() + accuracy + "%",
                     "%TIME%", p.getColorCode() + finalTime),
                     heat);
         }
@@ -151,9 +162,11 @@ public class Pit implements Listener {
 
     @EventHandler
     public void onItemClicked(InventoryClickEvent e) {
-        if(e.getCurrentItem() == null || e.getWhoClicked() != pp.getPlayer() || !e.getView().getTitle().startsWith("§dPigStops") || e.getClickedInventory() instanceof PlayerInventory) return;
+        if(e.getWhoClicked() != pp.getPlayer() || !e.getView().getTitle().startsWith("§dPigStops") || e.getClickedInventory() instanceof PlayerInventory) return;
         e.setCancelled(true);
+        clicks++;
 
+        if(e.getCurrentItem() == null) return;
         if(e.getCurrentItem().getType() != defaultBackground.getType()) {
             itemsToClick -= 1;
             pitWindow.setItem(e.getSlot(), new ItemStack(Material.AIR));

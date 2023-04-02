@@ -9,6 +9,7 @@ import org.bukkit.inventory.ItemStack;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.logging.Level;
 
 import static me.pigalala.pigstops.PigStops.getPlugin;
 
@@ -31,6 +32,7 @@ public abstract class Utils {
             if(participant.getTPlayer().getPlayer() == null) return;
             participant.getTPlayer().getPlayer().sendMessage(message);
         });
+        PigStops.getPlugin().getLogger().log(Level.INFO, heat.getName() + ": " + message.replaceAll("§.", ""));
     }
 
     public static void createNewPitFile(String path, String name, Integer invSize) {
