@@ -186,7 +186,7 @@ public class Pit implements Listener {
 
     @EventHandler
     public void onInvClose(InventoryCloseEvent e) {
-        if(e.getInventory() != pitWindow || isFinished()) return;
+        if(e.getInventory() != pitWindow || isFinished() || e.getReason() == InventoryCloseEvent.Reason.PLUGIN) return;
 
         if(e.getPlayer() == pp.getPlayer()) end();
         else removeSpectator(PitPlayer.of((Player) e.getPlayer()));
@@ -210,10 +210,10 @@ public class Pit implements Listener {
 
     private void end() {
         pp.pit = null;
-        pp.getPlayer().closeInventory();
+        pp.getPlayer().closeInventory(InventoryCloseEvent.Reason.PLUGIN);
         spectators.forEach(p -> {
             p.pit = null;
-            p.getPlayer().closeInventory();
+            p.getPlayer().closeInventory(InventoryCloseEvent.Reason.PLUGIN);
         });
         HandlerList.unregisterAll(this);
     }
