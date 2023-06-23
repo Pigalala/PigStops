@@ -151,7 +151,7 @@ public class Pit implements Listener {
             d.getCurrentLap().setPitted(true);
             heat.updatePositions();
 
-            Utils.broadcastMessage(Utils.getCustomMessage("&7PigStop %PIT% &7» %PLAYER%&7 &7in %TIME%&7 |%ACC% &7ACC|",
+            Utils.broadcastMessage(Utils.getCustomMessage("&aPigStop %PIT% &a» %PLAYER%&a in %TIME%&a |%ACC% &aACC|",
                     "%PLAYER%", p.getColorCode() + p.getName(),
                     "%PIT%", p.getColorCode() + d.getPits(),
                     "%ACC%", p.getColorCode() + accuracy + "%",
