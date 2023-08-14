@@ -2,6 +2,9 @@ package me.pigalala.pigstops;
 
 import me.makkuusen.timing.system.heat.Heat;
 import me.pigalala.pigstops.pit.management.PitGame;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextComponent;
+import net.kyori.adventure.text.event.HoverEvent;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -33,6 +36,14 @@ public abstract class Utils {
             participant.getTPlayer().getPlayer().sendMessage(message);
         });
         PigStops.getPlugin().getLogger().log(Level.INFO, heat.getName() + ": " + message.replaceAll("§.", ""));
+    }
+
+    public static void broadcastMessage(TextComponent message, Heat heat) {
+        heat.getParticipants().forEach(participant -> {
+            if(participant.getTPlayer().getPlayer() == null) return;
+            participant.getTPlayer().getPlayer().sendMessage(message);
+        });
+        PigStops.getPlugin().getLogger().log(Level.INFO, heat.getName() + ": " + message.content().replaceAll("§.", ""));
     }
 
     public static void createNewPitFile(String path, String name, Integer invSize) {

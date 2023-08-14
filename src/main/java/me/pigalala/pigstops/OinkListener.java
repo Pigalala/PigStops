@@ -41,12 +41,18 @@ public class OinkListener implements Listener {
         }
 
         var driver = TimingSystemAPI.getDriverFromRunningHeat(pp.getPlayer().getUniqueId());
-        if(!driver.isPresent()) {
+        if(driver.isEmpty()) {
+            if(pp.isInPracticeMode()) {
+                pp.newPit(Pit.Type.FAKE);
+            }
             if(pp.isInDebugMode()) {
                 pp.newPit(Pit.Type.FAKE);
                 pp.getPlayer().sendMessage("§aDebugMode has been " + (pp.toggleDebugMode() ? "enabled" : "disabled"));
             }
             return;
+        } else {
+            if(pp.isInPracticeMode()) pp.togglePracticeMode();
+            if(pp.isInDebugMode()) pp.toggleDebugMode();
         }
 
         if(driver.get().getHeat().isActive() && driver.get().getCurrentLap() != null && !driver.get().getCurrentLap().isPitted()) pp.newPit(Pit.Type.REAL);

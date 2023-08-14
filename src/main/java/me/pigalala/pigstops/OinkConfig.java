@@ -6,8 +6,10 @@ import org.bukkit.configuration.file.FileConfiguration;
 
 import java.io.File;
 import java.util.Arrays;
+import java.util.List;
 import java.util.logging.Level;
 
+import static me.pigalala.pigstops.PigStops.defaultPitGame;
 import static me.pigalala.pigstops.PigStops.pitGames;
 
 public abstract class OinkConfig {
@@ -21,7 +23,7 @@ public abstract class OinkConfig {
         plugin.saveDefaultConfig();
 
         loadPitBlock();
-        loadPitGame();
+        loadPitGames();
 
         File dir = new File(customPSPath);
         if(!dir.exists()) dir.mkdir();
@@ -38,28 +40,23 @@ public abstract class OinkConfig {
         }
     }
 
-    public static void loadPitGame() {
-        try {
-            File fi = new File(config.getString("pitGame"));
-            if(!fi.exists()) throw new NullPointerException();
-            PigStops.defaultPitGame = new PitGame(fi);
+    public static void loadPitGames() {
+        File dir = new File(customPSPath);
+        if(dir.listFiles() == null) return;
 
-            Arrays.stream(new File(OinkConfig.customPSPath).listFiles()).toList().forEach(f -> {
-                if(f == null) return;
-                PitGame pitGame = new PitGame(f);
-                pitGame.update();
-                pitGames.put(pitGame.name, pitGame);
-            });
+        for(File f : Arrays.stream(dir.listFiles()).toList()) {
+            PitGame pg = new PitGame(f);
+            pitGames.add(pg);
+            plugin.getLogger().log(Level.INFO, "Loaded PigStop: " + pg.name);
 
-        } catch (IllegalArgumentException | NullPointerException e) {
-            plugin.getLogger().log(Level.WARNING, "'pitGame' in PigStops plugin config does not exist.");
-            Utils.setDefaultPitGame(null);
+            if(f.getPath().equals(config.getString("pitGame"))) defaultPitGame = pg;
+            plugin.getLogger().log(Level.INFO, "DefaultPitGame Activated: " + pg.name);
         }
     }
 
     private static void updateConfig() {
         if(!config.isSet("version")) {
-            config.set("version", "2.0.4");
+            config.set("version", "'2.2.0'");
         }
         if(!config.isSet("pitBlock")) {
             config.set("pitBlock", "");

@@ -32,7 +32,7 @@ public class PitGame {
         file = f;
         pitFile = YamlConfiguration.loadConfiguration(file);
         firstTimeSetup();
-        pitGames.put(name, this);
+        pitGames.add(this);
     }
 
     public PitGame(String path, String name, Integer invSize) {
@@ -43,7 +43,7 @@ public class PitGame {
     public void delete() {
         if(file.exists()) file.delete();
         if(defaultPitGame == this) defaultPitGame = null;
-        pitGames.remove(name, this);
+        pitGames.remove(this);
     }
 
     public String getPath() {
@@ -87,18 +87,18 @@ public class PitGame {
 
         pitGames.remove(oldName);
         this.name = newName;
-        pitGames.put(newName, this);
+        pitGames.add(this);
 
         if(b) Utils.setDefaultPitGame(this);
         saveModifications();
     }
 
-    public void setModification(char mod, Modifications modification) {
-        if(mod == '+') {
+    public void setModification(char change, Modifications modification) {
+        if(change == '+') {
             if(hasModification(modification)) return;
             pitFile.set("modifications", pitFile.getString("modifications").concat(modification.getId()));
             this.modifications = this.modifications.concat(modification.getId());
-        } else if(mod == '-') {
+        } else if(change == '-') {
             pitFile.set("modifications", pitFile.getString("modifications").replace(modification.getId(), ""));
             this.modifications = this.modifications.replace(modification.getId(), "");
         } else throw new RuntimeException("Pigalala was stupid");
@@ -137,11 +137,20 @@ public class PitGame {
         }
     }
 
+    public static PitGame of(File f) {
+        for(PitGame pg : pitGames) {
+            if(pg.file == f) return pg;
+        }
+
+        return null;
+    }
+
     public static ContextResolver<PitGame, BukkitCommandExecutionContext> getPitGameContextResolver() {
         return c -> {
-            PitGame game = pitGames.get(c.popFirstArg());
-            if(game == null) throw new InvalidCommandArgument();
-            return game;
+            for(PitGame pg : pitGames) {
+                if(pg.name.equals(c.popFirstArg())) return pg;
+            }
+            throw new InvalidCommandArgument("§cThat pit game was not recognised.", false);
         };
     }
 }

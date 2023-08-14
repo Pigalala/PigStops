@@ -15,7 +15,7 @@ public final class PigStops extends JavaPlugin {
 
     private static PigStops plugin;
     public static final HashMap<Player, PitPlayer> pitPlayers = new HashMap<>();
-    public static final HashMap<String, PitGame> pitGames = new HashMap<>();
+    public static final List<PitGame> pitGames = new ArrayList<>();
     public static PitGame defaultPitGame;
 
     public static Material pitBlock;
@@ -32,7 +32,13 @@ public final class PigStops extends JavaPlugin {
     private void setupCommands() {
         PaperCommandManager commandManager = new PaperCommandManager(plugin);
 
-        commandManager.getCommandCompletions().registerAsyncCompletion("pits", c -> pitGames.keySet());
+        commandManager.getCommandCompletions().registerAsyncCompletion("pits", c -> {
+            List<String> gameNames = new ArrayList<>();
+            pitGames.forEach(p -> {
+                gameNames.add(p.name);
+            });
+            return gameNames;
+        });
 
         commandManager.getCommandCompletions().registerAsyncCompletion("items", c -> {
             List<String> e = new ArrayList<>();
@@ -55,10 +61,9 @@ public final class PigStops extends JavaPlugin {
 
         commandManager.getCommandCompletions().registerAsyncCompletion("modifiers", c -> {
             List<String> mods = new ArrayList<>();
-            for(Modifications mod : Arrays.stream(Modifications.values()).toList()) {
-                mods.add(mod.toString().toLowerCase());
+            for(Modifications mod : Modifications.values()) {
+                mods.add(mod.getDisplayName());
             }
-
             return mods;
         });
 

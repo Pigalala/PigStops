@@ -1,23 +1,30 @@
 package me.pigalala.pigstops.pit;
 
+import me.makkuusen.timing.system.ApiUtilities;
+import me.makkuusen.timing.system.Database;
 import me.makkuusen.timing.system.TPlayer;
 import me.makkuusen.timing.system.api.TimingSystemAPI;
 import me.makkuusen.timing.system.event.EventDatabase;
 import me.makkuusen.timing.system.heat.Heat;
+import me.makkuusen.timing.system.heat.ScoreboardUtils;
 import me.makkuusen.timing.system.participant.Driver;
+import me.makkuusen.timing.system.theme.Text;
 import me.pigalala.pigstops.PigStops;
 import me.pigalala.pigstops.PitPlayer;
 import me.pigalala.pigstops.Utils;
 import me.pigalala.pigstops.pit.management.Modifications;
 import me.pigalala.pigstops.pit.management.PitGame;
 import net.kyori.adventure.text.Component;
+import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.Sound;
+import org.bukkit.entity.Boat;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
+import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.Inventory;
@@ -25,12 +32,12 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import java.text.DecimalFormat;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.*;
 
 import static me.makkuusen.timing.system.ApiUtilities.formatAsTime;
+import static me.makkuusen.timing.system.ApiUtilities.spawnBoat;
 
 public class Pit implements Listener {
 
@@ -45,9 +52,8 @@ public class Pit implements Listener {
     private final Type pitType;
 
     private int itemsToClick;
-    private int maxItemToClick;
+    private int maxItemsToClick;
     private int clicks;
-    private int accuracy;
 
     private Instant startTime;
     private Inventory pitWindow;
@@ -73,7 +79,7 @@ public class Pit implements Listener {
         int itc = 0;
         for(ItemStack item : pitGame.contents) {
             if(contentsLines.size() >= pitGame.inventorySize) break;
-            if(item.getType().equals(Material.AIR)) {
+            if(item.getType() == Material.AIR) {
                 contentsLines.add(defaultBackground);
             } else {
                 contentsLines.add(item);
@@ -81,7 +87,7 @@ public class Pit implements Listener {
             }
         }
         this.itemsToClick = itc;
-        this.maxItemToClick = itemsToClick;
+        this.maxItemsToClick = itemsToClick;
 
         if(itc == 0) {
             // No items setup
@@ -127,22 +133,19 @@ public class Pit implements Listener {
 
     public void finishPit() {
         end();
+        Instant endTime = Instant.now();
+        String finalTime = formatAsTime(Duration.between(startTime, endTime).toMillis());
 
-        String finalTime = formatAsTime(Duration.between(startTime, Instant.now()).toMillis());
-
-        accuracy = Math.round((float) maxItemToClick / (float) clicks * 100f);
-
+        int accuracy = Math.round((float) maxItemsToClick / clicks * 100f);
 
         if(pitType != Type.REAL) {
-            pp.getPlayer().sendMessage(Utils.getCustomMessage("&7PigStops » &a%TIME%&7 |&a%ACC% &7ACC|",
-                    "%TIME%", finalTime,
-                    "%ACC%", accuracy + "%"));
+            pp.getPlayer().sendMessage(Utils.getCustomMessage("&aPigStop finished in &6%TIME%", "%TIME%", finalTime));
             return;
         }
 
-        TPlayer p = TimingSystemAPI.getTPlayer(pp.getPlayer().getUniqueId());
-        var driver = EventDatabase.getDriverFromRunningHeat(p.getUniqueId());
-        if(!driver.isPresent()) return;
+        TPlayer tp = TimingSystemAPI.getTPlayer(pp.getPlayer().getUniqueId());
+        var driver = EventDatabase.getDriverFromRunningHeat(tp.getUniqueId());
+        if(driver.isEmpty()) return;
         Driver d = driver.get();
         Heat heat = driver.get().getHeat();
 
@@ -151,19 +154,26 @@ public class Pit implements Listener {
             d.getCurrentLap().setPitted(true);
             heat.updatePositions();
 
-            Utils.broadcastMessage(Utils.getCustomMessage("&7PigStop %PIT% &7» %PLAYER%&7 &7in %TIME%&7 |%ACC% &7ACC|",
-                    "%PLAYER%", p.getColorCode() + p.getName(),
-                    "%PIT%", p.getColorCode() + d.getPits(),
-                    "%ACC%", p.getColorCode() + accuracy + "%",
-                    "%TIME%", p.getColorCode() + finalTime),
+            Utils.broadcastMessage(Utils.getCustomMessage("%LOGO% %PLAYER% &ahas completed PigStop &6%PIT% &ain &6%TIME%",
+                    "%LOGO%", getColor(tp.getPlayer()) + "&l&o||&r",
+                    "%PLAYER%", tp.getName(),
+                    "%PIT%", String.valueOf(d.getPits()),
+                    "%TIME%", finalTime),
                     heat);
         }
     }
 
     @EventHandler
     public void onItemClicked(InventoryClickEvent e) {
-        if(e.getWhoClicked() != pp.getPlayer() || !e.getView().getTitle().startsWith("§dPigStops") || e.getClickedInventory() instanceof PlayerInventory) return;
+        if(e.getWhoClicked() != pp.getPlayer() || !e.getView().getTitle().startsWith("§dPigStops")) return;
         e.setCancelled(true);
+        if(e.getClickedInventory() instanceof PlayerInventory) return;
+
+        // ANTICHEAT
+        if(e.getAction() == InventoryAction.CLONE_STACK) return; // MMB PICKING
+        if(e.getAction() == InventoryAction.MOVE_TO_OTHER_INVENTORY) return; // SHIFT CLICKING
+        if(e.getAction() == InventoryAction.HOTBAR_SWAP) return; // PRESSING HOTBAR KEYBINDS
+
         clicks++;
 
         if(e.getCurrentItem() == null) return;
@@ -216,9 +226,22 @@ public class Pit implements Listener {
             p.getPlayer().closeInventory(InventoryCloseEvent.Reason.PLUGIN);
         });
         HandlerList.unregisterAll(this);
+
+        if(pp.isInPracticeMode()) {
+            if(pp.getPlayer().getVehicle() instanceof Boat b) b.remove();
+            pp.practiceModeStart.setPitch(pp.getPlayer().getLocation().getPitch());
+            TPlayer tPlayer = TimingSystemAPI.getTPlayer(pp.getPlayer().getUniqueId());
+            Boat boat = spawnBoat(pp.practiceModeStart, tPlayer.getBoat(), tPlayer.isChestBoat());
+            boat.addPassenger(pp.getPlayer());
+        }
     }
 
     public void removeSpectator(PitPlayer pp) {
         spectators.remove(pp);
+    }
+
+    private static String getColor(Player p) {
+        Optional<Driver> maybeDriver = EventDatabase.getDriverFromRunningHeat(Database.getPlayer(p).getUniqueId());
+        return maybeDriver.isEmpty() ? "" + net.md_5.bungee.api.ChatColor.of("#ffffff") : maybeDriver.get().getTPlayer().getColorCode();
     }
 }

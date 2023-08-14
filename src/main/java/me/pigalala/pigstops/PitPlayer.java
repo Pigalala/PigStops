@@ -3,6 +3,7 @@ package me.pigalala.pigstops;
 import me.pigalala.pigstops.pit.*;
 import me.pigalala.pigstops.pit.management.PitEditor;
 import me.pigalala.pigstops.pit.management.PitGame;
+import org.bukkit.Location;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 
@@ -15,6 +16,9 @@ public class PitPlayer {
     public PitEditor editor;
 
     private boolean debugMode;
+    private boolean practiceMode;
+
+    public Location practiceModeStart;
 
     public PitPlayer(Player player){
         this.player = player;
@@ -49,8 +53,17 @@ public class PitPlayer {
         return debugMode;
     }
 
+    public boolean togglePracticeMode() {
+        practiceMode = !practiceMode;
+        return practiceMode;
+    }
+
     public boolean isInDebugMode() {
         return debugMode;
+    }
+
+    public boolean isInPracticeMode() {
+        return practiceMode;
     }
 
     public boolean isPitting() {

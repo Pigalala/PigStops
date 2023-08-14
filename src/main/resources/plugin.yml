@@ -1,7 +1,7 @@
 name: PigStops
 version: '${project.version}'
 main: me.pigalala.pigstops.PigStops
-api-version: 1.19
+api-version: '1.20'
 prefix: PigStops
 authors: [ Pigalala ]
 depend: [ TimingSystem ]
@@ -11,9 +11,5 @@ commands:
     aliases: []
 
 permissions:
-  pigstop.modify:
-    description: "Allows a player to modify the plugin through commands"
-    default: op
-  pigstop.editor:
-    description: "Allows a player to create a custom pigstop"
+  pigstop.admin:
     default: op

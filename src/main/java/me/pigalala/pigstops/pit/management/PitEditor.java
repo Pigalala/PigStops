@@ -15,6 +15,8 @@ import org.bukkit.inventory.ItemStack;
 import java.util.ArrayList;
 import java.util.List;
 
+import static me.pigalala.pigstops.PigStops.pitGames;
+
 public class PitEditor implements Listener {
 
     private final PitPlayer pp;
@@ -41,7 +43,16 @@ public class PitEditor implements Listener {
 
     @EventHandler
     public void onInvClose(InventoryCloseEvent e) {
-        if(!e.getPlayer().equals(pp.getPlayer()) || !PigStops.pitGames.containsKey(e.getView().getTitle().replaceAll("§6", ""))) return;
+        if(!e.getPlayer().equals(pp.getPlayer())) return;
+
+        boolean isPitGame = false;
+        for(PitGame pitGame : pitGames) {
+            if(e.getView().getTitle().replaceAll("§6", "").equals(pitGame.name)) {
+                isPitGame = true;
+                break;
+            }
+        }
+        if(!isPitGame) return;
 
         List<ItemStack> newContents = new ArrayList<>();
         for(ItemStack item : e.getInventory().getContents()) {

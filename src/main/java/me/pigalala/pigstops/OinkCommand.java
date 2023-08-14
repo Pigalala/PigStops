@@ -5,15 +5,22 @@ import co.aikar.commands.BukkitCommandExecutionContext;
 import co.aikar.commands.InvalidCommandArgument;
 import co.aikar.commands.annotation.*;
 import co.aikar.commands.contexts.ContextResolver;
+import me.makkuusen.timing.system.TPlayer;
+import me.makkuusen.timing.system.api.TimingSystemAPI;
+import me.makkuusen.timing.system.commands.CommandBoat;
 import me.pigalala.pigstops.pit.Pit;
 import me.pigalala.pigstops.pit.management.*;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Boat;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import java.io.File;
+
+import static me.makkuusen.timing.system.ApiUtilities.spawnBoat;
 
 @CommandAlias("pigstop|pit")
 public class OinkCommand extends BaseCommand {
@@ -53,17 +60,44 @@ public class OinkCommand extends BaseCommand {
     }
 
     @Subcommand("debugmode")
-    @CommandCompletion("pigstop.admin")
+    @CommandPermission("pigstop.admin")
     public static void toggleDebugMode(Player player) {
+        var maybeDriver = TimingSystemAPI.getDriverFromRunningHeat(player.getUniqueId());
+        if(maybeDriver.isPresent()) {
+            player.sendMessage("§cYou may not do this now");
+            return;
+        }
+
         player.sendMessage("§aDebugMode has been " + (PitPlayer.of(player).toggleDebugMode() ? "enabled" : "disabled"));
     }
 
+    @Subcommand("practicemode")
+    public static void togglePracticeMode(Player player) {
+        var maybeDriver = TimingSystemAPI.getDriverFromRunningHeat(player.getUniqueId());
+        if(maybeDriver.isPresent()) {
+            player.sendMessage("§cYou may not do this now");
+            return;
+        }
+
+        PitPlayer pp = PitPlayer.of(player);
+        player.sendMessage("§aPracticeMode has been " + (pp.togglePracticeMode() ? "enabled" : "disabled"));
+        if(pp.isInPracticeMode()) {
+            pp.practiceModeStart = player.getLocation();
+            pp.practiceModeStart.setPitch(pp.getPlayer().getLocation().getPitch());
+            TPlayer tPlayer = TimingSystemAPI.getTPlayer(pp.getPlayer().getUniqueId());
+            if(!isInBoat(player)) {
+                Boat boat = spawnBoat(pp.practiceModeStart, tPlayer.getBoat(), tPlayer.isChestBoat());
+                boat.addPassenger(pp.getPlayer());
+            }
+        }
+    }
+
     @Subcommand("editor")
-    @CommandPermission("pigstop.editor")
+    @CommandPermission("pigstop.admin")
     public class Editor extends BaseCommand {
         @Subcommand("create")
         @CommandCompletion("name inventorySize")
-        public static void createPitGame (Player player, String name, @Optional Integer invSize){
+        public static void createPitGame (Player player, String name, @Optional Integer invSize) {
             int iSize;
 
             if (invSize == null) iSize = 27;
@@ -82,14 +116,14 @@ public class OinkCommand extends BaseCommand {
 
         @Subcommand("delete")
         @CommandCompletion("@pits")
-        public static void deletePit (Player player, PitGame game){
+        public static void deletePit(Player player, PitGame game){
             game.delete();
             player.sendMessage("§aSuccessfully deleted " + game.name);
         }
 
         @Subcommand("design")
         @CommandCompletion("@pits")
-        public static void designPit (Player player, PitGame game){
+        public static void designPit(Player player, PitGame game){
             PitPlayer.of(player).newEditor(game);
         }
 
@@ -152,7 +186,7 @@ public class OinkCommand extends BaseCommand {
                 StringBuilder message = new StringBuilder("§7---------------\n§aModifiers of §6" + pitGame.name + "§7:\n");
 
                 for(Modifications modification : Modifications.values()) {
-                    message.append("§d").append(modification.toString().toLowerCase()).append(" §7: ").append(pitGame.hasModification(modification) ? "§a✓" : "§c×").append("\n");
+                    message.append("§d").append(modification.getDisplayName()).append(" §7: ").append(pitGame.hasModification(modification) ? "§a✓" : "§c×").append("\n");
                 }
 
                 player.sendMessage(message.append("§7---------------").toString());
@@ -201,5 +235,10 @@ public class OinkCommand extends BaseCommand {
                 throw new InvalidCommandArgument();
             }
         };
+    }
+
+    private static boolean isInBoat(Player p) {
+        Entity v = p.getVehicle();
+        return v != null && v.getType() != null && (v.getType().equals(EntityType.BOAT) || v.getType().equals(EntityType.CHEST_BOAT));
     }
 }
