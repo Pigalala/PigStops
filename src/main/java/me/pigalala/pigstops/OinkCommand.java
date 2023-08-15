@@ -25,11 +25,20 @@ import static me.makkuusen.timing.system.ApiUtilities.spawnBoat;
 public class OinkCommand extends BaseCommand {
 
     @Default
+    public static void practisePit(Player player) {
+        if(PigStops.defaultPitGame == null) {
+            player.sendMessage("§cThere is no pit game available. Please inform a server admin.");
+            return;
+        }
+        PitPlayer.of(player).newPit(Pit.Type.FAKE);
+    }
+
     @Subcommand("practise")
+    @CommandCompletion("@pits")
     public static void practisePit(Player player, @Optional PitGame pitGame) {
         if(pitGame == null) {
             if(PigStops.defaultPitGame == null) {
-                player.sendMessage("§cThere is no pit game available. Please contact a server admin.");
+                player.sendMessage("§cThere is no pit game available. Please inform a server admin.");
                 return;
             }
             PitPlayer.of(player).newPit(Pit.Type.FAKE);

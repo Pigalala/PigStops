@@ -137,6 +137,14 @@ public class PitGame {
         }
     }
 
+    public static PitGame of(String name) {
+        for(PitGame pg : pitGames) {
+            if(pg.name.equals(name)) return pg;
+        }
+
+        return null;
+    }
+
     public static PitGame of(File f) {
         for(PitGame pg : pitGames) {
             if(pg.file == f) return pg;
@@ -147,10 +155,11 @@ public class PitGame {
 
     public static ContextResolver<PitGame, BukkitCommandExecutionContext> getPitGameContextResolver() {
         return c -> {
-            for(PitGame pg : pitGames) {
-                if(pg.name.equals(c.popFirstArg())) return pg;
+            try {
+                return PitGame.of(c.popFirstArg());
+            } catch (Exception e) {
+                throw new InvalidCommandArgument("§cThat pit game was not recognised.", false);
             }
-            throw new InvalidCommandArgument("§cThat pit game was not recognised.", false);
         };
     }
 }
