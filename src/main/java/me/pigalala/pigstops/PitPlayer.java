@@ -6,6 +6,7 @@ import me.pigalala.pigstops.pit.management.PitGame;
 import org.bukkit.Location;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
 
@@ -37,6 +38,10 @@ public class PitPlayer {
 
     public void newPit(Pit.Type pitType) {
         pit = new Pit(this, pitType);
+    }
+
+    public void newPit(Pit.Type pitType, PitGame pg) {
+        pit = new Pit(this, pitType, pg);
     }
 
     public Pit getPit() {

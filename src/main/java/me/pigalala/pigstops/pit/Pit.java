@@ -66,6 +66,19 @@ public class Pit implements Listener {
         this.pitGame = PigStops.defaultPitGame;
         this.defaultBackground = pitGame.backgroundItem;
 
+        setup();
+    }
+
+    public Pit(PitPlayer pp, Type pitType, PitGame pg) {
+        this.pp = pp;
+        this.pitType = pitType;
+        this.pitGame = pg;
+        this.defaultBackground = pg.backgroundItem;
+
+        setup();
+    }
+
+    private void setup() {
         setItemMetas();
         registerSpectators();
 

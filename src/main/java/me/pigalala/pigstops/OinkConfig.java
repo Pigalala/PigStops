@@ -49,8 +49,10 @@ public abstract class OinkConfig {
             pitGames.add(pg);
             plugin.getLogger().log(Level.INFO, "Loaded PigStop: " + pg.name);
 
-            if(f.getPath().equals(config.getString("pitGame"))) defaultPitGame = pg;
-            plugin.getLogger().log(Level.INFO, "DefaultPitGame Activated: " + pg.name);
+            if(f.getPath().equals(config.getString("pitGame"))) {
+                defaultPitGame = pg;
+                plugin.getLogger().log(Level.INFO, "DefaultPitGame Activated: " + pg.name);
+            }
         }
     }
 

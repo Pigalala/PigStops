@@ -7,7 +7,6 @@ import co.aikar.commands.annotation.*;
 import co.aikar.commands.contexts.ContextResolver;
 import me.makkuusen.timing.system.TPlayer;
 import me.makkuusen.timing.system.api.TimingSystemAPI;
-import me.makkuusen.timing.system.commands.CommandBoat;
 import me.pigalala.pigstops.pit.Pit;
 import me.pigalala.pigstops.pit.management.*;
 import org.bukkit.Material;
@@ -26,13 +25,17 @@ import static me.makkuusen.timing.system.ApiUtilities.spawnBoat;
 public class OinkCommand extends BaseCommand {
 
     @Default
-    public static void practiseDefaultPit(Player player) {
-        if(PigStops.defaultPitGame == null) {
-            player.sendMessage("§cThere is no pit game available. Please contact a server admin.");
-            return;
+    @Subcommand("practise")
+    public static void practisePit(Player player, @Optional PitGame pitGame) {
+        if(pitGame == null) {
+            if(PigStops.defaultPitGame == null) {
+                player.sendMessage("§cThere is no pit game available. Please contact a server admin.");
+                return;
+            }
+            PitPlayer.of(player).newPit(Pit.Type.FAKE);
+        } else {
+            PitPlayer.of(player).newPit(Pit.Type.FAKE, pitGame);
         }
-
-        PitPlayer.of(player).pit = new Pit(PitPlayer.of(player), Pit.Type.FAKE);
     }
 
     @Subcommand("setgame")

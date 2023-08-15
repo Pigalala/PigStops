@@ -38,14 +38,6 @@ public abstract class Utils {
         PigStops.getPlugin().getLogger().log(Level.INFO, heat.getName() + ": " + message.replaceAll("§.", ""));
     }
 
-    public static void broadcastMessage(TextComponent message, Heat heat) {
-        heat.getParticipants().forEach(participant -> {
-            if(participant.getTPlayer().getPlayer() == null) return;
-            participant.getTPlayer().getPlayer().sendMessage(message);
-        });
-        PigStops.getPlugin().getLogger().log(Level.INFO, heat.getName() + ": " + message.content().replaceAll("§.", ""));
-    }
-
     public static void createNewPitFile(String path, String name, Integer invSize) {
         File f = new File(path);
         try {
