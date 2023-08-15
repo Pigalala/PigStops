@@ -30,12 +30,12 @@ public abstract class Utils {
         return message;
     }
 
-    public static void broadcastMessage(String message, Heat heat) {
+    public static void broadcastMessage(TextComponent message, Heat heat) {
         heat.getParticipants().forEach(participant -> {
             if(participant.getTPlayer().getPlayer() == null) return;
             participant.getTPlayer().getPlayer().sendMessage(message);
         });
-        PigStops.getPlugin().getLogger().log(Level.INFO, heat.getName() + ": " + message.replaceAll("§.", ""));
+        PigStops.getPlugin().getLogger().log(Level.INFO, heat.getName() + ": " + message.content());
     }
 
     public static void createNewPitFile(String path, String name, Integer invSize) {

@@ -9,6 +9,7 @@ import me.makkuusen.timing.system.heat.Heat;
 import me.makkuusen.timing.system.heat.ScoreboardUtils;
 import me.makkuusen.timing.system.participant.Driver;
 import me.makkuusen.timing.system.theme.Text;
+import me.pigalala.pigstops.OinkMessages;
 import me.pigalala.pigstops.PigStops;
 import me.pigalala.pigstops.PitPlayer;
 import me.pigalala.pigstops.Utils;
@@ -150,9 +151,10 @@ public class Pit implements Listener {
         String finalTime = formatAsTime(Duration.between(startTime, endTime).toMillis());
 
         int accuracy = Math.round((float) maxItemsToClick / clicks * 100f);
+        int misclicks = clicks - maxItemsToClick;
 
         if(pitType != Type.REAL) {
-            pp.getPlayer().sendMessage(Utils.getCustomMessage("&aPigStop finished in &6%TIME%", "%TIME%", finalTime));
+            pp.getPlayer().sendMessage(OinkMessages.getSoloFinishText(finalTime, accuracy, misclicks));
             return;
         }
 
@@ -167,12 +169,7 @@ public class Pit implements Listener {
             d.getCurrentLap().setPitted(true);
             heat.updatePositions();
 
-            Utils.broadcastMessage(Utils.getCustomMessage("%LOGO% %PLAYER% &ahas completed PigStop &6%PIT% &ain &6%TIME%",
-                    "%LOGO%", getColor(tp.getPlayer()) + "&l&o||&r",
-                    "%PLAYER%", tp.getName(),
-                    "%PIT%", String.valueOf(d.getPits()),
-                    "%TIME%", finalTime),
-                    heat);
+            Utils.broadcastMessage(OinkMessages.getRaceFinishText(tp, pitGame.name, d.getPits(), finalTime, accuracy, misclicks), heat);
         }
     }
 

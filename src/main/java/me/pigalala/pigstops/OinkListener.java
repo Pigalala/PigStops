@@ -11,6 +11,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.event.vehicle.VehicleExitEvent;
 import org.bukkit.util.Vector;
 
 public class OinkListener implements Listener {
@@ -32,7 +33,7 @@ public class OinkListener implements Listener {
     @EventHandler
     public void onMove(PlayerMoveEvent e) {
         PitPlayer pp = PitPlayer.of(e.getPlayer());
-        if(!pp.getPlayer().getLocation().add(new Vector(0, -2, 0)).getBlock().getType().equals(PigStops.pitBlock) || pp.isPitting()) return;
+        if(pp.isPitting() || !pp.getPlayer().getLocation().add(new Vector(0, -2, 0)).getBlock().getType().equals(PigStops.pitBlock)) return;
 
         if(!(pp.getPlayer().getVehicle() instanceof Boat)) {
             if(!pp.isInDebugMode()) return;
@@ -56,6 +57,17 @@ public class OinkListener implements Listener {
         }
 
         if(driver.get().getHeat().isActive() && driver.get().getCurrentLap() != null && !driver.get().getCurrentLap().isPitted()) pp.newPit(Pit.Type.REAL);
+    }
+
+    @EventHandler
+    public void onPlayerExitBoat(VehicleExitEvent e) {
+        if(e.getExited() instanceof Player player && e.getVehicle() instanceof Boat) {
+            PitPlayer pp = PitPlayer.of(player);
+            if(pp.isInPracticeMode()) {
+                pp.togglePracticeMode();
+                player.sendMessage("§aPracticeMode has been disabled");
+            }
+        }
     }
 
     @EventHandler
