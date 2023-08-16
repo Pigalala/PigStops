@@ -169,7 +169,7 @@ public class Pit implements Listener {
             d.getCurrentLap().setPitted(true);
             heat.updatePositions();
 
-            Utils.broadcastMessage(OinkMessages.getRaceFinishText(tp, pitGame.name, d.getPits(), finalTime, accuracy, misclicks), heat);
+            Utils.broadcastMessage(OinkMessages.getRaceFinishText(tp, pitGame.name, d.getPits(), finalTime, accuracy, misclicks), heat, String.format("%s in %s (%s)", tp.getName(), finalTime, d.getPits()));
         }
     }
 

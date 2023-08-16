@@ -9,6 +9,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.io.IOException;
@@ -30,12 +31,12 @@ public abstract class Utils {
         return message;
     }
 
-    public static void broadcastMessage(TextComponent message, Heat heat) {
+    public static void broadcastMessage(TextComponent message, Heat heat, @Nullable String simpleMessage) {
         heat.getParticipants().forEach(participant -> {
             if(participant.getTPlayer().getPlayer() == null) return;
             participant.getTPlayer().getPlayer().sendMessage(message);
         });
-        PigStops.getPlugin().getLogger().log(Level.INFO, heat.getName() + ": " + message.content());
+        if(simpleMessage != null) PigStops.getPlugin().getLogger().log(Level.INFO, heat.getName() + ": " + simpleMessage);
     }
 
     public static void createNewPitFile(String path, String name, Integer invSize) {

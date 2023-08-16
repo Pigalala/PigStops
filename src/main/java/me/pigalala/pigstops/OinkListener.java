@@ -60,17 +60,6 @@ public class OinkListener implements Listener {
     }
 
     @EventHandler
-    public void onPlayerExitBoat(VehicleExitEvent e) {
-        if(e.getExited() instanceof Player player && e.getVehicle() instanceof Boat) {
-            PitPlayer pp = PitPlayer.of(player);
-            if(pp.isInPracticeMode()) {
-                pp.togglePracticeMode();
-                player.sendMessage("§aPracticeMode has been disabled");
-            }
-        }
-    }
-
-    @EventHandler
     public void onStopSpectating(PlayerStopSpectatingEntityEvent e) {
         if(!(e.getSpectatorTarget() instanceof Player t)) return;
         PitPlayer spectator = PitPlayer.of(e.getPlayer());
