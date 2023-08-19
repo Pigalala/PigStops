@@ -2,7 +2,7 @@ package me.pigalala.pigstops;
 
 import com.destroystokyo.paper.event.player.PlayerStopSpectatingEntityEvent;
 import me.makkuusen.timing.system.api.TimingSystemAPI;
-import me.pigalala.pigstops.pit.*;
+import me.pigalala.pigstops.pit.management.pitmodes.Pit;
 import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Boat;
 import org.bukkit.entity.Player;
@@ -11,7 +11,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
-import org.bukkit.event.vehicle.VehicleExitEvent;
 import org.bukkit.util.Vector;
 
 public class OinkListener implements Listener {

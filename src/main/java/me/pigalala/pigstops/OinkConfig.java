@@ -46,7 +46,6 @@ public abstract class OinkConfig {
 
         for(File f : Arrays.stream(dir.listFiles()).toList()) {
             PitGame pg = new PitGame(f);
-            pitGames.add(pg);
             plugin.getLogger().log(Level.INFO, "Loaded PigStop: " + pg.name);
 
             if(f.getPath().equals(config.getString("pitGame"))) {

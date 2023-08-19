@@ -1,24 +1,19 @@
-package me.pigalala.pigstops.pit;
+package me.pigalala.pigstops.pit.management.pitmodes;
 
-import me.makkuusen.timing.system.ApiUtilities;
-import me.makkuusen.timing.system.Database;
+import co.aikar.commands.BukkitCommandExecutionContext;
+import co.aikar.commands.InvalidCommandArgument;
+import co.aikar.commands.contexts.ContextResolver;
 import me.makkuusen.timing.system.TPlayer;
 import me.makkuusen.timing.system.api.TimingSystemAPI;
 import me.makkuusen.timing.system.event.EventDatabase;
 import me.makkuusen.timing.system.heat.Heat;
-import me.makkuusen.timing.system.heat.ScoreboardUtils;
 import me.makkuusen.timing.system.participant.Driver;
-import me.makkuusen.timing.system.theme.Text;
 import me.pigalala.pigstops.OinkMessages;
 import me.pigalala.pigstops.PigStops;
 import me.pigalala.pigstops.PitPlayer;
 import me.pigalala.pigstops.Utils;
-import me.pigalala.pigstops.pit.management.Modifications;
 import me.pigalala.pigstops.pit.management.PitGame;
-import net.kyori.adventure.text.Component;
-import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
-import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Boat;
 import org.bukkit.entity.Player;
@@ -29,6 +24,7 @@ import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -36,30 +32,65 @@ import org.bukkit.inventory.meta.ItemMeta;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.*;
+import java.util.logging.Level;
 
 import static me.makkuusen.timing.system.ApiUtilities.formatAsTime;
 import static me.makkuusen.timing.system.ApiUtilities.spawnBoat;
 
-public class Pit implements Listener {
+public abstract class Pit implements Listener {
 
     public enum Type {
         REAL,
         FAKE;
     }
 
-    private final PitPlayer pp;
-    private final ItemStack defaultBackground;
-    private final PitGame pitGame;
-    private final Type pitType;
+    public enum PitMode {
+        DEFAULT("Default"),
+        ITEM_PER_PAGE("Items Per Page");
 
-    private int itemsToClick;
-    private int maxItemsToClick;
-    private int clicks;
+        private final String displayName;
 
-    private Instant startTime;
-    private Inventory pitWindow;
+        PitMode(String displayName) {
+            this.displayName = displayName;
+        }
 
-    private final List<PitPlayer> spectators = new ArrayList<>();
+        public String getDisplayName() {
+            return displayName;
+        }
+
+        public static PitMode of(String name) {
+            try {
+                return PitMode.valueOf(name);
+            } catch (Exception e) {
+                PigStops.getPlugin().getLogger().log(Level.WARNING, "Unknown PitMode detected, please shout at Pigalala.");
+                return null;
+            }
+        }
+
+        public static ContextResolver<PitMode, BukkitCommandExecutionContext> getPitModeCommandContext() {
+            return c -> {
+                try {
+                    return of(c.popFirstArg().toUpperCase());
+                } catch (Exception e) {
+                    throw new InvalidCommandArgument();
+                }
+            };
+        }
+    }
+
+    protected final PitPlayer pp;
+    protected final ItemStack defaultBackground;
+    protected final PitGame pitGame;
+    protected final Type pitType;
+
+    protected int itemsToClick;
+    protected int maxItemsToClick;
+    protected int clicks;
+
+    protected Instant startTime;
+    protected Inventory pitWindow;
+
+    protected final List<PitPlayer> spectators = new ArrayList<>();
 
     public Pit(PitPlayer pp, Type pitType) {
         this.pp = pp;
@@ -88,28 +119,6 @@ public class Pit implements Listener {
         createWindow(registerContents(), pitGame.name, pitGame.inventorySize);
     }
 
-    private ItemStack[] registerContents() {
-        List<ItemStack> contentsLines = new ArrayList<>();
-        int itc = 0;
-        for(ItemStack item : pitGame.contents) {
-            if(contentsLines.size() >= pitGame.inventorySize) break;
-            if(item.getType() == Material.AIR) {
-                contentsLines.add(defaultBackground);
-            } else {
-                contentsLines.add(item);
-                itc++;
-            }
-        }
-        this.itemsToClick = itc;
-        this.maxItemsToClick = itemsToClick;
-
-        if(itc == 0) {
-            // No items setup
-            return new ItemStack[]{defaultBackground};
-        }
-
-        return contentsLines.toArray(new ItemStack[0]);
-    }
 
     private void registerSpectators() {
         for(Player p : Bukkit.getOnlinePlayers()) {
@@ -132,18 +141,6 @@ public class Pit implements Listener {
         return itemsToClick <= 0;
     }
 
-    private void createWindow(ItemStack[] contents, String windowName, Integer windowSize){
-        Inventory pitWindow = Bukkit.createInventory(null, windowSize, Component.text(Utils.pitNameBase + windowName));
-
-        this.pitWindow = pitWindow;
-        this.startTime = Instant.now();
-
-        pitWindow.setContents(contents);
-        if(pitGame.hasModification(Modifications.RANDOMISE_ON_START)) shuffleItems(false);
-
-        pp.getPlayer().openInventory(pitWindow);
-        spectators.forEach(pitPlayer -> pitPlayer.getPlayer().openInventory(pitWindow));
-    }
 
     public void finishPit() {
         end();
@@ -169,12 +166,12 @@ public class Pit implements Listener {
             d.getCurrentLap().setPitted(true);
             heat.updatePositions();
 
-            Utils.broadcastMessage(OinkMessages.getRaceFinishText(tp, pitGame.name, d.getPits(), finalTime, accuracy, misclicks), heat, String.format("%s in %s (%s)", tp.getName(), finalTime, d.getPits()));
+            Utils.broadcastMessage(OinkMessages.getRaceFinishText(tp, pitGame.name, d.getPits(), finalTime, accuracy, misclicks, pitGame.pitMode), heat, String.format("%s in %s (%s)", tp.getName(), finalTime, d.getPits()));
         }
     }
 
     @EventHandler
-    public void onItemClicked(InventoryClickEvent e) {
+    public void itemClickedEvent(InventoryClickEvent e) {
         if(e.getWhoClicked() != pp.getPlayer() || !e.getView().getTitle().startsWith("§dPigStops")) return;
         e.setCancelled(true);
         if(e.getClickedInventory() instanceof PlayerInventory) return;
@@ -187,40 +184,25 @@ public class Pit implements Listener {
         clicks++;
 
         if(e.getCurrentItem() == null) return;
-        if(e.getCurrentItem().getType() != defaultBackground.getType()) {
-            itemsToClick -= 1;
-            pitWindow.setItem(e.getSlot(), new ItemStack(Material.AIR));
-
-            if(!isFinished()) {
-                pp.playSound(Sound.BLOCK_BAMBOO_HIT);
-                spectators.forEach(ppp -> ppp.playSound(Sound.BLOCK_BAMBOO_HIT));
-            } else {
-                pp.playSound(Sound.BLOCK_SMITHING_TABLE_USE);
-                spectators.forEach(ppp -> ppp.playSound(Sound.BLOCK_SMITHING_TABLE_USE));
-                finishPit();
-            }
-        } else {
-            shuffleItems(true);
-        }
+        onItemClicked(e.getClickedInventory(), e.getView(), e.getCurrentItem(), e.getSlot());
     }
 
+
     @EventHandler
-    public void onInvClose(InventoryCloseEvent e) {
+    public void invCloseEvent(InventoryCloseEvent e) {
         if(e.getInventory() != pitWindow || isFinished() || e.getReason() == InventoryCloseEvent.Reason.PLUGIN) return;
 
         if(e.getPlayer() == pp.getPlayer()) end();
         else removeSpectator(PitPlayer.of((Player) e.getPlayer()));
     }
 
-    private void shuffleItems(Boolean playFailSound) {
-        if(pitGame.hasModification(Modifications.RANDOMISE_ON_FAIL)) {
-            List<ItemStack> shuffled = new ArrayList<>(Arrays.stream(pitWindow.getContents()).toList());
-            do {
-                Collections.shuffle(shuffled);
-            } while(shuffled.equals(Arrays.stream(pitWindow.getContents()).toList()));
+    protected void shuffleItems(Boolean playFailSound) {
+        List<ItemStack> shuffled = new ArrayList<>(Arrays.stream(pitWindow.getContents()).toList());
+        do {
+            Collections.shuffle(shuffled);
+        } while(shuffled.equals(Arrays.stream(pitWindow.getContents()).toList()));
 
-            pitWindow.setContents(shuffled.toArray(new ItemStack[0]));
-        }
+        pitWindow.setContents(shuffled.toArray(new ItemStack[0]));
 
         if(playFailSound) {
             pp.playSound(Sound.BLOCK_NOTE_BLOCK_PLING, 0.5f, 0.5f);
@@ -250,8 +232,18 @@ public class Pit implements Listener {
         spectators.remove(pp);
     }
 
-    private static String getColor(Player p) {
-        Optional<Driver> maybeDriver = EventDatabase.getDriverFromRunningHeat(Database.getPlayer(p).getUniqueId());
-        return maybeDriver.isEmpty() ? "" + net.md_5.bungee.api.ChatColor.of("#ffffff") : maybeDriver.get().getTPlayer().getColorCode();
+    protected abstract void createWindow(ItemStack[] contents, String windowName, Integer windowSize);
+    protected abstract ItemStack[] registerContents();
+    protected abstract void onItemClicked(Inventory inventory, InventoryView inventoryView, ItemStack clickedItem, int clickedSlot);
+
+    public static Pit newPitOfMode(PitGame pg, PitPlayer pp, Type pitType) {
+        switch(pg.pitMode) {
+            case ITEM_PER_PAGE -> {
+                return new PitModeItemPerPage(pp, pitType);
+            }
+            default -> {
+                return new PitModeDefault(pp, pitType);
+            }
+        }
     }
 }

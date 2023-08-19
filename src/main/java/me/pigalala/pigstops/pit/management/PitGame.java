@@ -5,6 +5,7 @@ import co.aikar.commands.InvalidCommandArgument;
 import co.aikar.commands.contexts.ContextResolver;
 import me.pigalala.pigstops.OinkConfig;
 import me.pigalala.pigstops.Utils;
+import me.pigalala.pigstops.pit.management.pitmodes.Pit;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.inventory.ItemStack;
@@ -13,9 +14,9 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
 
-import static me.pigalala.pigstops.PigStops.defaultPitGame;
-import static me.pigalala.pigstops.PigStops.pitGames;
+import static me.pigalala.pigstops.PigStops.*;
 
 public class PitGame {
 
@@ -27,6 +28,7 @@ public class PitGame {
     public ItemStack backgroundItem;
     public String modifications;
     public List<ItemStack> contents = new ArrayList<>();
+    public Pit.PitMode pitMode;
 
     public PitGame(File f) {
         file = f;
@@ -59,18 +61,18 @@ public class PitGame {
             }
             pitFile.set("item" + i, contents.get(i));
         }
-        saveModifications();
+        save();
     }
 
     public void setBackgroundItem(ItemStack backgroundItem) {
         pitFile.set("background", backgroundItem);
-        saveModifications();
+        save();
         this.backgroundItem = backgroundItem;
     }
 
     public void setInventorySize(Integer size) {
         pitFile.set("invsize", size);
-        saveModifications();
+        save();
         this.inventorySize = size;
     }
 
@@ -90,7 +92,13 @@ public class PitGame {
         pitGames.add(this);
 
         if(b) Utils.setDefaultPitGame(this);
-        saveModifications();
+        save();
+    }
+
+    public void setPitMode(Pit.PitMode pitMode) {
+        pitFile.set("pitmode", pitMode.toString());
+        save();
+        this.pitMode = pitMode;
     }
 
     public void setModification(char change, Modifications modification) {
@@ -103,22 +111,14 @@ public class PitGame {
             this.modifications = this.modifications.replace(modification.getId(), "");
         } else throw new RuntimeException("Pigalala was stupid");
 
-        saveModifications();
+        save();
     }
 
     public boolean hasModification(Modifications modification) {
         return modifications.contains(modification.getId());
     }
 
-    public void update() {
-        if(!pitFile.isSet("modifications")) {
-            pitFile.set("modifications", "ab");
-        }
-
-        saveModifications();
-    }
-
-    private void saveModifications() {
+    private void save() {
         try {
             pitFile.save(file);
         } catch (IOException e) {
@@ -127,14 +127,28 @@ public class PitGame {
     }
 
     private void firstTimeSetup() {
-        this.name = pitFile.getString("name");
-        this.inventorySize = pitFile.getInt("invsize");
-        this.backgroundItem = pitFile.getItemStack("background");
-        this.modifications = pitFile.getString("modifications");
+        try {
+            validateFile();
+            this.name = pitFile.getString("name");
+            this.inventorySize = pitFile.getInt("invsize");
+            this.backgroundItem = pitFile.getItemStack("background");
+            this.modifications = pitFile.getString("modifications");
+            this.pitMode = Pit.PitMode.of(pitFile.getString("pitmode"));
 
-        for(int i = 0; i < 54; i++) {
-            contents.add(pitFile.getItemStack("item" + i));
+            for(int i = 0; i < 54; i++) {
+                contents.add(pitFile.getItemStack("item" + i));
+            }
+        } catch (NullPointerException e) {
+            getPlugin().getLogger().log(Level.SEVERE, "^^^ Error loading PigStop, please send the above PigStop to Pigalala for maintenance, or delete it ^^^");
         }
+    }
+
+    private void validateFile() {
+        if(!pitFile.isSet("name")) throw new NullPointerException();
+        if(!pitFile.isSet("invsize")) pitFile.set("invsize", 27);
+        if(!pitFile.isSet("background")) pitFile.set("background", new ItemStack(Material.BARRIER));
+        if(!pitFile.isSet("modifications")) pitFile.set("modifications", "ab");
+        if(!pitFile.isSet("pitmode")) pitFile.set("pitmode", Pit.PitMode.DEFAULT.toString());
     }
 
     public static PitGame of(String name) {

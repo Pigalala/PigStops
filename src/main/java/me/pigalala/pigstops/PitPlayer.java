@@ -1,12 +1,11 @@
 package me.pigalala.pigstops;
 
-import me.pigalala.pigstops.pit.*;
 import me.pigalala.pigstops.pit.management.PitEditor;
 import me.pigalala.pigstops.pit.management.PitGame;
+import me.pigalala.pigstops.pit.management.pitmodes.Pit;
 import org.bukkit.Location;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
 
@@ -37,11 +36,11 @@ public class PitPlayer {
     }
 
     public void newPit(Pit.Type pitType) {
-        pit = new Pit(this, pitType);
+        pit = Pit.newPitOfMode(PigStops.defaultPitGame, this, pitType);
     }
 
     public void newPit(Pit.Type pitType, PitGame pg) {
-        pit = new Pit(this, pitType, pg);
+        pit = Pit.newPitOfMode(pg, this, pitType);
     }
 
     public Pit getPit() {

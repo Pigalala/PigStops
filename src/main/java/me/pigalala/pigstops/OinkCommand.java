@@ -7,7 +7,7 @@ import co.aikar.commands.annotation.*;
 import co.aikar.commands.contexts.ContextResolver;
 import me.makkuusen.timing.system.TPlayer;
 import me.makkuusen.timing.system.api.TimingSystemAPI;
-import me.pigalala.pigstops.pit.Pit;
+import me.pigalala.pigstops.pit.management.pitmodes.Pit;
 import me.pigalala.pigstops.pit.management.*;
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -128,7 +128,7 @@ public class OinkCommand extends BaseCommand {
 
         @Subcommand("delete")
         @CommandCompletion("@pits")
-        public static void deletePit(Player player, PitGame game){
+        public static void deletePit(Player player, PitGame game) {
             game.delete();
             player.sendMessage("§aSuccessfully deleted " + game.name);
         }
@@ -165,14 +165,21 @@ public class OinkCommand extends BaseCommand {
                 }
 
                 game.setInventorySize(size);
-                player.sendMessage("§aSuccessfully change pit inventory size to " + size);
+                player.sendMessage("§aSuccessfully changed pit inventory size to " + size);
             }
 
             @Subcommand("background")
             @CommandCompletion("@pits @items")
             public static void setBackgroundItem(Player player, PitGame game, Material itemMat) {
                 game.setBackgroundItem(new ItemStack(itemMat));
-                player.sendMessage("§aSuccessfully change background item to " + itemMat.toString().toLowerCase());
+                player.sendMessage("§aSuccessfully changed background item to " + itemMat.toString().toLowerCase());
+            }
+
+            @Subcommand("pitmode")
+            @CommandCompletion("@pits @pitmode")
+            public static void setPitMode(Player player, PitGame pitGame, Pit.PitMode pitMode) {
+                pitGame.setPitMode(pitMode);
+                player.sendMessage("§aSuccessfully changed PitMode to §d" + pitMode.getDisplayName());
             }
 
             @Subcommand("modifiers")

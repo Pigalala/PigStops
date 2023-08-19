@@ -19,7 +19,7 @@ import static me.pigalala.pigstops.PigStops.getPlugin;
 
 public abstract class Utils {
 
-    public static final String pitNameBase = "§dPigStops §r- §d";
+    public static final String pitNameBase = "§dPigStops §7§l- §d";
 
     public static String getCustomMessage(String message, String... replacements) {
 
@@ -36,7 +36,7 @@ public abstract class Utils {
             if(participant.getTPlayer().getPlayer() == null) return;
             participant.getTPlayer().getPlayer().sendMessage(message);
         });
-        if(simpleMessage != null) PigStops.getPlugin().getLogger().log(Level.INFO, heat.getName() + ": " + simpleMessage);
+        if(simpleMessage != null) PigStops.getPlugin().getLogger().log(Level.INFO, heat.getName() + " Pit: " + simpleMessage);
     }
 
     public static void createNewPitFile(String path, String name, Integer invSize) {
@@ -53,7 +53,7 @@ public abstract class Utils {
         yamlConfig.set("invsize", invSize);
         yamlConfig.set("background", new ItemStack(Material.GRAY_STAINED_GLASS_PANE));
         yamlConfig.set("modifications", "ab");
-
+        yamlConfig.set("pitmode", "DEFAULT");
         for (int i = 0; i < 54; i++) {
             yamlConfig.set("item" + i, new ItemStack(Material.AIR));
         }

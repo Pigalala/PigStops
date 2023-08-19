@@ -1,6 +1,7 @@
 package me.pigalala.pigstops;
 
 import me.makkuusen.timing.system.TPlayer;
+import me.pigalala.pigstops.pit.management.pitmodes.Pit;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -27,7 +28,7 @@ public class OinkMessages {
                 .build();
     }
 
-    public static TextComponent getRaceFinishText(TPlayer player, String pitName, int pit, String time, int accuracy, int misclicks) {
+    public static TextComponent getRaceFinishText(TPlayer player, String pitName, int pit, String time, int accuracy, int misclicks, Pit.PitMode pm) {
         return Component.text().content("").color(NamedTextColor.GREEN)
                 .append(Component.text("|| ", player.getTextColor(), TextDecoration.BOLD, TextDecoration.ITALIC))
                 .append(Component.text(player.getName(), NamedTextColor.WHITE))
@@ -40,7 +41,8 @@ public class OinkMessages {
                         .append(Component.text("|| ", player.getTextColor(), TextDecoration.BOLD, TextDecoration.ITALIC))
                         .append(Component.text(player.getName(), NamedTextColor.WHITE))
                         .appendNewline().append(Component.text("----------").color(NamedTextColor.GRAY))
-                        .appendNewline().append(Component.text(pitName))
+                        .appendNewline().append(Component.text(pitName)).append(Component.text(".pigstop").color(NamedTextColor.GRAY))
+                        .appendNewline().append(Component.text(pm.getDisplayName()).color(NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, true))
                         .appendNewline().append(Component.text("----------").color(NamedTextColor.GRAY))
                         .appendNewline().append(Component.text(time))
                         .appendNewline().append(Component.text("Accuracy: ").color(TextColor.color(0x7BF200))).append(Component.text(accuracy + "%"))
