@@ -2,6 +2,7 @@ package me.pigalala.pigstops.pit.management.pitmodes;
 
 import me.pigalala.pigstops.PitPlayer;
 import me.pigalala.pigstops.Utils;
+import me.pigalala.pigstops.pit.management.PitGame;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -18,6 +19,10 @@ public class PitModeDefault extends Pit {
 
     public PitModeDefault(PitPlayer pp, Type pitType) {
         super(pp, pitType);
+    }
+
+    public PitModeDefault(PitPlayer pp, Type pitType, PitGame pg) {
+        super(pp, pitType, pg);
     }
 
     @Override

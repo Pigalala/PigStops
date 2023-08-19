@@ -71,18 +71,6 @@ public class OinkCommand extends BaseCommand {
         player.sendMessage("§aSuccessfully set pit block to " + block.toString().toLowerCase());
     }
 
-    @Subcommand("debugmode")
-    @CommandPermission("pigstop.admin")
-    public static void toggleDebugMode(Player player) {
-        var maybeDriver = TimingSystemAPI.getDriverFromRunningHeat(player.getUniqueId());
-        if(maybeDriver.isPresent()) {
-            player.sendMessage("§cYou may not do this now");
-            return;
-        }
-
-        player.sendMessage("§aDebugMode has been " + (PitPlayer.of(player).toggleDebugMode() ? "enabled" : "disabled"));
-    }
-
     @Subcommand("practicemode")
     public static void togglePracticeMode(Player player) {
         var maybeDriver = TimingSystemAPI.getDriverFromRunningHeat(player.getUniqueId());

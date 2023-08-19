@@ -15,7 +15,6 @@ public class PitPlayer {
     public Pit pit;
     public PitEditor editor;
 
-    private boolean debugMode;
     private boolean practiceMode;
 
     public Location practiceModeStart;
@@ -52,18 +51,9 @@ public class PitPlayer {
         return editor;
     }
 
-    public boolean toggleDebugMode() {
-        debugMode = !debugMode;
-        return debugMode;
-    }
-
     public boolean togglePracticeMode() {
         practiceMode = !practiceMode;
         return practiceMode;
-    }
-
-    public boolean isInDebugMode() {
-        return debugMode;
     }
 
     public boolean isInPracticeMode() {

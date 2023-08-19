@@ -2,6 +2,7 @@ package me.pigalala.pigstops.pit.management.pitmodes;
 
 import me.pigalala.pigstops.PitPlayer;
 import me.pigalala.pigstops.Utils;
+import me.pigalala.pigstops.pit.management.PitGame;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -22,6 +23,10 @@ public class PitModeItemPerPage extends Pit {
 
     public PitModeItemPerPage(PitPlayer pp, Type pitType) {
         super(pp, pitType);
+    }
+
+    public PitModeItemPerPage(PitPlayer pp, Type pitType, PitGame pg) {
+        super(pp, pitType, pg);
     }
 
     @Override
@@ -76,7 +81,7 @@ public class PitModeItemPerPage extends Pit {
             inventory.setContents(pages.get(page));
             inventoryView.setTitle(pitInvName + " §7§l- §d" + (page + 1));
 
-            pp.playSound(Sound.BLOCK_NOTE_BLOCK_PLING);
+            pp.playSound(Sound.BLOCK_NOTE_BLOCK_PLING, 1f, 2f);
             spectators.forEach(pp -> pp.playSound(Sound.BLOCK_NOTE_BLOCK_PLING, 1f, 2f));
         } else {
             shuffleItems(true);

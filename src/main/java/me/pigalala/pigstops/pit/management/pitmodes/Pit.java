@@ -46,7 +46,7 @@ public abstract class Pit implements Listener {
 
     public enum PitMode {
         DEFAULT("Default"),
-        ITEM_PER_PAGE("Items Per Page");
+        ITEM_PER_PAGE("Item Per Page");
 
         private final String displayName;
 
@@ -239,10 +239,10 @@ public abstract class Pit implements Listener {
     public static Pit newPitOfMode(PitGame pg, PitPlayer pp, Type pitType) {
         switch(pg.pitMode) {
             case ITEM_PER_PAGE -> {
-                return new PitModeItemPerPage(pp, pitType);
+                return new PitModeItemPerPage(pp, pitType, pg);
             }
             default -> {
-                return new PitModeDefault(pp, pitType);
+                return new PitModeDefault(pp, pitType, pg);
             }
         }
     }

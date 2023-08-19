@@ -4,6 +4,7 @@ import com.destroystokyo.paper.event.player.PlayerStopSpectatingEntityEvent;
 import me.makkuusen.timing.system.api.TimingSystemAPI;
 import me.pigalala.pigstops.pit.management.pitmodes.Pit;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.TextColor;
 import org.bukkit.entity.Boat;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -32,27 +33,18 @@ public class OinkListener implements Listener {
     @EventHandler
     public void onMove(PlayerMoveEvent e) {
         PitPlayer pp = PitPlayer.of(e.getPlayer());
+        if(pp.isInPracticeMode()) pp.getPlayer().sendActionBar(Component.text("You are in PigStop's PracticeMode").color(TextColor.color(0xF38AFF)));
+        if(pp.isInPracticeMode() && TimingSystemAPI.getDriverFromRunningHeat(pp.getPlayer().getUniqueId()).isPresent()) pp.togglePracticeMode();
         if(pp.isPitting() || !pp.getPlayer().getLocation().add(new Vector(0, -2, 0)).getBlock().getType().equals(PigStops.pitBlock)) return;
-
-        if(!(pp.getPlayer().getVehicle() instanceof Boat)) {
-            if(!pp.isInDebugMode()) return;
-            pp.getPlayer().sendActionBar(Component.text("§aYou are standing on a pitblock"));
-            return;
-        }
 
         var driver = TimingSystemAPI.getDriverFromRunningHeat(pp.getPlayer().getUniqueId());
         if(driver.isEmpty()) {
             if(pp.isInPracticeMode()) {
                 pp.newPit(Pit.Type.FAKE);
             }
-            if(pp.isInDebugMode()) {
-                pp.newPit(Pit.Type.FAKE);
-                pp.getPlayer().sendMessage("§aDebugMode has been " + (pp.toggleDebugMode() ? "enabled" : "disabled"));
-            }
             return;
         } else {
             if(pp.isInPracticeMode()) pp.togglePracticeMode();
-            if(pp.isInDebugMode()) pp.toggleDebugMode();
         }
 
         if(driver.get().getHeat().isActive() && driver.get().getCurrentLap() != null && !driver.get().getCurrentLap().isPitted()) pp.newPit(Pit.Type.REAL);
