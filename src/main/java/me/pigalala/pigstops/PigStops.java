@@ -2,7 +2,6 @@ package me.pigalala.pigstops;
 
 import co.aikar.commands.PaperCommandManager;
 import com.google.common.collect.ImmutableList;
-import me.pigalala.pigstops.pit.management.Modifications;
 import me.pigalala.pigstops.pit.management.PitGame;
 import me.pigalala.pigstops.pit.management.pitmodes.Pit;
 import org.bukkit.Material;
@@ -60,14 +59,6 @@ public final class PigStops extends JavaPlugin {
             return ImmutableList.copyOf(blocks.toArray(new String[0]));
         });
 
-        commandManager.getCommandCompletions().registerAsyncCompletion("modifiers", c -> {
-            List<String> mods = new ArrayList<>();
-            for(Modifications mod : Modifications.values()) {
-                mods.add(mod.getDisplayName());
-            }
-            return mods;
-        });
-
         commandManager.getCommandCompletions().registerAsyncCompletion("pitmode", c -> {
             List<String> modes = new ArrayList<>();
             for(Pit.PitMode pm : Pit.PitMode.values()) {
@@ -79,7 +70,6 @@ public final class PigStops extends JavaPlugin {
         commandManager.getCommandContexts().registerContext(PitGame.class, PitGame.getPitGameContextResolver());
         commandManager.getCommandContexts().registerContext(Material.class, OinkCommand.getMaterialContextResolver());
         commandManager.getCommandContexts().registerContext(Sound.class, OinkCommand.getSoundContextCompletions());
-        commandManager.getCommandContexts().registerContext(Modifications.class, Modifications.getModificationsContextResolver());
         commandManager.getCommandContexts().registerContext(Pit.PitMode.class, Pit.PitMode.getPitModeCommandContext());
 
         commandManager.registerCommand(new OinkCommand());

@@ -181,36 +181,12 @@ public class OinkCommand extends BaseCommand {
                 pitGame.setPitMode(pitMode);
                 player.sendMessage("§aSuccessfully changed PitMode to §d" + pitMode.getDisplayName());
             }
-
-            @Subcommand("modifiers")
-            @CommandCompletion("@pits +/- @modifiers")
-            public static void setModifier(Player player, PitGame pitGame, char change, Modifications modification) {
-                if(change == '+' || change == '-') {
-                    pitGame.setModification(change, modification);
-                    player.sendMessage("§aSuccessfully modified " + pitGame.name);
-                    return;
-                }
-
-                player.sendMessage("§cPlease use a + or - to set a modifier");
-            }
         }
 
         @Subcommand("info")
-        @CommandPermission("pigstop.editor")
-        public class Info extends BaseCommand {
-
-            @Subcommand("modifiers")
-            @CommandCompletion("@pits")
-            public static void listModifiers(Player player, PitGame pitGame) {
-                StringBuilder message = new StringBuilder("§7---------------\n§aModifiers of §6" + pitGame.name + "§7:\n");
-
-                for(Modifications modification : Modifications.values()) {
-                    message.append("§d").append(modification.getDisplayName()).append(" §7: ").append(pitGame.hasModification(modification) ? "§a✓" : "§c×").append("\n");
-                }
-
-                player.sendMessage(message.append("§7---------------").toString());
-            }
-
+        @CommandCompletion("@pits")
+        public static void getInfo(Player player, PitGame pitGame) {
+            player.sendMessage(OinkMessages.getPitGameInfoText(pitGame));
         }
     }
 

@@ -2,7 +2,6 @@ package me.pigalala.pigstops.pit.management.pitmodes;
 
 import me.pigalala.pigstops.PitPlayer;
 import me.pigalala.pigstops.Utils;
-import me.pigalala.pigstops.pit.management.Modifications;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -56,7 +55,7 @@ public class PitModeItemPerPage extends Pit {
         this.startTime = Instant.now();
 
         pitWindow.setContents(pages.get(0));
-        if(pitGame.hasModification(Modifications.RANDOMISE_ON_START)) shuffleItems(false);
+        shuffleItems(false);
 
         pp.getPlayer().openInventory(pitWindow);
         spectators.forEach(pitPlayer -> pitPlayer.getPlayer().openInventory(pitWindow));

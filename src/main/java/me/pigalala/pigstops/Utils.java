@@ -52,7 +52,6 @@ public abstract class Utils {
         yamlConfig.set("name", name);
         yamlConfig.set("invsize", invSize);
         yamlConfig.set("background", new ItemStack(Material.GRAY_STAINED_GLASS_PANE));
-        yamlConfig.set("modifications", "ab");
         yamlConfig.set("pitmode", "DEFAULT");
         for (int i = 0; i < 54; i++) {
             yamlConfig.set("item" + i, new ItemStack(Material.AIR));

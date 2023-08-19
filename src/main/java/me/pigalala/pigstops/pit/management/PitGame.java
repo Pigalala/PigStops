@@ -26,7 +26,6 @@ public class PitGame {
     public String name;
     public int inventorySize;
     public ItemStack backgroundItem;
-    public String modifications;
     public List<ItemStack> contents = new ArrayList<>();
     public Pit.PitMode pitMode;
 
@@ -101,23 +100,6 @@ public class PitGame {
         this.pitMode = pitMode;
     }
 
-    public void setModification(char change, Modifications modification) {
-        if(change == '+') {
-            if(hasModification(modification)) return;
-            pitFile.set("modifications", pitFile.getString("modifications").concat(modification.getId()));
-            this.modifications = this.modifications.concat(modification.getId());
-        } else if(change == '-') {
-            pitFile.set("modifications", pitFile.getString("modifications").replace(modification.getId(), ""));
-            this.modifications = this.modifications.replace(modification.getId(), "");
-        } else throw new RuntimeException("Pigalala was stupid");
-
-        save();
-    }
-
-    public boolean hasModification(Modifications modification) {
-        return modifications.contains(modification.getId());
-    }
-
     private void save() {
         try {
             pitFile.save(file);
@@ -132,14 +114,13 @@ public class PitGame {
             this.name = pitFile.getString("name");
             this.inventorySize = pitFile.getInt("invsize");
             this.backgroundItem = pitFile.getItemStack("background");
-            this.modifications = pitFile.getString("modifications");
             this.pitMode = Pit.PitMode.of(pitFile.getString("pitmode"));
 
             for(int i = 0; i < 54; i++) {
                 contents.add(pitFile.getItemStack("item" + i));
             }
         } catch (NullPointerException e) {
-            getPlugin().getLogger().log(Level.SEVERE, "^^^ Error loading PigStop, please send the above PigStop to Pigalala for maintenance, or delete it ^^^");
+            getPlugin().getLogger().log(Level.SEVERE, "Error loading " + file.getName() + ", please send the above PigStop to Pigalala for maintenance, or delete it");
         }
     }
 
@@ -147,7 +128,6 @@ public class PitGame {
         if(!pitFile.isSet("name")) throw new NullPointerException();
         if(!pitFile.isSet("invsize")) pitFile.set("invsize", 27);
         if(!pitFile.isSet("background")) pitFile.set("background", new ItemStack(Material.BARRIER));
-        if(!pitFile.isSet("modifications")) pitFile.set("modifications", "ab");
         if(!pitFile.isSet("pitmode")) pitFile.set("pitmode", Pit.PitMode.DEFAULT.toString());
     }
 

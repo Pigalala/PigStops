@@ -1,6 +1,7 @@
 package me.pigalala.pigstops;
 
 import me.makkuusen.timing.system.TPlayer;
+import me.pigalala.pigstops.pit.management.PitGame;
 import me.pigalala.pigstops.pit.management.pitmodes.Pit;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
@@ -49,6 +50,17 @@ public class OinkMessages {
                         .appendNewline().append(Component.text("Misclicks: ").color(TextColor.color(0x7BF200))).append(Component.text(misclicks))
                         .build()
                 )
+                .build();
+    }
+
+    public static TextComponent getPitGameInfoText(PitGame pg) {
+
+        return Component.text().content("").color(NamedTextColor.GRAY)
+                .append(Component.text("--- "))
+                .append(Component.text(pg.name).color(TextColor.color(0xF38AFF))).append(Component.text(".pigstop"))
+                .append(Component.text(" ---"))
+                .appendNewline().append(Component.text("PitMode: ")).append(Component.text(pg.pitMode.getDisplayName()).color(TextColor.color(0xF38AFF)))
+                .appendNewline().append(Component.text("InventorySize: ")).append(Component.text(pg.inventorySize).color(TextColor.color(0xF38AFF)))
                 .build();
     }
 }
