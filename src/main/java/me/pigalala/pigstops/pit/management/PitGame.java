@@ -109,23 +109,19 @@ public class PitGame {
     }
 
     private void firstTimeSetup() {
-        try {
-            validateFile();
-            this.name = pitFile.getString("name");
-            this.inventorySize = pitFile.getInt("invsize");
-            this.backgroundItem = pitFile.getItemStack("background");
-            this.pitMode = Pit.PitMode.of(pitFile.getString("pitmode"));
+        validateFile();
+        this.name = pitFile.getString("name");
+        this.inventorySize = pitFile.getInt("invsize");
+        this.backgroundItem = pitFile.getItemStack("background");
+        this.pitMode = Pit.PitMode.of(pitFile.getString("pitmode"));
 
-            for(int i = 0; i < 54; i++) {
-                contents.add(pitFile.getItemStack("item" + i));
-            }
-        } catch (NullPointerException e) {
-            getPlugin().getLogger().log(Level.SEVERE, "Error loading " + file.getName() + ", please send the above PigStop to Pigalala for maintenance, or delete it");
+        for(int i = 0; i < 54; i++) {
+            contents.add(pitFile.getItemStack("item" + i));
         }
     }
 
     private void validateFile() {
-        if(!pitFile.isSet("name")) throw new NullPointerException();
+        if(!pitFile.isSet("name")) pitFile.set("name", file.getName().replace(".pigstop", ""));
         if(!pitFile.isSet("invsize")) pitFile.set("invsize", 27);
         if(!pitFile.isSet("background")) pitFile.set("background", new ItemStack(Material.BARRIER));
         if(!pitFile.isSet("pitmode")) pitFile.set("pitmode", Pit.PitMode.DEFAULT.toString());
